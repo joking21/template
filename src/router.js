@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import PageMyTask from './views/PageMyTask.vue';
-
+// import PageMyTask from './views/PageMyTask.vue';
+import PageIndexBaseManage from './views/PageIndexBaseManage.vue';
 Vue.use(Router)
 
 export default new Router({
@@ -11,7 +11,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: PageMyTask
+      component: PageIndexBaseManage
     }
   ]
 })
