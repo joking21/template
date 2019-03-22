@@ -134,6 +134,11 @@ export default {
       viewDetailsModel: false
     };
   },
+  created() {
+    this.$http.get("/api/articles/new/article").then(response => {
+      console.log(response);
+    });
+  },
   components: {
     StartReport,
     StartReview,
