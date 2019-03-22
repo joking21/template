@@ -1,9 +1,10 @@
 <template>
   <div class="aside">
+    <!-- :default-openeds="['2']" -->
     <el-menu
-      default-active="1"
+      :default-active="toobarIndex"
       class="el-menu-vertical-demo"
-      :default-openeds="['2']"
+      :default-openeds="[zankai]"
       active-text-color="#ffffff"
       text-color="#ffffff"
       background-color="transparent"
@@ -35,7 +36,11 @@
       </el-submenu>
     </el-menu>
     <div class="d-aside-footer">
-      <el-button icon="el-icon-search" circle @click="changeBtn"></el-button>
+      <i
+        class="el-icon-d-arrow-left"
+        style="font-size: 20px; color: #ffffff; cursor: pointer;"
+        @click="changeBtn"
+      ></i>
     </div>
   </div>
 </template>
@@ -43,11 +48,11 @@
 .aside {
   .d-aside-footer {
     position: fixed;
-    bottom: 10px;
+    bottom: 0px;
     height: 48px;
     width: 100%;
     line-height: 48px;
-    padding-left: 10px;
+    padding-left: 17px;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
@@ -80,33 +85,47 @@ export default {
       isCollapse: true
     };
   },
+  computed: {
+    toobarIndex() {
+      return this.$store.state.toobarIndex;
+    },
+    zankai(){
+      console.log(this.$store.state.toobarIndex);
+      console.log(this.$store.state.toobarIndex.split('-'));
+       return this.$store.state.toobarIndex.split('-')[0];
+    }
+  },
   methods: {
     selectJump(index) {
-      console.log(index);
       let title;
+      let url;
       switch (index) {
         case "1":
           title = "我的考评任务";
+          url = "/";
           break;
         case "2-1":
-          title = "考评指标管理/指标库管理";
+          title = "考评指标管理 / 指标库管理";
+          url = "/indexBaseManage";
           break;
         case "2-2":
-          title = "考评指标管理/考评模板管理";
+          title = "考评指标管理 / 考评模板管理";
+          url = "/templateManage";
           break;
         case "3":
           title = "考评任务设置";
           break;
         case "4-1":
-          title = "考评工作汇总/考评任务管理";
+          title = "考评工作汇总 / 考评任务管理";
           break;
         case "4-2":
-          title = "考评工作汇总/考评分析报表";
+          title = "考评工作汇总 / 考评分析报表";
           break;
         default:
           title = "未知";
       }
-      this.$store.commit("changeToobar", title);
+      this.$router.push({ path: url });
+      this.$store.commit("changeToobar", {title: title, index: index});
     },
     changeBtn() {
       this.isCollapse ? (this.isCollapse = false) : (this.isCollapse = true);

@@ -29,20 +29,19 @@ html, body, div, p, a{
     position: relative;
     .d-left{
         position: absolute; top:0; left:0;
-        width: 260px;
+        width: 240px;
         height: auto;
         background: #ffffff;
         padding: 10px;
         border: 1px solid #eeeeee;
-        margin-right: 20px;
-        height: 250px;
+        min-height: 250px;
     }
     .d-right{
         margin-left: 300px;
     }
 }
 .el-table th{
-    height:40px;
+    height:36px;
     background:rgba(242,242,242,1);
     border:1px solid rgba(233,233,233,1);
     border-left:none;
@@ -51,21 +50,21 @@ html, body, div, p, a{
     font-family:PingFangSC-Regular;
     font-weight:400;
     color:rgba(51,51,51,1);
-    line-height:40px;
+    line-height:36px;
 }
 .el-table .operator{
     font-size:13px;
     font-family:PingFangSC-Regular;
     font-weight:400;
     color:#31A1F4;
-    line-height:41px;
+    line-height:36px;
     border: none;
     padding: 3px;
     cursor: pointer;
 }
 .el-table td{
-    height: 40px;
-    line-height: 40px;
+    height: 36px;
+    line-height: 36px;
     border-bottom:1px solid rgba(233,233,233,1);
     font-size:13px;
     font-family:PingFangSC-Regular;
@@ -152,4 +151,21 @@ html, body, div, p, a{
     .el-input__inner{
         height: 30px;
     }
+}
+// 字体描述性文字样子
+.d-desc{
+    font-size:13px;
+    font-family:PingFangSC-Regular;
+    font-weight:400;
+    color:rgba(51,51,51,1);
+    line-height:36px;
+}
+.el-button--danger{
+    background:rgba(234,237,241,1) !important;
+    font-family:MicrosoftYaHei !important;
+    color:rgba(102,102,102,1) !important;
+    border: none !important;
+}
+.el-button--danger:hover{
+    background:rgba(234,237,241,0.7) !important;
 }

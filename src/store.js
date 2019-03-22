@@ -5,14 +5,18 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-     toobarName: '我的考核任务'
+    toobarName: sessionStorage.getItem('toobarName') ? sessionStorage.getItem('toobarName') : '我的考核任务',
+    toobarIndex: sessionStorage.getItem('toobarIndex') ? sessionStorage.getItem('toobarIndex') : '1',
   },
   mutations: {
-    changeToobar(state, title){
-      state.toobarName = title;
+    changeToobar(state, data) {
+      state.toobarName = data.title;
+      state.toobarIndex = data.index;
+      sessionStorage.setItem('toobarName', data.title);
+      sessionStorage.setItem('toobarIndex', data.index);
     },
   },
   actions: {
-// this.$store.commit('changeToobar', '2');
+    // this.$store.commit('changeToobar', '2');
   }
 })

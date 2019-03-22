@@ -3,7 +3,7 @@
     <div class="search" style="padding: 10px 14px 6px 14px;">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="任务状态">
-          <el-select v-model="formInline.region">
+          <el-select v-model="formInline.region" style="width: 180px;">
             <el-option label="全部" value="全部"></el-option>
             <el-option label="未填报" value="beijing"></el-option>
             <el-option label="已提交" value="beijing1"></el-option>
@@ -21,7 +21,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="任务名称">
-          <el-input v-model="formInline.name" placeholder="任务名称"></el-input>
+          <el-input v-model="formInline.name" placeholder="任务名称" style="width: 150px;"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary">查询</el-button>
