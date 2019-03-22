@@ -1,5 +1,9 @@
 <template>
   <div class="d-content">
+    <div class="d-tabs">
+      <el-button size="small" icon="el-icon-plus">代办填报</el-button>
+      <el-button size="small" icon="el-icon-delete">代办审核</el-button>
+    </div>
     <div class="search" style="padding: 10px 14px 6px 14px;">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="任务状态">
@@ -74,6 +78,7 @@
     <ReReport :reReportVisible="reReportVisible" :changeParent="changeParent"/>
   </div>
 </template>
+
 <script>
 import StartReport from "../components/PageMyTask/StartReport.vue";
 import StartReview from "../components/PageMyTask/StartReview.vue";

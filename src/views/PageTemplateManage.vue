@@ -136,7 +136,7 @@ export default {
      // 删除指标项
     deleteTemplate(index, row) {
       console.log(index, row);
-      this.$confirm("是否确定删除指标【指标名称】", "删除指标", {
+      this.$confirm("是否确定删除任务【任务名称】", "刪除任务", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -152,7 +152,7 @@ export default {
     // 删除选中的指标项
     deleteTemplateAll() {
       console.log(this.multipleSelection);
-      this.$confirm("是否确定删除选中的指标项", "删除指标", {
+      this.$confirm("是否确定删除选中的任务", "刪除任务", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

@@ -114,6 +114,7 @@ export default {
           break;
         case "3":
           title = "考评任务设置";
+          url = "/taskSet";
           break;
         case "4-1":
           title = "考评工作汇总 / 考评任务管理";

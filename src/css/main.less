@@ -131,6 +131,11 @@ html, body, div, p, a{
     .el-form-item{
         margin-bottom: 0px;
     }
+    .el-dialog__body{
+        .el-input__inner{
+            height: 30px;
+        }
+    }
 }
 // 模态框
 .el-dialog__header{
@@ -146,11 +151,6 @@ html, body, div, p, a{
     font-family: PingFangSC-Medium;
     font-weight: 500;
     color: #ffffff;
-}
-.el-dialog__body{
-    .el-input__inner{
-        height: 30px;
-    }
 }
 // 字体描述性文字样子
 .d-desc{
@@ -168,4 +168,14 @@ html, body, div, p, a{
 }
 .el-button--danger:hover{
     background:rgba(234,237,241,0.7) !important;
+}
+// 自定义tab标签
+.d-tabs{
+    margin-bottom: 8px;
+    background-color: rgb(232,236,240);
+    margin-left: -1px;
+    margin-top: -1px;
+    .el-button{
+        
+    }
 }

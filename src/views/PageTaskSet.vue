@@ -6,7 +6,7 @@
         <el-button size="small" icon="el-icon-delete" type="danger" @click="deleteTemplateAll">删除任务</el-button>
       </el-row>
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="所属组织">
+        <el-form-item label="考评对象">
           <el-select v-model="formInline.region" style="width: 180px;" placeholder="请选择">
             <el-option label="组1" value="beijing"></el-option>
             <el-option label="组2" value="beijing1"></el-option>
@@ -14,17 +14,16 @@
             <el-option label="组4" value="beijing3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="创建时间" style="padding-top: 4px; ">
-          <el-date-picker
-            v-model="formInline.date"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
-          ></el-date-picker>
+        <el-form-item label="任务状态">
+          <el-select v-model="formInline.region" style="width: 180px;" placeholder="请选择">
+            <el-option label="组1" value="beijing"></el-option>
+            <el-option label="组2" value="beijing1"></el-option>
+            <el-option label="组3" value="beijing2"></el-option>
+            <el-option label="组4" value="beijing3"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="模板名称">
-          <el-input v-model="formInline.name" placeholder="请输入模板名称" style="width: 150px;"></el-input>
+        <el-form-item label="任务名称">
+          <el-input v-model="formInline.name" placeholder="请输入任务名称" style="width: 150px;"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary">查询</el-button>
@@ -38,15 +37,16 @@
       style="width: 100%"
     >
       <el-table-column type="selection" width="55" :selectable="disabledFun"></el-table-column>
-      <el-table-column prop="name" label="模板名称"></el-table-column>
-      <el-table-column prop="status" label="所属组织"></el-table-column>
-      <el-table-column prop="status1" label="创建时间"></el-table-column>
-      <el-table-column prop="status2" label="创建人"></el-table-column>
-      <el-table-column prop="status3" label="最后修改时间"></el-table-column>
-      <el-table-column prop="status4" label="修改人"></el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column prop="name" label="任务名称"></el-table-column>
+      <el-table-column prop="status" label="考评对象"></el-table-column>
+      <el-table-column prop="status1" label="任务状态"></el-table-column>
+      <el-table-column prop="status2" label="考评周期"></el-table-column>
+      <el-table-column prop="status3" label="任务创建时间"></el-table-column>
+      <el-table-column prop="status4" label="任务创建人"></el-table-column>
+      <el-table-column label="操作" width="120">
         <template slot-scope="scope">
           <!--             v-if="scope.row.id===1" -->
+          <a class="operator">查看</a>
           <a class="operator" @click="editTemplate(scope.$index, scope.row)">编辑</a>
           <a class="operator" @click="deleteTemplate(scope.$index, scope.row)">删除</a>
         </template>
@@ -67,14 +67,14 @@
   </div>
 </template>
 <script>
-import Task from "../components/PageTemplateManage/Task.vue";
+import Task from "../components/PageTaskSet/Task.vue";
 export default {
   data() {
     return {
       formInline: {
         name: "",
         region: "",
-        date: ""
+        region1: ""
       },
       currentPage: 1,
       tableData: [
@@ -115,11 +115,11 @@ export default {
     changeParent(name, value) {
       this[name] = value;
     },
-    addTask() {
+    addTemplate() {
       this.taskModel = true;
       this.isTaskEdit = false;
     },
-    editTask() {
+    editTemplate() {
       this.taskModel = true;
       this.isTaskEdit = true;
     },

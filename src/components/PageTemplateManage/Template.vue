@@ -42,11 +42,14 @@
               <span>{{ scope.row.amount4 }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="amount5" label="权重" width="80"></el-table-column>
-          <el-table-column prop="amount6" label="期望值（%）" width="80"></el-table-column>
-          <el-table-column label="实际值（%）" width="80">
+           <el-table-column label="权重" width="80">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.amount7"></el-input>
+              <el-input v-model="scope.row.amount5"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column label="期望值（%）" width="80">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.amount6"></el-input>
             </template>
           </el-table-column>
         </el-table>
