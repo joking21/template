@@ -1,23 +1,19 @@
 <template>
   <div class="d-content">
     <div class="d-tabs">
-      <el-button size="small" icon="el-icon-plus">代办填报</el-button>
-      <el-button size="small" icon="el-icon-delete">代办审核</el-button>
+      <el-button size="small" :class="active===1?'d-active':''" @click="handleFillIn">代办填报</el-button>
+      <el-button size="small" :class="active===2?'d-active':''" style="margin-left: 5px;" @click="handleToExamine">代办审核</el-button>
     </div>
     <div class="search" style="padding: 10px 14px 6px 14px;">
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form :inline="true" :model="form" class="demo-form-inline">
         <el-form-item label="任务状态">
-          <el-select v-model="formInline.region" style="width: 180px;">
-            <el-option label="全部" value="全部"></el-option>
-            <el-option label="未填报" value="beijing"></el-option>
-            <el-option label="已提交" value="beijing1"></el-option>
-            <el-option label="待审核" value="beijing2"></el-option>
-            <el-option label="审核通过" value="beijing3"></el-option>
+          <el-select v-model="form.type" style="width: 180px;">
+            <el-option v-for="(item, index) in form.typeArr" :key="index" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="考评截止日期" style="padding-top: 4px;">
+        <el-form-item label="派发时间" style="padding-top: 4px;">
           <el-date-picker
-            v-model="formInline.date"
+            v-model="form.date"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -25,7 +21,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="任务名称">
-          <el-input v-model="formInline.name" placeholder="任务名称" style="width: 150px;"></el-input>
+          <el-input v-model="form.name" placeholder="任务名称" style="width: 150px;"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary">查询</el-button>
@@ -47,7 +43,7 @@
           <a
             class="operator"
             v-if="scope.row.id===2"
-            @click="handleEdit(scope.$index, scope.row)"
+            @click="handleViewDetails(scope.$index, scope.row)"
           >查看详情</a>
           <a
             class="operator"
@@ -73,23 +69,36 @@
         :total="100"
       ></el-pagination>
     </div>
+    <!-- 查看详情 -->
+    <ViewDetails :viewDetailsModel="viewDetailsModel" :changeParent="changeParent"/>
+    <!-- 开始填报 -->
     <StartReport :startReportModel="startReportModel" :changeParent="changeParent"/>
+    <!-- 开始审核 -->
     <StartReview :startReviewVisible="startReviewVisible" :changeParent="changeParent"/>
+    <!-- 重新填报 -->
     <ReReport :reReportVisible="reReportVisible" :changeParent="changeParent"/>
   </div>
 </template>
 
 <script>
+import ViewDetails from "../components/PageMyTask/ViewDetails.vue";
 import StartReport from "../components/PageMyTask/StartReport.vue";
 import StartReview from "../components/PageMyTask/StartReview.vue";
 import ReReport from "../components/PageMyTask/ReReport.vue";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
-      formInline: {
+      active: 1,
+      form: {
         name: "",
-        user: "",
-        region: "",
+        type: "待填报",
+        typeArr: [
+          { name: "全部" },
+          { name: "待填报" },
+          { name: "待审核" },
+          { name: "已完成" }
+        ],
         date: ""
       },
       currentPage: 1,
@@ -121,13 +130,15 @@ export default {
       ],
       startReportModel: false,
       startReviewVisible: false,
-      reReportVisible: false
+      reReportVisible: false,
+      viewDetailsModel: false
     };
   },
   components: {
     StartReport,
     StartReview,
-    ReReport
+    ReReport,
+    ViewDetails
   },
   methods: {
     handleEdit(index, row) {
@@ -146,6 +157,9 @@ export default {
       console.log(name, value);
       this[name] = value;
     },
+    handleViewDetails() {
+      this.viewDetailsModel = true;
+    },
     handleStartReport() {
       this.startReportModel = true;
     },
@@ -154,6 +168,31 @@ export default {
     },
     handleReReport() {
       this.reReportVisible = true;
+    },
+    // 代办填报
+    handleFillIn() {
+      this.active = 1;
+      this.form = {
+        name: "",
+        type: "待填报",
+        typeArr: [
+          { name: "全部" },
+          { name: "待填报" },
+          { name: "待审核" },
+          { name: "已完成" }
+        ],
+        date: ""
+      };
+    },
+    // 代办审核
+    handleToExamine() {
+      this.active = 2;
+      this.form = {
+        name: "",
+        type: "待审核",
+        typeArr: [{ name: "全部" }, { name: "待审核" }, { name: "已完成" }],
+        date: ""
+      };
     }
   }
 };

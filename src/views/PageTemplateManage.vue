@@ -44,9 +44,10 @@
       <el-table-column prop="status2" label="创建人"></el-table-column>
       <el-table-column prop="status3" label="最后修改时间"></el-table-column>
       <el-table-column prop="status4" label="修改人"></el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column label="操作" width="120">
         <template slot-scope="scope">
           <!--             v-if="scope.row.id===1" -->
+          <a class="operator">查看</a>
           <a class="operator" @click="editTemplate(scope.$index, scope.row)">编辑</a>
           <a class="operator" @click="deleteTemplate(scope.$index, scope.row)">删除</a>
         </template>

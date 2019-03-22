@@ -3,7 +3,9 @@ import Router from 'vue-router'
 import PageMyTask from './views/PageMyTask.vue';
 import PageIndexBaseManage from './views/PageIndexBaseManage.vue';
 import PageTemplateManage from './views/PageTemplateManage.vue';
-import PageTaskSet from './views/PageTaskSet.vue'
+import PageTaskSet from './views/PageTaskSet.vue';
+import PageTaskManagement from './views/PageTaskManagement.vue';
+import PageReportAnalysis from './views/PageReportAnalysis';
 Vue.use(Router)
 
 export default new Router({
@@ -29,6 +31,16 @@ export default new Router({
       path: '/taskSet',
       name: 'PageTaskSet',
       component: PageTaskSet
+    },
+    {
+      path: '/taskManagement',
+      name: 'PageTaskManagement',
+      component: PageTaskManagement
+    },
+    {
+      path: '/reportAnalysis',
+      name: 'PageReportAnalysis',
+      component: PageReportAnalysis
     },
   ]
 })

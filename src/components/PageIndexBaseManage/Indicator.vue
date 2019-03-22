@@ -25,6 +25,7 @@
           :key="index"
           label="子指标项"
           label-width="73px"
+          style="margin-bottom: 5px;"
         >
           <el-col :span="16">
             <el-input v-model="item.name"></el-input>

@@ -79,7 +79,7 @@ html, body, div, p, a{
 }
 // 分页
 .d-pagination{
-    margin-top: 8px;
+    padding: 15px 0px;
     text-align: right;
     .el-pagination .el-select .el-input {
         width: 80px;
@@ -152,6 +152,12 @@ html, body, div, p, a{
     font-weight: 500;
     color: #ffffff;
 }
+.el-dialog__body{
+    .el-input__inner{
+      height: 36px;
+   }
+}
+
 // 字体描述性文字样子
 .d-desc{
     font-size:13px;
@@ -169,6 +175,11 @@ html, body, div, p, a{
 .el-button--danger:hover{
     background:rgba(234,237,241,0.7) !important;
 }
+.el-menu--vertical{
+    .el-menu{
+        background-color: #303133 !important;
+    }
+}
 // 自定义tab标签
 .d-tabs{
     margin-bottom: 8px;
@@ -176,6 +187,15 @@ html, body, div, p, a{
     margin-left: -1px;
     margin-top: -1px;
     .el-button{
-        
+        border: none;
+        font-size: 14px;
+    }
+    .d-active{
+        span{
+            font-size:14px;
+            font-family:MicrosoftYaHei;
+            color:rgba(0,138,241,1); 
+        }
+       
     }
 }

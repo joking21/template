@@ -60,12 +60,13 @@
         style="width: 100%"
       >
         <el-table-column type="selection" width="55" :selectable="disabledFun"></el-table-column>
-        <el-table-column prop="name" label="指标线"></el-table-column>
+        <el-table-column prop="name" label="指标项"></el-table-column>
         <el-table-column prop="status" label="指标来源"></el-table-column>
         <el-table-column prop="status1" label="指标描述"></el-table-column>
-        <el-table-column label="操作" width="100">
+        <el-table-column label="操作" width="120">
           <!-- v-if="scope.row.id===2" -->
           <template slot-scope="scope">
+            <a class="operator" >查看</a>
             <a class="operator" @click="handleEditIndicator(scope.$index, scope.row)">编辑</a>
             <a class="operator" @click="deleteIndicator(scope.$index, scope.row)">删除</a>
           </template>
