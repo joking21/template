@@ -2,8 +2,8 @@
   <div class="d-content">
     <div class="search" style="padding: 10px 14px 6px 14px;">
       <el-row style="margin-bottom: 15px;">
-        <el-button size="small" icon="el-icon-plus" type="primary" @click="addTemplate">新增任务</el-button>
-        <el-button size="small" icon="el-icon-delete" type="danger" @click="deleteTemplateAll">删除任务</el-button>
+        <el-button size="small" icon="el-icon-plus" type="primary" @click="addTemplate">新增模板</el-button>
+        <el-button size="small" icon="el-icon-delete" type="danger" @click="deleteTemplateAll">删除模板</el-button>
       </el-row>
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="所属组织">

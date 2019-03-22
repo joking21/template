@@ -31,13 +31,13 @@
             icon="el-icon-plus"
             type="primary"
             @click="handleAddIndicator"
-          >新增任务</el-button>
+          >新增指标</el-button>
           <el-button
             size="small"
             icon="el-icon-delete"
             type="danger"
             @click="handledeleteSelect"
-          >删除任务</el-button>
+          >删除指标</el-button>
         </el-row>
         <el-row>
           <el-col :span="12">
