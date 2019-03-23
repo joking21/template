@@ -6,7 +6,7 @@
     >
         <el-table-column v-for="item in columnArr" :key="item" :label="`${item}级指标分类`" width="100">
             <template slot-scope="scope">
-                <el-checkbox :name="scope.row[`name${item}`]" style="margin-right: 5px"></el-checkbox>
+                <el-checkbox v-if="scope.row[`name${item}`]" :name="scope.row[`name${item}`]" style="margin-right: 5px"></el-checkbox>
                 <span>{{ scope.row[`name${item}`] || '-'}}</span>
             </template>
         </el-table-column>
@@ -47,25 +47,25 @@ export default {
       data6: [
         {
           id: 1,
-          label: "一级指标分类testA",
+          label: "一级1a",
           children: [
             {
               id: 2,
-              label: "二级指标分类testA(指标项1A)",
+              label: "二级2a",
               children: [
                 {
                   id: 3,
-                  label: "子指标项1A",
+                  label: "指标项3a",
                   children: [
                     {
                       id: 4,
-                      label: "子指标项1A"
+                      label: "子指标项4a"
                     }
                   ]
                 },
                 {
                   id: 5,
-                  label: "子指标项5A"
+                  label: "子指标项5a"
                 }
               ]
             }
@@ -73,23 +73,23 @@ export default {
         },
         {
           id: 7,
-          label: "一级指标分类testBB",
+          label: "一级b",
           children: [
             {
               id: 8,
-              label: "二级指标分类test(子指标项)"
+              label: "二级b"
             },
             {
               id: 9,
-              label: "指标项test",
+              label: "指标项b",
               children: [
                 {
                   id: 10,
-                  label: "指标项1（子指标项）"
+                  label: "子指标项10b"
                 },
                 {
                   id: 11,
-                  label: "指标项2（子指标项）"
+                  label: "子指标项11b"
                 }
               ]
             }
@@ -99,7 +99,8 @@ export default {
       level: [],
       columnArr: [],
       dataArr: [], // 如果后台传回来的是一颗树，则把树转换成单挑数据解析    【过程：计算数的深度、解析成单条数据->再把单条数据弄成表格想要的】
-      tableData: []
+      tableData: [], // 表格最终数据
+      maxLevel: 0 // 深度
     };
   },
   //   props: ["templateModel", "changeParent", "isTemplateEdit"],
@@ -128,21 +129,35 @@ export default {
     // console.log(gData);
   },
   created() {
-    this.analyticTree(this.data6);
-    console.log(this.level);
-    this.getMax(this.level);
-    // console.log(this.data6);
-    // console.log(this.dataArr);
-    // this.tableData = this.analyticArr(this.dataArr);
-    console.log("11", this.analyticArr(this.dataArr));
-    // console.log(this.tableData);
-    // console.log(this.analyticArr(this.dataArr));
+    this.analyticTree(this.data6); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
+    this.getMax(this.level); // 计算最深树枝的深度
+    this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
+    // 处理rowspan
+    this.handleRowspan();
+    console.log("最最最忠", this.tableData);
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (row.rowspan) {
+      const maxLevel = this.maxLevel;
+      const index = parseInt(columnIndex + 1, 10);
+      if (index <= maxLevel && row[`name${index}`]) {
         return {
-          rowspan: row.rowspan,
+          rowspan: row[`name${index}rowspan`],
+          colspan: 1
+        };
+      } else if (columnIndex === maxLevel) {
+        return {
+          rowspan: row.indexItemNamerowspan,
+          colspan: 1
+        };
+      } else if (columnIndex === maxLevel + 1) {
+        return {
+          rowspan: row.subIndexItemNamerowspan,
+          colspan: 1
+        };
+      } else {
+        return {
+          rowspan: 1,
           colspan: 1
         };
       }
@@ -150,13 +165,14 @@ export default {
     analyticTree(data, index, level) {
       for (let i = 0; i < data.length; i++) {
         let tempLevel, tempIndex;
-        tempLevel = level === undefined ? 0 : level;
-        tempIndex = index === undefined ? -1 : index;
+        tempLevel = level === undefined ? -1 : level;
+        tempIndex = index === undefined ? -2 : index;
         const temp = {
           pid: tempIndex,
           id: data[i].id,
           label: data[i].label,
-          level: tempLevel
+          level: tempLevel,
+          rowspan: 1
         };
         this.dataArr.push(temp);
         if (data[i].children && data[i].children.length > 0) {
@@ -188,44 +204,48 @@ export default {
       for (let i = 1; i <= max; i++) {
         this.columnArr.push(i);
       }
+      this.maxLevel = max;
     },
     // 封装成想要渲染表格的数据
     analyticArr(data) {
-      console.log(JSON.parse(JSON.stringify(data)));
       let tempData = JSON.parse(JSON.stringify(data));
       for (let i = 0; i < tempData.length; i++) {
-        let rowspan = 0;
+        // let rowspan = tempData.rowspan;
         for (let j = 0; j < tempData.length; j++) {
           if (tempData[i].id === tempData[j].pid) {
-            rowspan += 1;
+            tempData[i].rowspan += 1;
             // 判断是否是指标项  处理指标项
             if (this.isIndexItem(data, tempData[j].id)) {
               tempData[i].indexItemId = tempData[i].id;
               tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-              tempData[i].indexItemNamerowspan = rowspan;
+              tempData[i].indexItemNamerowspan = tempData[i].rowspan;
               tempData[i].indexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+              tempData[i].indexItemId = tempData[i].id;
             } else {
               const name = `name${tempData[i].level + 2}`;
               tempData[i][name] = tempData[i].label;
-              tempData[i][`${name}rowspan`] = rowspan;
+              tempData[i][`${name}rowspan`] = tempData[i].rowspan;
+              tempData[i][`${name}Id`] = tempData[i].id;
               tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id; // 每个级别的id
             }
           }
         }
         // tempData[i].rowspan = rowspan;
-        if (rowspan === 0) {
+        if (tempData[i].rowspan === 1) {
           // 处理子指标项
           tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
           tempData[i].subIndexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
           tempData[i].subIndexItemExpectations = ""; // 期望值  逻辑同权重
           tempData[i].subIndexItemId = tempData[i].id;
-          tempData[i].subIndexItemNamerowspan = rowspan;
+          tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
         }
       }
-      //   return tempData;
-      console.log(tempData);
-      let tempTable = this.concatArr(tempData, tempData[0].id, tempData[0]);
-      console.log("最终", tempTable);
+      for (let i = 0; i < tempData.length; i++) {
+        if (tempData[i].pid === -2) {
+          this.concatArr(tempData, tempData[i].id, tempData[i]);
+        }
+      }
+      console.log("最终", this.tableData);
     },
     // 判断是否是指标项 -> 判断依据：子类是否还有子类
     isIndexItem(data, id) {
@@ -238,26 +258,73 @@ export default {
     },
     // 合并多条数据
     concatArr(data, id, obj) {
-      let tableData = [];
-      //   debugger
+      let tempData = JSON.parse(JSON.stringify(data));
       let yy = [];
-      for (let i = 0; i < data.length; i++) {
-        if (id === data[i].pid) {
-          obj = Object.assign(obj, data[i]);
-          // tableData.push(tempObj);
-          this.concatArr(data, data[i].id, obj);
+      for (let i = 0; i < tempData.length; i++) {
+        if (id === tempData[i].pid) {
+          obj = Object.assign(obj, tempData[i]);
+          this.concatArr(data, tempData[i].id, obj);
         } else {
           yy.push(1);
         }
       }
-      console.log(yy.length, data.length);
-      if (yy.length === data.length) {
+      if (yy.length === tempData.length) {
         this.tableData.push(JSON.parse(JSON.stringify(obj)));
         obj = {};
       }
-      console.log("原头", this.tableData);
-      //   return temp;
-      // return this.tableData;
+    },
+    handleRowspan() {
+      let data = this.tableData;
+      let indexItemNamerowspanArr = [];
+      let subIndexItemNamerowspanArr = [];
+
+      for (let i = 0; i < data.length; i++) {
+        for (let j = i; j < data.length; j++) {
+          if (data[i].id !== data[j].id) {
+            if (data[i].indexItemId === data[j].indexItemId) {
+              data[j].indexItemNamerowspan = 0;
+            }
+            if (data[i].subIndexItemId === data[j].subIndexItemId) {
+              data[j].subIndexItemNamerowspan = 0;
+            }
+            for (let k = 1; k <= this.maxLevel; k++) {
+              if (data[i][`name${k}Id`] === data[j][`name${k}Id`]) {
+                data[j][`name${k}rowspan`] = 0;
+              }
+            }
+          }
+        }
+      }
+      for (let m = 0; m < data.length; m++) {
+        for (let n = 0; n < data.length; n++) {
+          // debugger
+          if (data[m].indexItemId !== data[n].indexItemId) {
+            indexItemNamerowspanArr.push(1);
+          }
+          if (data[m].subIndexItemId !== data[n].subIndexItemId) {
+            subIndexItemNamerowspanArr.push(1);
+          }
+          // if (data[i].id !== data[j].id) {
+          //   if (data[i].indexItemId !== data[j].indexItemId) {
+          //     indexItemNamerowspanArr.push(1);
+          //   }
+          //   if (data[i].subIndexItemId !== data[j].subIndexItemId) {
+          //     subIndexItemNamerowspanArr.push(1);
+          //   }
+          //   // for (let k = 1; k <= this.maxLevel; k++) {
+          //   //   if (data[i][`name${k}Id`] === data[j][`name${k}Id`]) {
+          //   //     data[j][`name${k}rowspan`] = 0;
+          //   //   }
+          //   // }
+          // }
+        }
+        if (indexItemNamerowspanArr.length === data.length) {
+          data[m].indexItemNamerowspan = 1;
+        }
+        if (subIndexItemNamerowspanArr.length === data.length) {
+          data[m].subIndexItemNamerowspanArr = 1;
+        }
+      }
     }
 
     // 单条数据转换成树测试
