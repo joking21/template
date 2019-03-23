@@ -5,7 +5,7 @@
     @close="handleCancel"
     width="70%"
   >
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="模板名称">
         <el-input style="width: 220px;" v-model="form.name"></el-input>
       </el-form-item>
@@ -21,38 +21,7 @@
         <el-input type="textarea" v-model="form.desc"></el-input>
       </el-form-item>
       <el-form-item label="选择指标项">
-        <el-table :data="tableData6" :span-method="objectSpanMethod" border>
-          <!-- <el-table-column prop="amount1" label="指标分类" width="100"></el-table-column> -->
-          <el-table-column label="指标分类" width="150">
-            <template slot-scope="scope">
-              <el-checkbox name="amount2" style="margin-right: 5px"></el-checkbox>
-              <span>{{ scope.row.amount1 }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="指标项">
-            <template slot-scope="scope">
-              <el-checkbox name="amount2" style="margin-right: 5px"></el-checkbox>
-              <span>{{ scope.row.amount2 }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="amount3" label="权重" width="80"></el-table-column>
-          <el-table-column label="子指标项">
-            <template slot-scope="scope">
-              <el-checkbox name="amount4" style="margin-right: 5px"></el-checkbox>
-              <span>{{ scope.row.amount4 }}</span>
-            </template>
-          </el-table-column>
-           <el-table-column label="权重" width="80">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.amount5"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="期望值（%）" width="80">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.amount6"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
+        <TableTemp />
       </el-form-item>
        <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
     </el-form>
@@ -63,6 +32,7 @@
   </el-dialog>
 </template>
 <script>
+import TableTemp from '../Common/TableTemp.vue';
 export default {
   data() {
     return {
@@ -71,50 +41,6 @@ export default {
         desc: "",
         region: "" // 所属组织
       },
-      tableData6: [
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "接入情况",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81",
-          rowspan: 4
-        },
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "平台使用率",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81"
-        },
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "资源共享情况",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81"
-        },
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "资源目录系统",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81"
-        },
-        {
-          amount1: "总分",
-          amount2: "90",
-          all: 1
-        }
-      ]
     };
   },
   props: ["templateModel", "changeParent", "isTemplateEdit"],
@@ -123,31 +49,10 @@ export default {
       return this.templateModel;
     }
   },
+  components:{
+    TableTemp,
+  },
   methods: {
-    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (
-        row.rowspan &&
-        (columnIndex === 0 || columnIndex === 1 || columnIndex === 2)
-      ) {
-        return {
-          rowspan: row.rowspan,
-          colspan: 1
-        };
-      } else if (row.all && columnIndex === 1) {
-        return {
-          rowspan: 1,
-          colspan: 6
-        };
-      } else if (
-        !(row.rowspan || row.all) &&
-        (columnIndex === 0 || columnIndex === 1 || columnIndex === 2)
-      ) {
-        return {
-          rowspan: 0,
-          colspan: 0
-        };
-      }
-    },
     handleCancel() {
       this.changeParent("templateModel", false);
     }

@@ -85,7 +85,7 @@
 export default {
   data() {
     return {
-      isCollapse: true
+      isCollapse: false
     };
   },
   computed: {
@@ -93,8 +93,6 @@ export default {
       return this.$store.state.toobarIndex;
     },
     zankai(){
-      console.log(this.$store.state.toobarIndex);
-      console.log(this.$store.state.toobarIndex.split('-'));
        return this.$store.state.toobarIndex.split('-')[0];
     }
   },
