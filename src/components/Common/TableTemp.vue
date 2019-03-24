@@ -4,7 +4,7 @@
         :span-method="objectSpanMethod"
         border
     >
-        <el-table-column v-for="item in columnArr" :key="item" :label="`${item}级指标分类`" width="100">
+        <el-table-column prop="name" v-for="item in columnArr" :key="item" :label="`${item}级指标分类`" width="100">
             <template slot-scope="scope">
                 <el-checkbox v-if="scope.row[`name${item}`]" :name="scope.row[`name${item}`]" style="margin-right: 5px"></el-checkbox>
                 <span>{{ scope.row[`name${item}`] || '-'}}</span>
@@ -58,6 +58,18 @@ export default {
                   label: "指标项3a",
                   children: [
                     {
+                      id: 4,
+                      label: "子指标项4a"
+                    },
+                     {
+                      id: 4,
+                      label: "子指标项4a"
+                    },
+                     {
+                      id: 4,
+                      label: "子指标项4a"
+                    },
+                     {
                       id: 4,
                       label: "子指标项4a"
                     }
@@ -140,8 +152,15 @@ export default {
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      // debugger
       const maxLevel = this.maxLevel;
       const index = parseInt(columnIndex + 1, 10);
+      if(column.property==='indexItemWeight' && row.indexItemName){
+        return {
+          rowspan: row.indexItemNamerowspan,
+          colspan: 1
+        };
+      }
       if(column.label == '权重' || column.label == '期望值（%）') {
         return {
           rowspan: 1,
