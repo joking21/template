@@ -10,16 +10,16 @@
                 <span>{{ scope.row[`name${item}`] || '-'}}</span>
             </template>
         </el-table-column>
-        <!-- <el-table-column  v-for="item in columnArr" :key="item" :label="`${item}级指标分类`" :prop="`name${item}`" width="100"></el-table-column> -->
         <el-table-column label="指标项">
             <template slot-scope="scope">
-                <el-checkbox name="scope.row.indexItemName" style="margin-right: 5px"></el-checkbox>
-                <span>{{ scope.row.indexItemName }}</span>
+                <el-checkbox v-if="scope.row.indexItemName" name="scope.row.indexItemName" style="margin-right: 5px"></el-checkbox>
+                <span>{{ scope.row.indexItemName || '-'}}</span>
             </template>
         </el-table-column>
         <el-table-column prop="indexItemWeight" label="权重" width="80">
               <template slot-scope="scope">
-                  <el-input v-model="scope.row.indexItemWeight"></el-input>
+                  <el-input v-if="scope.row.indexItemName" v-model="scope.row.indexItemWeight"></el-input>
+                  <span v-if="!scope.row.indexItemName">-</span>
             </template>
         </el-table-column>
         <el-table-column label="子指标项">
@@ -135,35 +135,37 @@ export default {
     this.analyticTree(this.data6); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
     this.getMax(this.level); // 计算最深树枝的深度
     this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
-    // 处理rowspan
-    // this.handleRowspan();
+    this.handleRowspan(); // 处理rowspan
     console.log("最最最忠", this.tableData);
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      // const maxLevel = this.maxLevel;
-      // const index = parseInt(columnIndex + 1, 10);
-      // if (index <= maxLevel && row[`name${index}`]) {
-      //   return {
-      //     rowspan: row[`name${index}rowspan`],
-      //     colspan: 1
-      //   };
-      // } else if (columnIndex === maxLevel) {
-      //   return {
-      //     rowspan: row.indexItemNamerowspan,
-      //     colspan: 1
-      //   };
-      // } else if (columnIndex === maxLevel + 1) {
-      //   return {
-      //     rowspan: row.subIndexItemNamerowspan,
-      //     colspan: 1
-      //   };
-      // } else {
-      //   return {
-      //     rowspan: 1,
-      //     colspan: 1
-      //   };
-      // }
+      const maxLevel = this.maxLevel;
+      const index = parseInt(columnIndex + 1, 10);
+      if(column.label == '权重' || column.label == '期望值（%）') {
+        return {
+          rowspan: 1,
+          colspan: 1
+        };
+      }
+      if(column.label == '指标项' && row.indexItemName){
+        return {
+          rowspan: row.indexItemNamerowspan,
+          colspan: 1
+        };
+      }
+      if(column.label == '子指标项'){
+        return {
+          rowspan: 1,
+          colspan: 1
+        };
+      }
+      if (index <= maxLevel && row[`name${index}`]) {
+        return {
+          rowspan: row[`name${index}rowspan`],
+          colspan: 1
+        };
+      }
     },
     analyticTree(data, index, level) {
       for (let i = 0; i < data.length; i++) {
@@ -188,16 +190,6 @@ export default {
         this.level.push(tempLevel);
       }
     },
-    // analyticTree(data, level) {
-    //   for (let i = 0; i < data.length; i++) {
-    //     if (data[i].children && data[i].children.length > 0) {
-    //       level += 1;
-    //       this.analyticTree(data[i].children, level, data[i].id);
-    //     }
-    //   }
-    //   this.level.push(level);
-    //   return level;
-    // },
     // 取最大层级渲染表格
     getMax(arr) {
       arr.sort(function(a, b) {
@@ -209,65 +201,9 @@ export default {
       }
       this.maxLevel = max;
     },
-    // 封装成想要渲染表格的数据
-    // analyticArr(data){
-    //   let tempData = JSON.parse(JSON.stringify(data));
-    //   const maxLevel = this.maxLevel;   // 最深层次   第一层   -2
-    //    for (let i = 0; i < tempData.length; i++) {
-    //      if(tempData[i].level === maxLevel){
-    //        // 表示是子指标项
-    //       tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-    //       tempData[i].subIndexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-    //       tempData[i].subIndexItemExpectations = ""; // 期望值  逻辑同权重
-    //       tempData[i].subIndexItemId = tempData[i].id;
-    //       tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
-    //      }else if(tempData[i].level === maxLevel-1){
-    //         tempData[i].indexItemId = tempData[i].id;
-    //         tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-    //         tempData[i].indexItemNamerowspan = tempData[i].rowspan;
-    //         tempData[i].indexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-    //         tempData[i].indexItemId = tempData[i].id;
-    //      }else{
-    //       const name = `name${tempData[i].level + 2}`;
-    //       tempData[i][name] = tempData[i].label;
-    //       tempData[i][`${name}rowspan`] = tempData[i].rowspan;
-    //       tempData[i][`${name}Id`] = tempData[i].id;
-    //       tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
-    //      }
-    //    }
-    //    console.log(JSON.parse(JSON.stringify(tempData)));
-    //     this.tempData = tempData;
-    //     this.tableData = this.concatArr();
-    // },
-
     analyticArr(data){
       let tempData = JSON.parse(JSON.stringify(data));
       const comData = JSON.parse(JSON.stringify(data));
-      // const maxLevel = this.maxLevel;   // 最深层次   第一层   -2
-      //  for (let i = 0; i < tempData.length; i++) {
-      //    if(tempData[i].level === maxLevel){
-      //      // 表示是子指标项
-      //     tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-      //     tempData[i].subIndexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-      //     tempData[i].subIndexItemExpectations = ""; // 期望值  逻辑同权重
-      //     tempData[i].subIndexItemId = tempData[i].id;
-      //     tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
-      //    }else if(tempData[i].level === maxLevel-1){
-      //       tempData[i].indexItemId = tempData[i].id;
-      //       tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-      //       tempData[i].indexItemNamerowspan = tempData[i].rowspan;
-      //       tempData[i].indexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-      //       tempData[i].indexItemId = tempData[i].id;
-      //    }else{
-      //     const name = `name${tempData[i].level + 2}`;
-      //     tempData[i][name] = tempData[i].label;
-      //     tempData[i][`${name}rowspan`] = tempData[i].rowspan;
-      //     tempData[i][`${name}Id`] = tempData[i].id;
-      //     tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
-      //    }
-      //  }
-       console.log(JSON.parse(JSON.stringify(tempData)));
-       debugger
        for(let i = 0; i<tempData.length; i++){
          if(this.isSubIndexItem(tempData[i].id, comData)){
           tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
@@ -328,13 +264,11 @@ export default {
       let tempChild = [];
       let tempArr = [];
       for (let i = 0; i < tempData.length; i++) {
-        console.log(tempData[i]);
         for(let j = 0; j<tempData.length;j++){
           if(tempData[i].id === tempData[j].pid){
             tempArr.push(1);
           }
         }
-
         if(tempArr.length === 0){
           tempChild.push(tempData[i]);
         }
@@ -342,6 +276,9 @@ export default {
       }
       for(let m = 0; m < tempChild.length; m++){
         this.findParent(tempChild[m]);
+      }
+      for(let i = 0; i<tempChild.length; i++){
+        tempChild[i].id = i;
       }
       return tempChild;
     },
@@ -361,124 +298,31 @@ export default {
             temp.push(i);  // 找到对应位置
           }
         }
-        // debugger
         return temp;
     },
-    //  concatArr(id, obj) {
-    //   let tempData = JSON.parse(JSON.stringify(this.tempData));
-    //   let yy = [];
-    //   for (let i = 0; i < tempData.length; i++) {
-    //     // debugger
-    //     if (id === tempData[i].pid ) {
-    //       const objFirst = JSON.parse(JSON.stringify(this.tempObj));
-    //       this.tempObj = Object.assign(this.tempObj, tempData[i]);
-    //       this.concatArr(tempData[i].id, objFirst);
-    //       yy = [];
-    //     } else {
-    //       yy.push(1);
-    //     }
-    //   }
-    //   if (yy.length === tempData.length) {
-    //     this.tableData.push(JSON.parse(JSON.stringify(this.tempObj)));
-    //     this.tempObj = {};
-    //   }
-    // },
     handleRowspan(){
       let data = this.tableData; 
       let indexItemNamerowspanArr = [];
       let subIndexItemNamerowspanArr = [];
       let nameArr = [];
       for (let i = 0; i < data.length; i++) {
-        for (let j = i; j < data.length; j++) {
-          if (data[i].id !== data[j].id) {
-            if (data[i].indexItemId === data[j].indexItemId) {
-              indexItemNamerowspanArr.push(1);
-            }
-            if (data[i].subIndexItemId === data[j].subIndexItemId) {
-              subIndexItemNamerowspanArr.push(1);
-            }
-            for (let k = 1; k <= this.maxLevel; k++) {
-              if (data[i][`name${k}Id`] === data[j][`name${k}Id`]) {
-                //  data[j][`name${k}rowspan`] = 0;
-                debugger
-                nameArr[k] = nameArr[k] ? nameArr[k] + 1 : 1;
+        for(let j = 0; j< data.length; j++){
+          if(data[i].indexItemId === data[j].indexItemId && data[i].id !== data[j].id && !data[i].indexItemFixed && data[i].indexItemNamerowspan){
+            data[i].indexItemNamerowspan ++;
+            data[j].indexItemNamerowspan = 0;
+            data[j].indexItemFixed = true;
+          }
+          for (let k = 1; k <= this.maxLevel; k++) {
+              const name = `name${k}`;
+              if(data[i][`${name}Id`] === data[j][`${name}Id`] && data[i].id !== data[j].id && !data[i][`${name}Fixed`] && data[i][`${name}rowspan`]){
+                data[i][`${name}rowspan`] ++;
+                data[j][`${name}rowspan`] = 0;
+                data[j][`${name}Fixed`] = true;
               }
             }
-          }
-        }
-        if (indexItemNamerowspanArr.length === 0){
-          data[i].indexItemNamerowspan = 1;
-        } else {
-           data[i].indexItemNamerowspan = indexItemNamerowspanArr.length;
-        }
-        if (subIndexItemNamerowspanArr.length === 0){
-          data[i].subIndexItemNamerowspan = 1;
-        } else {
-           data[i].subIndexItemNamerowspan = subIndexItemNamerowspanArr.length;
-        }
-          for (let k = 1; k <= this.maxLevel; k++) {
-          if (!nameArr[k]) {
-            data[i][`name${k}rowspan`] = nameArr[k];
-            //  data[j][`name${k}rowspan`] = 0;
-            // let name = `name${k}`;
-            // nameArr[name] = nameArr[name] ? nameArr[name] + 1 : 1;
-          }
         }
       }
     }
-    // handleRowspan() {
-    //   let data = this.tableData;
-    //   let indexItemNamerowspanArr = [];
-    //   let subIndexItemNamerowspanArr = [];
-
-    //   for (let i = 0; i < data.length; i++) {
-    //     for (let j = i; j < data.length; j++) {
-    //       if (data[i].id !== data[j].id) {
-    //         if (data[i].indexItemId === data[j].indexItemId) {
-    //           data[j].indexItemNamerowspan = 0;
-    //         }
-    //         if (data[i].subIndexItemId === data[j].subIndexItemId) {
-    //           data[j].subIndexItemNamerowspan = 0;
-    //         }
-    //         for (let k = 1; k <= this.maxLevel; k++) {
-    //           if (data[i][`name${k}Id`] === data[j][`name${k}Id`]) {
-    //             data[j][`name${k}rowspan`] = 0;
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    //   for (let m = 0; m < data.length; m++) {
-    //     for (let n = 0; n < data.length; n++) {
-    //       // debugger
-    //       if (data[m].indexItemId !== data[n].indexItemId) {
-    //         indexItemNamerowspanArr.push(1);
-    //       }
-    //       if (data[m].subIndexItemId !== data[n].subIndexItemId) {
-    //         subIndexItemNamerowspanArr.push(1);
-    //       }
-    //       // if (data[i].id !== data[j].id) {
-    //       //   if (data[i].indexItemId !== data[j].indexItemId) {
-    //       //     indexItemNamerowspanArr.push(1);
-    //       //   }
-    //       //   if (data[i].subIndexItemId !== data[j].subIndexItemId) {
-    //       //     subIndexItemNamerowspanArr.push(1);
-    //       //   }
-    //       //   // for (let k = 1; k <= this.maxLevel; k++) {
-    //       //   //   if (data[i][`name${k}Id`] === data[j][`name${k}Id`]) {
-    //       //   //     data[j][`name${k}rowspan`] = 0;
-    //       //   //   }
-    //       //   // }
-    //       // }
-    //     }
-    //     if (indexItemNamerowspanArr.length === data.length) {
-    //       data[m].indexItemNamerowspan = 1;
-    //     }
-    //     if (subIndexItemNamerowspanArr.length === data.length) {
-    //       data[m].subIndexItemNamerowspanArr = 1;
-    //     }
-    //   }
-    // }
 
     // 单条数据转换成树测试
     // toTreeData(data, attributes) {
