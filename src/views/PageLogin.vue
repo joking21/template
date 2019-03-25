@@ -1,19 +1,19 @@
 <template>
   <div class="d-login">
-    <!-- <header>
-      <h3>{{systemName.systemShowName}}</h3>
-    </header>-->
     <div class="d-loginheader">
       <p>信息考评管理系统</p>
       <p class="tip">账户密码登录</p>
     </div>
     <div class="login-content">
-      <el-form ref="login" :model="loginData" :rules="MessageL">
-        <el-form-item prop="username" class="userName_font">
-          <el-input v-model="loginData.username" style="width: 300px;"></el-input>
+      <el-form ref="loginData" :model="loginData" :rules="rulesForm">
+        <el-form-item prop="username">
+          <!-- <el-input placeholder="请输入用户名" v-model="loginData.username">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input> -->
+          <el-input v-model="loginData.username" style="width: 300px;" placeholder="用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password" class="password_font_algin">
-          <el-input type="password" v-model="loginData.password" style="width: 300px;"></el-input>
+          <el-input type="password" v-model="loginData.password" style="width: 300px;" placeholder="密码"></el-input>
         </el-form-item>
         <el-form-item style="text-align:center;">
           <el-button
@@ -21,7 +21,7 @@
             plain
             size="medium"
             style="width: 300px;"
-            @click="submit"
+            @click="submit('loginData')"
           >登&nbsp;&nbsp;录</el-button>
         </el-form-item>
       </el-form>
@@ -74,14 +74,15 @@
 
 <script>
 import md5 from "md5";
-// md5(state.login.password)
 export default {
   data() {
     return {
-      MessageL: {
-        name: [{ required: true, message: "用户名不能为空!", trigger: "blur" }],
+      rulesForm: {
+        name: [
+          { required: true, message: "用户名不能为空!", trigger: "change" }
+        ],
         password: [
-          { required: true, message: "密码不能为空!", trigger: "blur" }
+          { required: true, message: "密码不能为空!", trigger: "change" }
         ]
       },
       loginData: {
@@ -91,19 +92,22 @@ export default {
     };
   },
   methods: {
-    submit() {
-      const data = {
-        username: this.loginData.username,
-        password: md5(this.loginData.password)
-      };
-      this.$post("/data/login", data, (data) => {
-        sessionStorage.setItem("token", data.object.tokenMap.accessToken);
-        sessionStorage.setItem("user", JSON.stringify(data.object.user));
-        this.$store.commit("changeLogin");
-        this.$router.push({ path: "/" });
+    submit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          const postData = {
+            username: this.loginData.username,
+            password: md5(this.loginData.password)
+          };
+          this.$post("/data/login", postData, data => {
+            sessionStorage.setItem("token", data.object.tokenMap.accessToken);
+            sessionStorage.setItem("user", JSON.stringify(data.object.user));
+            this.$store.commit("changeLogin");
+            this.$router.push({ path: "/" });
+          });
+        }
       });
-    },
-    // seccessFun(data) {}
+    }
   }
 };
 </script>

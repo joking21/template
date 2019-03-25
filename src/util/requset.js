@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Notification } from 'element-ui';
 import store from '../store';
+import router from '../router';
 // charset=UTF-8
 axios.defaults.headers.common['Content-Type'] = "application/json";
 function success(msg) {
@@ -29,7 +30,15 @@ export function post(url, para, successFun, errorFun) {
             if (response.data.code === 200) {
                 success(response.data.msg);
                 if (successFun) successFun(response.data.data);
-            } else {
+            } 
+            else if(response.data.code === 401){
+                failer(response.data.msg);
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("user");
+                store.commit("changeLogin");
+                router.push({ path: "/login" });
+            }
+            else {
                 if (errorFun) errorFun();
                 failer(response.data.msg);
             }
@@ -49,7 +58,15 @@ export function get(url, para, successFun, errorFun) {
         .then(function (response) {
             if (response.data.code === 200) {
                 if (successFun) successFun(response.data.data);
-            } else {
+            }
+            else if(response.data.code === 401){
+                failer(response.data.msg);
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("user");
+                store.commit("changeLogin");
+                router.push({ path: "/login" });
+            }
+            else {
                 if (errorFun) errorFun();
                 failer(response.data.msg);
             }

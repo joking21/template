@@ -153,6 +153,7 @@
         margin: 0px;
         padding-bottom: 10px;
         width: 104px;
+        margin-top: -18px;
         li {
           text-align: center;
           padding: 0px 10px;
