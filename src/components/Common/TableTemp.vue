@@ -22,7 +22,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="指标项">
+    <el-table-column prop="indexItem" label="指标项">
       <template slot-scope="scope">
         <!-- 查看 -->
         <div v-if="preview || startReview || startReport || reReport">
@@ -49,7 +49,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="子指标项">
+    <el-table-column prop="subIndexItem" label="子指标项">
       <template slot-scope="scope">
         <div v-if="preview || startReview || startReport || reReport">
           <span>{{ scope.row.subIndexItemName}}</span>
@@ -70,7 +70,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="期望值（%）" width="80">
+    <el-table-column prop="expectations" label="期望值（%）" width="80">
       <template slot-scope="scope">
         <div v-if="preview || startReview || startReport || reReport">
           <span>{{ scope.row.subIndexItemExpectations}}</span>
@@ -179,7 +179,7 @@ export default {
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      // debugger
+      //  以下代码不要轻易改的，连顺序都是有要求的
       const maxLevel = this.maxLevel;
       const index = parseInt(columnIndex + 1, 10);
       if (column.property === "indexItemWeight" && row.indexItemName) {
@@ -188,19 +188,19 @@ export default {
           colspan: 1
         };
       }
-      if (column.label == "权重" || column.label == "期望值（%）") {
+      if (column.label == "权重" || column.property === "expectations") {
         return {
           rowspan: 1,
           colspan: 1
         };
       }
-      if (column.label == "指标项" && row.indexItemName) {
+      if (column.property === "indexItem" && row.indexItemName) {
         return {
           rowspan: row.indexItemNamerowspan,
           colspan: 1
         };
       }
-      if (column.label == "子指标项") {
+      if (column.label == "subIndexItem") {
         return {
           rowspan: 1,
           colspan: 1
