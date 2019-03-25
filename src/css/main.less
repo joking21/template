@@ -12,8 +12,20 @@ html, body, div, p, a{
    padding: 0 0 0 20px;
 }
 .el-main{
-    background:rgb(232,236,240);
+   background:rgb(232,236,240);
 //    overflow: visible;
+}
+.el-main::-webkit-scrollbar {
+    width: 7px;
+    height: 1px;
+}
+.el-main::-webkit-scrollbar-thumb {
+    border-radius: 7px;
+    background: #7A7973;
+}
+.el-main::-webkit-scrollbar-track {
+    border-radius: 7px;
+    background: transparent;
 }
 .el-footer{
     background-color: #efeaef;
@@ -22,6 +34,8 @@ html, body, div, p, a{
 .el-aside{
     background:linear-gradient(180deg,rgba(19,30,73,1) 0%,rgba(13,18,46,1) 100%) !important;
     overflow: hidden;
+    // padding-bottom: 9999px;
+    // margin-bottom: -9999px; 
 }
 .d-content{
     border: 1px solid #ffffff;
