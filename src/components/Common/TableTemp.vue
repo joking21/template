@@ -1,44 +1,96 @@
 <template>
-    <el-table
-        :data="tableData"
-        :span-method="objectSpanMethod"
-        border
+  <el-table :data="tableData" :span-method="objectSpanMethod" border>
+    <el-table-column
+      prop="name"
+      v-for="item in columnArr"
+      :key="item"
+      :label="`${item}级指标分类`"
+      width="100"
     >
-        <el-table-column prop="name" v-for="item in columnArr" :key="item" :label="`${item}级指标分类`" width="100">
-            <template slot-scope="scope">
-                <el-checkbox v-if="scope.row[`name${item}`]" :name="scope.row[`name${item}`]" style="margin-right: 5px"></el-checkbox>
-                <span>{{ scope.row[`name${item}`] || '-'}}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="指标项">
-            <template slot-scope="scope">
-                <el-checkbox v-if="scope.row.indexItemName" name="scope.row.indexItemName" style="margin-right: 5px"></el-checkbox>
-                <span>{{ scope.row.indexItemName || '-'}}</span>
-            </template>
-        </el-table-column>
-        <el-table-column prop="indexItemWeight" label="权重" width="80">
-              <template slot-scope="scope">
-                  <el-input v-if="scope.row.indexItemName" v-model="scope.row.indexItemWeight"></el-input>
-                  <span v-if="!scope.row.indexItemName">-</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="子指标项">
-            <template slot-scope="scope">
-                <el-checkbox name="subIndexItemName" style="margin-right: 5px"></el-checkbox>
-                <span>{{ scope.row.subIndexItemName }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column label="权重" width="80">
-            <template slot-scope="scope">
-                <el-input v-model="scope.row.subIndexItemWeight"></el-input>
-            </template>
-        </el-table-column>
-        <el-table-column label="期望值（%）" width="80">
-            <template slot-scope="scope">
-                <el-input v-model="scope.row.subIndexItemExpectations"></el-input>
-            </template>
-        </el-table-column>
-    </el-table> 
+      <template slot-scope="scope">
+        <!-- 查看详情、开始审核、开始填报、重新填报-->
+        <div v-if="preview || startReview || startReport || reReport">
+          <span>{{ scope.row[`name${item}`] || '-'}}</span>
+        </div>
+        <div v-else>
+          <el-checkbox
+            v-if="scope.row[`name${item}`]"
+            :name="scope.row[`name${item}`]"
+            style="margin-right: 5px"
+          ></el-checkbox>
+          <span>{{ scope.row[`name${item}`] || '-'}}</span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column label="指标项">
+      <template slot-scope="scope">
+        <!-- 查看 -->
+        <div v-if="preview || startReview || startReport || reReport">
+          <span>{{ scope.row.indexItemName || '-'}}</span>
+        </div>
+        <div v-else>
+          <el-checkbox
+            v-if="scope.row.indexItemName"
+            name="scope.row.indexItemName"
+            style="margin-right: 5px"
+          ></el-checkbox>
+          <span>{{ scope.row.indexItemName || '-'}}</span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="indexItemWeight" label="权重" width="80">
+      <template slot-scope="scope">
+        <div v-if="preview || startReview || startReport || reReport">
+          <span>{{ scope.row.indexItemWeight || '-'}}</span>
+        </div>
+        <div v-else>
+          <el-input v-if="scope.row.indexItemName" v-model="scope.row.indexItemWeight"></el-input>
+          <span v-if="!scope.row.indexItemName">-</span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column label="子指标项">
+      <template slot-scope="scope">
+        <div v-if="preview || startReview || startReport || reReport">
+          <span>{{ scope.row.subIndexItemName}}</span>
+        </div>
+        <div v-else>
+          <el-checkbox name="subIndexItemName" style="margin-right: 5px"></el-checkbox>
+          <span>{{ scope.row.subIndexItemName }}</span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column label="权重" width="80">
+      <template slot-scope="scope">
+        <div v-if="preview || startReview || startReport || reReport">
+          <span>{{ scope.row.subIndexItemWeight}}</span>
+        </div>
+        <div v-else>
+          <el-input v-model="scope.row.subIndexItemWeight"></el-input>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column label="期望值（%）" width="80">
+      <template slot-scope="scope">
+        <div v-if="preview || startReview || startReport || reReport">
+          <span>{{ scope.row.subIndexItemExpectations}}</span>
+        </div>
+        <div v-else>
+          <el-input v-model="scope.row.subIndexItemExpectations"></el-input>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column v-if="preview || startReview || startReport || reReport" label="实际值" width="80">
+      <template slot-scope="scope">
+        <div v-if="preview">
+          <span>{{ scope.row.subIndexItemactualvalues}}</span>
+        </div>
+        <div v-else>
+          <el-input v-model="scope.row.subIndexItemactualvalues"></el-input>
+        </div>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 <script>
 export default {
@@ -61,15 +113,15 @@ export default {
                       id: 4,
                       label: "子指标项4a"
                     },
-                     {
+                    {
                       id: 4,
                       label: "子指标项4a"
                     },
-                     {
+                    {
                       id: 4,
                       label: "子指标项4a"
                     },
-                     {
+                    {
                       id: 4,
                       label: "子指标项4a"
                     }
@@ -108,41 +160,16 @@ export default {
           ]
         }
       ],
-      level: [],
-      columnArr: [],
+      level: [], // 所有树枝深度
+      columnArr: [], // 此表格应该有的级别数    1级指标分类->2级指标分类
       dataArr: [], // 如果后台传回来的是一颗树，则把树转换成单挑数据解析    【过程：计算数的深度、解析成单条数据->再把单条数据弄成表格想要的】
       tableData: [], // 表格最终数据
       maxLevel: 0, // 深度
-      tempData: [],
-      tempObj:{},
-      tempArr:[],
+      tempData: [] // 把单条数据里面的字段初始化【ps: 方便下一步的把父子关系的对象，合并成一条对象】,若要增删字段，则在处理这个数据时操作
     };
   },
-  //   props: ["templateModel", "changeParent", "isTemplateEdit"],
-  //   computed: {
-  //     reversedMessage: function() {
-  //       return this.templateModel;
-  //     }
-  //   },
-  created() {
-    let attributes = {
-      id: "index",
-      parentId: "pid",
-      name: "key",
-      rootId: -1
-    };
-    const tt = [
-      { index: 1, title: "10.0.5.11", key: "10.0.5.11", pid: -1 },
-      { index: 2, title: "10.0.5.11", key: "10.0.5.11", pid: 1 },
-      { index: 3, title: "7.4_1", key: "7.4_1", pid: 2 },
-      { index: 5, title: "7.4_2", key: "7.4_2", pid: 2 },
-      { index: 2, title: "10.0.5.11", key: "10.0.5.11", pid: -1 }
-    ];
-    //  如果后台传回来的是单条数据，转换过程为  解析成树（便于计算深度）-> 去掉空值children、计算树的最深度->再把单条数据弄成表格想要的
-    // let gData = this.toTreeData(tt, attributes);
-    // this.analyticTree(gData, 0, -1); // 可以增加去掉空的children
-    // console.log(gData);
-  },
+  // preview:查看  startReview:开始审核  startReport :开始填报 reReport:重新填报 
+  props: ["preview", "startReview", "startReport", "reReport"],
   created() {
     this.analyticTree(this.data6); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
     this.getMax(this.level); // 计算最深树枝的深度
@@ -155,25 +182,25 @@ export default {
       // debugger
       const maxLevel = this.maxLevel;
       const index = parseInt(columnIndex + 1, 10);
-      if(column.property==='indexItemWeight' && row.indexItemName){
+      if (column.property === "indexItemWeight" && row.indexItemName) {
         return {
           rowspan: row.indexItemNamerowspan,
           colspan: 1
         };
       }
-      if(column.label == '权重' || column.label == '期望值（%）') {
+      if (column.label == "权重" || column.label == "期望值（%）") {
         return {
           rowspan: 1,
           colspan: 1
         };
       }
-      if(column.label == '指标项' && row.indexItemName){
+      if (column.label == "指标项" && row.indexItemName) {
         return {
           rowspan: row.indexItemNamerowspan,
           colspan: 1
         };
       }
-      if(column.label == '子指标项'){
+      if (column.label == "子指标项") {
         return {
           rowspan: 1,
           colspan: 1
@@ -220,62 +247,61 @@ export default {
       }
       this.maxLevel = max;
     },
-    analyticArr(data){
+    analyticArr(data) {
       let tempData = JSON.parse(JSON.stringify(data));
       const comData = JSON.parse(JSON.stringify(data));
-       for(let i = 0; i<tempData.length; i++){
-         if(this.isSubIndexItem(tempData[i].id, comData)){
+      for (let i = 0; i < tempData.length; i++) {
+        if (this.isSubIndexItem(tempData[i].id, comData)) {
           tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
           tempData[i].subIndexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
           tempData[i].subIndexItemExpectations = ""; // 期望值  逻辑同权重
+          tempData[i].subIndexItemactualvalues = ""; // 实际值 
           tempData[i].subIndexItemId = tempData[i].id;
           tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
-         }
-         else if(this.isIndexItem(tempData[i].id, comData)){
-            tempData[i].indexItemId = tempData[i].id;
-            tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-            tempData[i].indexItemNamerowspan = tempData[i].rowspan;
-            tempData[i].indexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-         }
-         else{
+        } else if (this.isIndexItem(tempData[i].id, comData)) {
+          tempData[i].indexItemId = tempData[i].id;
+          tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
+          tempData[i].indexItemNamerowspan = tempData[i].rowspan;
+          tempData[i].indexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+        } else {
           const name = `name${tempData[i].level + 2}`;
           tempData[i][name] = tempData[i].label;
           tempData[i][`${name}rowspan`] = tempData[i].rowspan;
           tempData[i][`${name}Id`] = tempData[i].id;
           tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
-         }
-       }
-        this.tempData = tempData;
-        this.tableData = this.concatArr();
+        }
+      }
+      this.tempData = tempData;
+      this.tableData = this.concatArr();
     },
     // 判断是否是指标项 -> 判断依据：子类是否还有子类
     isIndexItem(id, data) {
       let temp = [];
       for (let i = 0; i < data.length; i++) {
         if (id === data[i].pid) {
-          for(let j = 0;j<data.length;j++){
-            if(data[i].id === data[j].pid){
+          for (let j = 0; j < data.length; j++) {
+            if (data[i].id === data[j].pid) {
               temp.push(1);
             }
           }
         }
       }
-       if(temp.length !== 0){
-          return false;
-        }
-        return true;
+      if (temp.length !== 0) {
+        return false;
+      }
+      return true;
     },
-    isSubIndexItem(id, data){
+    isSubIndexItem(id, data) {
       let temp = [];
       for (let i = 0; i < data.length; i++) {
-          if (id === data[i].pid) {
-            temp.push(1);
-          }
+        if (id === data[i].pid) {
+          temp.push(1);
         }
-        if(temp.length !== 0){
-          return false;
-        }
-        return true;
+      }
+      if (temp.length !== 0) {
+        return false;
+      }
+      return true;
     },
     // 合并多条数据
     concatArr() {
@@ -283,119 +309,75 @@ export default {
       let tempChild = [];
       let tempArr = [];
       for (let i = 0; i < tempData.length; i++) {
-        for(let j = 0; j<tempData.length;j++){
-          if(tempData[i].id === tempData[j].pid){
+        for (let j = 0; j < tempData.length; j++) {
+          if (tempData[i].id === tempData[j].pid) {
             tempArr.push(1);
           }
         }
-        if(tempArr.length === 0){
+        if (tempArr.length === 0) {
           tempChild.push(tempData[i]);
         }
         tempArr = [];
       }
-      for(let m = 0; m < tempChild.length; m++){
+      for (let m = 0; m < tempChild.length; m++) {
         this.findParent(tempChild[m]);
       }
-      for(let i = 0; i<tempChild.length; i++){
+      for (let i = 0; i < tempChild.length; i++) {
         tempChild[i].id = i;
       }
       return tempChild;
     },
-    findParent(obj){
+    findParent(obj) {
       let tempData = JSON.parse(JSON.stringify(this.tempData));
-      for(let i = 0; i < tempData.length; i++){
-        if(obj.pid === tempData[i].id){
+      for (let i = 0; i < tempData.length; i++) {
+        if (obj.pid === tempData[i].id) {
           obj = Object.assign(obj, tempData[i]);
           this.findParent(obj, tempData);
         }
       }
     },
-    test(data, id){
+    test(data, id) {
       let temp = [];
-        for (let i = 0; i < data.length; i++) {
-          if(data.pid === id){
-            temp.push(i);  // 找到对应位置
-          }
+      for (let i = 0; i < data.length; i++) {
+        if (data.pid === id) {
+          temp.push(i); // 找到对应位置
         }
-        return temp;
+      }
+      return temp;
     },
-    handleRowspan(){
-      let data = this.tableData; 
+    handleRowspan() {
+      let data = this.tableData;
       let indexItemNamerowspanArr = [];
       let subIndexItemNamerowspanArr = [];
       let nameArr = [];
       for (let i = 0; i < data.length; i++) {
-        for(let j = 0; j< data.length; j++){
-          if(data[i].indexItemId === data[j].indexItemId && data[i].id !== data[j].id && !data[i].indexItemFixed && data[i].indexItemNamerowspan){
-            data[i].indexItemNamerowspan ++;
+        for (let j = 0; j < data.length; j++) {
+          if (
+            data[i].indexItemId === data[j].indexItemId &&
+            data[i].id !== data[j].id &&
+            !data[i].indexItemFixed &&
+            data[i].indexItemNamerowspan
+          ) {
+            data[i].indexItemNamerowspan++;
             data[j].indexItemNamerowspan = 0;
             data[j].indexItemFixed = true;
           }
           for (let k = 1; k <= this.maxLevel; k++) {
-              const name = `name${k}`;
-              if(data[i][`${name}Id`] === data[j][`${name}Id`] && data[i].id !== data[j].id && !data[i][`${name}Fixed`] && data[i][`${name}rowspan`]){
-                data[i][`${name}rowspan`] ++;
-                data[j][`${name}rowspan`] = 0;
-                data[j][`${name}Fixed`] = true;
-              }
+            const name = `name${k}`;
+            if (
+              data[i][`${name}Id`] === data[j][`${name}Id`] &&
+              data[i].id !== data[j].id &&
+              !data[i][`${name}Fixed`] &&
+              data[i][`${name}rowspan`]
+            ) {
+              data[i][`${name}rowspan`]++;
+              data[j][`${name}rowspan`] = 0;
+              data[j][`${name}Fixed`] = true;
             }
+          }
         }
       }
     }
-
-    // 单条数据转换成树测试
-    // toTreeData(data, attributes) {
-    //   let resData = data;
-    //   let tree = [];
-    //   for (let i = 0; i < resData.length; i++) {
-    //     if (resData[i][attributes.parentId] === attributes.rootId) {
-    //       let obj = {
-    //         id: resData[i][attributes.id],
-    //         title: resData[i][attributes.name],
-    //         key: resData[i][attributes.name],
-    //         children: []
-    //       };
-    //       tree.push(obj);
-    //       resData.splice(i, 1);
-    //       i--;
-    //     }
-    //   }
-    //   run(tree);
-    //   function run(chiArr) {
-    //     if (resData.length !== 0) {
-    //       for (let i = 0; i < chiArr.length; i++) {
-    //         for (let j = 0; j < resData.length; j++) {
-    //           if (chiArr[i].id === resData[j][attributes.parentId]) {
-    //             let obj = {
-    //               id: resData[j][attributes.id],
-    //               key: resData[j][attributes.name],
-    //               title: resData[j][attributes.name],
-    //               children: []
-    //             };
-    //             chiArr[i].children.push(obj);
-    //             resData.splice(j, 1);
-    //             j--;
-    //           }
-    //         }
-    //         run(chiArr[i].children);
-    //       }
-    //     }
-    //   }
-    //   return tree;
-    // }
-
-    // 表格增加合计
-    //   getSummaries(param) {
-    //     const { columns, data } = param;
-    //     const sums = [];
-    //     columns.forEach((column, index) => {
-    //       if (index === 0) {
-    //         sums[index] = "——————";
-    //         return;
-    //       }
-    //     });
-    //     return sums;
-    //   }
   }
 };
 </script>

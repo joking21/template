@@ -15,19 +15,7 @@
         <el-input type="textarea" v-model="form.desc"></el-input>
       </el-form-item>
       <el-form-item label="考核信息">
-        <el-table :data="tableData6" :span-method="objectSpanMethod" border>
-          <el-table-column prop="amount1" label="指标分类" width="100"></el-table-column>
-          <el-table-column prop="amount2" label="指标项" width="180"></el-table-column>
-          <el-table-column prop="amount3" label="权重"></el-table-column>
-           <el-table-column prop="amount4" label="子指标项" width="180"></el-table-column>
-          <el-table-column prop="amount5" label="权重"></el-table-column>
-          <el-table-column prop="amount6" label="期望值（%）"></el-table-column>
-          <el-table-column label="实际值（%）" width="80">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.amount7"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
+          <TableTemp :startReview='true' />
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
       <div class="d-auditOpinion">
@@ -57,6 +45,7 @@
 </style>
 
 <script>
+import TableTemp from '../Common/TableTemp';
 export default {
   data() {
     return {
@@ -67,50 +56,6 @@ export default {
         region: "shanghai",
         desc: "",
       },
-      tableData6: [
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "接入情况",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81",
-          rowspan: 4
-        },
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "平台使用率",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81"
-        },
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "资源共享情况",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81"
-        },
-        {
-          amount1: "业务类",
-          amount2: "数据资源共享考评",
-          amount3: 100,
-          amount4: "资源目录系统",
-          amount5: "30",
-          amount6: "90",
-          amount7: "81"
-        },
-        {
-          amount1: "总分",
-          amount2: "90",
-          all: 1
-        }
-      ]
     };
   },
   props: ["startReviewVisible", "changeParent"],
@@ -119,31 +64,10 @@ export default {
       return this.startReviewVisible;
     }
   },
+  components:{
+    TableTemp,
+  },
   methods: {
-    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (
-        row.rowspan &&
-        (columnIndex === 0 || columnIndex === 1 || columnIndex === 2)
-      ) {
-        return {
-          rowspan: row.rowspan,
-          colspan: 1
-        };
-      } else if (row.all && columnIndex === 1) {
-        return {
-          rowspan: 1,
-          colspan: 6
-        };
-      } else if (
-        !(row.rowspan || row.all) &&
-        (columnIndex === 0 || columnIndex === 1 || columnIndex === 2)
-      ) {
-        return {
-          rowspan: 0,
-          colspan: 0
-        };
-      }
-    },
     handleCancel() {
       this.changeParent("startReviewVisible", false);
     }
