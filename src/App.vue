@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <el-container style="height: 100vh">
+    <el-container style="height: 100vh" v-if="$route.meta.keepAlive">
       <el-header height="50px">
         <Header />
       </el-header>
@@ -19,6 +19,7 @@
         </el-container>
       </el-container>
     </el-container>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
   </div>
 </template>
 

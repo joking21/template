@@ -1,14 +1,14 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './css/main.less';
-import axios from 'axios'
-Vue.prototype.$http = axios
-
-Vue.config.productionTip = false
+import {post, get } from './util/requset';
+Vue.prototype.$post = post;
+Vue.prototype.$get = get;
+Vue.config.productionTip = false;
 Vue.use(ElementUI);
 
 new Vue({

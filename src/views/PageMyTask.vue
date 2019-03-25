@@ -1,14 +1,24 @@
 <template>
   <div class="d-content">
     <div class="d-tabs">
-      <el-button size="small" :class="active===1?'d-active':''" @click="handleFillIn">代办填报</el-button>
-      <el-button size="small" :class="active===2?'d-active':''" style="margin-left: 5px;" @click="handleToExamine">代办审核</el-button>
+      <el-button size="small" :class="active===1?'d-active':''" @click="handleFillIn">待办填报</el-button>
+      <el-button
+        size="small"
+        :class="active===2?'d-active':''"
+        style="margin-left: 5px;"
+        @click="handleToExamine"
+      >待办审核</el-button>
     </div>
     <div class="search" style="padding: 10px 14px 6px 14px;">
       <el-form :inline="true" :model="form" class="demo-form-inline">
         <el-form-item label="任务状态">
           <el-select v-model="form.type" style="width: 180px;">
-            <el-option v-for="(item, index) in form.typeArr" :key="index" :label="item.name" :value="item.name"></el-option>
+            <el-option
+              v-for="(item, index) in form.typeArr"
+              :key="index"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="派发时间" style="padding-top: 4px;">
@@ -135,9 +145,8 @@ export default {
     };
   },
   created() {
-    this.$http.get("/api/articles/new/article").then(response => {
-      console.log(response);
-    });
+    this.$get('/meEvaluateUserTask/list',null);
+    // this.$get('/api/articles/new/article');
   },
   components: {
     StartReport,

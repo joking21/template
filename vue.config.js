@@ -1,6 +1,7 @@
 
 module.exports = {
     devServer: {
-     proxy: 'https://wstart.top/'
-}
+        proxy: 'http://eva.wwolf.wang/'
+        // proxy: 'https://wstart.top/'
+    }
 }

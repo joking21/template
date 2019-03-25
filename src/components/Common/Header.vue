@@ -24,18 +24,18 @@
       <el-col :span="12" style="text-align: right;">
         <div class="location">
           <i class="el-icon-location-outline"></i>
-          <span>内江市</span>
+          <span>{{user.regionName}}</span>
         </div>
         <div class="admin" @mouseenter="peopleEnter" @mouseleave="peopleLeave">
           <div class="imgIcon">
             <img src="../../assets/people.jpg" alt>
           </div>
           <div class="people">
-            admin
-            <i v-if="!isShowLoginout" style="margin-left: 5px;" class="el-icon-caret-bottom"></i>
-            <i v-else style="margin-left: 5px;" class="el-icon-caret-top"></i>
+            <p class="userName">{{user.userName}}</p>
+            <i v-if="!isShowLoginout" class="el-icon-caret-bottom d-icon"></i>
+            <i v-else class="el-icon-caret-top d-icon"></i>
             <ul v-if="isShowLoginout">
-              <li>退出</li>
+              <li style="cursor:pointer" @click="loginOut">退出</li>
             </ul>
           </div>
         </div>
@@ -127,7 +127,6 @@
         width: 24px;
         height: 24px;
         border-radius: 30px;
-        // border: 1px solid #ff0000;
       }
     }
     .people {
@@ -136,6 +135,18 @@
       font-family: PingFangSC-Regular;
       font-weight: 400;
       color: rgba(255, 255, 255, 1);
+      .userName {
+        display: inline-block;
+        width: 60px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .d-icon {
+        position: relative;
+        top: -19px;
+        margin-left: 5px;
+      }
       ul {
         list-style: none;
         padding: 0px;
@@ -171,6 +182,11 @@ export default {
       isShowLoginout: false
     };
   },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  },
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
@@ -186,6 +202,14 @@ export default {
     },
     peopleLeave() {
       this.isShowLoginout = false;
+    },
+    loginOut() {
+      this.$post("/logout", null, (data) => {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+        this.$store.commit("changeLogin");
+        this.$router.push({ path: "/login" });
+      });
     }
   }
 };
