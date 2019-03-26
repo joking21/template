@@ -114,15 +114,15 @@ export default {
                       label: "子指标项4a"
                     },
                     {
-                      id: 4,
+                      id: 12,
                       label: "子指标项4a"
                     },
                     {
-                      id: 4,
+                      id: 13,
                       label: "子指标项4a"
                     },
                     {
-                      id: 4,
+                      id: 14,
                       label: "子指标项4a"
                     }
                   ]
