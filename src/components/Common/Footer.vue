@@ -4,6 +4,10 @@
   </div>
 </template>
 <style lang="less">
+.el-footer{
+    background-color: #e8ecf0;
+    text-align: center;
+}
 .footer {
   font-size: 13px;
   font-family: MicrosoftYaHei;
