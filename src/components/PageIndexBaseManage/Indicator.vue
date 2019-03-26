@@ -79,11 +79,16 @@ export default {
       };
     },
     addSubIndicator() {
+      if (this.form.subIndicatorName.length >= 5) {
+        return this.$message({
+          message: "最多添加5个子指标项。",
+          type: "warning"
+        });
+      }
       this.form.subIndicatorName.push({ name: "" });
     },
     deleteSubIndicator(index) {
       this.form.subIndicatorName.splice(index, 1);
-      //   splice(index,len,[item])
     },
     submitFun() {
       console.log(this.form);
