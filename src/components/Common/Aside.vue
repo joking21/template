@@ -48,37 +48,7 @@
   </div>
 </template>
 <style lang="less">
-.aside {
-  .d-aside-footer {
-    position: fixed;
-    bottom: 0px;
-    height: 48px;
-    width: 100%;
-    line-height: 48px;
-    padding-left: 17px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-  }
-  .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 200px;
-    min-height: 400px;
-  }
-  .el-menu-item:hover {
-    outline: 0;
-    background: rgba(31, 67, 128, 0.5) !important;
-  }
-  .el-submenu__title:hover {
-    background: rgba(31, 67, 128, 0.5) !important;
-  }
-  .is-active {
-    background: rgba(31, 67, 128, 0.5) !important;
-  }
-  .el-dropdown-menu {
-    top: 30px !important;
-  }
-  .el-submenu {
-    background: transparent !important;
-  }
-}
+@import "../../css/aside.less";
 </style>
 
 <script>
