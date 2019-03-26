@@ -13,25 +13,24 @@
       :collapse="isCollapse"
     >
       <el-menu-item index="1">
-        <i class="el-icon-news"></i>
-        <!-- <img src="../../assets/people.png" alt> -->
+        <i class="iconfont iconwodekaopingrenwu-1"></i>
         <span slot="title">我的考评任务</span>
       </el-menu-item>
       <el-submenu index="2">
         <template slot="title">
-          <i class="el-icon-tickets"></i>
+           <i class="iconfont iconkaopingzhibiaoguanli"></i>
           <span>考评指标管理</span>
         </template>
         <el-menu-item index="2-1">指标库管理</el-menu-item>
         <el-menu-item index="2-2">考评模板管理</el-menu-item>
       </el-submenu>
       <el-menu-item index="3">
-        <i class="el-icon-setting"></i>
+         <i class="iconfont iconkaopingrenwushezhisvg"></i>
         <span slot="title">考评任务设置</span>
       </el-menu-item>
       <el-submenu index="4">
         <template slot="title">
-          <i class="el-icon-menu"></i>
+          <i class="iconfont iconkaopingrenwuhuizong"></i>
           <span>考评工作汇总</span>
         </template>
         <el-menu-item index="4-1">考评任务管理</el-menu-item>

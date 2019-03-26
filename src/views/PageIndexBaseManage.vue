@@ -241,13 +241,13 @@ export default {
     getCurrentNode() {
       console.log(this.$refs.tree.getCurrentNode());
     },
-    handleRightClick(event, data, node) {
-      console.log(event, data, node);
+    handleRightClick(event, data, node, self) {
+      // console.log(event);
+      console.log(data);
+      console.log(node.parent.id);
       this.menuVisible = true;
       let menu = document.querySelector("#menu");
       /* 菜单定位基于鼠标点击位置 */
-      console.log(event.clientX);
-      console.log(event.clientY);
       menu.style.left = event.clientX - 194 + "px";
       menu.style.top = event.clientY - 140 + "px";
       // console.log("右键被点击的event:",event);

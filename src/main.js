@@ -5,6 +5,7 @@ import store from './store';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './css/main.less';
+import './css/font.css';
 import {post, get } from './util/requset';
 Vue.prototype.$post = post;
 Vue.prototype.$get = get;
