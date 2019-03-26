@@ -1,11 +1,11 @@
 <template>
   <div class="d-content">
     <div class="d-left" id="leftTree">
-      <el-row style="margin-bottom: 20px;">
+      <!-- <el-row style="margin-bottom: 20px;">
         <el-button size="mini" @click="handleNewclassification">新增</el-button>
         <el-button size="mini" @click="handleEditNewclassification">编辑</el-button>
         <el-button size="mini" @click="deleteType" type="danger">删除</el-button>
-      </el-row>
+      </el-row>-->
       <el-tree
         :data="data"
         :props="defaultProps"
@@ -66,7 +66,7 @@
         <el-table-column label="操作" width="120">
           <!-- v-if="scope.row.id===2" -->
           <template slot-scope="scope">
-            <a class="operator" >查看</a>
+            <a class="operator">查看</a>
             <a class="operator" @click="handleEditIndicator(scope.$index, scope.row)">编辑</a>
             <a class="operator" @click="deleteIndicator(scope.$index, scope.row)">删除</a>
           </template>
@@ -84,6 +84,17 @@
         ></el-pagination>
       </div>
     </div>
+    <div v-show="menuVisible" id="menu">
+      <div class="d-btnitem">
+        <el-button size="mini" @click="handleNewclassification">新增</el-button>
+      </div>
+      <div class="d-btnitem">
+        <el-button size="mini" @click="handleEditNewclassification">编辑</el-button>
+      </div>
+      <div class="d-btnitem">
+        <el-button size="mini" @click="deleteType" type="danger">删除</el-button>
+      </div>
+    </div>
     <!-- 新增编辑分类 -->
     <Newclassification
       :NewclassificationModel="NewclassificationModel"
@@ -98,6 +109,19 @@
     />
   </div>
 </template>
+<style lang="less" scoped>
+#menu {
+  position: absolute;
+  z-index: 10000;
+  box-shadow: 0 0 10px #e9e9e9;
+  padding: 10px;
+  background-color: #ffffff;
+  .d-btnitem{
+    margin-top: 8px;
+  }
+}
+</style>
+
 <script>
 import Newclassification from "../components/PageIndexBaseManage/Newclassification.vue";
 import Indicator from "../components/PageIndexBaseManage/Indicator.vue";
@@ -167,10 +191,27 @@ export default {
       NewclassificationIsEdit: false,
       IndicatorIsEdit: false,
       IndicatorModel: false,
-      multipleSelection: []
+      multipleSelection: [],
+      menuVisible: false
     };
   },
   mounted() {},
+  created() {
+    const _this = this;
+    // document.bind('click', function(){
+    //   _this.menuVisible = false;
+    // })
+    document.body.addEventListener(
+      "click",
+      function(event) {
+        _this.menuVisible = false;
+      },
+      false
+    );
+    // document.onclick(function() {
+    //   _this.menuVisible = false;
+    // });
+  },
   components: {
     Newclassification,
     Indicator
@@ -187,6 +228,7 @@ export default {
     },
     // 选择树
     handleNodeClick(data, node) {
+      this.menuVisible = false;
       console.log(data);
     },
     // 选中变化时
@@ -201,6 +243,17 @@ export default {
     },
     handleRightClick(event, data, node) {
       console.log(event, data, node);
+      this.menuVisible = true;
+      let menu = document.querySelector("#menu");
+      /* 菜单定位基于鼠标点击位置 */
+      console.log(event.clientX);
+      console.log(event.clientY);
+      menu.style.left = event.clientX - 194 + "px";
+      menu.style.top = event.clientY - 140 + "px";
+      // console.log("右键被点击的event:",event);
+      // console.log("右键被点击的object:",object);
+      // console.log("右键被点击的value:",value);
+      // console.log("右键被点击的element:",element);
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
