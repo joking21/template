@@ -68,17 +68,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="block d-pagination">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
-        layout="prev, pager, next, sizes, jumper"
-        :total="100"
-      ></el-pagination>
-    </div>
+    <Pagination :paginationPara="paginationPara" :getList="getList" />
     <!-- 查看详情 -->
     <ViewDetails :viewDetailsModel="viewDetailsModel" :changeParent="changeParent"/>
     <!-- 开始填报 -->
@@ -95,7 +85,7 @@ import ViewDetails from "../components/PageMyTask/ViewDetails.vue";
 import StartReport from "../components/PageMyTask/StartReport.vue";
 import StartReview from "../components/PageMyTask/StartReview.vue";
 import ReReport from "../components/PageMyTask/ReReport.vue";
-import { setTimeout } from "timers";
+import Pagination from "../components/Common/Pagination.vue";
 export default {
   data() {
     return {
@@ -111,7 +101,6 @@ export default {
         ],
         date: ""
       },
-      currentPage: 1,
       tableData: [
         {
           date: "2016-05-02",
@@ -138,6 +127,11 @@ export default {
           id: 4
         }
       ],
+      paginationPara: {
+        total: 100,
+        pagesize: 10,
+        test: "11"
+      },
       startReportModel: false,
       startReviewVisible: false,
       reReportVisible: false,
@@ -145,27 +139,25 @@ export default {
     };
   },
   created() {
-    this.$get('/meEvaluateUserTask/list',null);
+    this.$get("/meEvaluateUserTask/list", null);
     // this.$get('/api/articles/new/article');
   },
   components: {
     StartReport,
     StartReview,
     ReReport,
-    ViewDetails
+    ViewDetails,
+    Pagination
   },
   methods: {
+    getList(para){
+      console.log(para);
+    },
     handleEdit(index, row) {
       console.log(index, row);
     },
     handleDelete(index, row) {
       console.log(index, row);
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
     },
     changeParent(name, value) {
       console.log(name, value);

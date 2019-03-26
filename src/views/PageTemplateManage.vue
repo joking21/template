@@ -47,7 +47,7 @@
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
           <!--             v-if="scope.row.id===1" -->
-          <a class="operator">查看</a>
+          <a class="operator" @click="previewTemplate(scope.$index, scope.row)">查看</a>
           <a class="operator" @click="editTemplate(scope.$index, scope.row)">编辑</a>
           <a class="operator" @click="deleteTemplate(scope.$index, scope.row)">删除</a>
         </template>
@@ -64,7 +64,12 @@
         :total="100"
       ></el-pagination>
     </div>
-    <Template :templateModel="templateModel" :isTemplateEdit="isTemplateEdit" :changeParent="changeParent"/>
+    <Template
+      :templateModel="templateModel"
+      :isTemplateEdit="isTemplateEdit"
+      :isPreview="isPreview"
+      :changeParent="changeParent"
+    />
   </div>
 </template>
 <script>
@@ -93,8 +98,9 @@ export default {
         }
       ],
       templateModel: false,
-      isTemplateEdit: false,
-      multipleSelection: ''
+      isTemplateEdit: false, // 编辑
+      isPreview: false, // 查看
+      multipleSelection: ""
     };
   },
   components: {
@@ -119,10 +125,17 @@ export default {
     addTemplate() {
       this.templateModel = true;
       this.isTemplateEdit = false;
+      this.isPreview = false;
     },
     editTemplate() {
       this.templateModel = true;
       this.isTemplateEdit = true;
+      this.isPreview = false;
+    },
+    previewTemplate() {
+      this.templateModel = true;
+      this.isTemplateEdit = false;
+      this.isPreview = true;
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -134,7 +147,7 @@ export default {
       }
       return true;
     },
-     // 删除指标项
+    // 删除指标项
     deleteTemplate(index, row) {
       console.log(index, row);
       this.$confirm("是否确定删除任务【任务名称】", "刪除任务", {
@@ -165,7 +178,7 @@ export default {
           });
         })
         .catch(() => {});
-    },
+    }
   }
 };
 </script>

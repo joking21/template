@@ -8,8 +8,8 @@
       width="100"
     >
       <template slot-scope="scope">
-        <!-- 查看详情、开始审核、开始填报、重新填报-->
-        <div v-if="preview || startReview || startReport || reReport">
+        <!-- 查看详情、开始审核、开始填报、重新填报、查看模板-->
+        <div v-if="preview || startReview || startReport || reReport || templatePreview">
           <span>{{ scope.row[`name${item}`] || '-'}}</span>
         </div>
         <div v-else>
@@ -25,7 +25,7 @@
     <el-table-column prop="indexItem" label="指标项">
       <template slot-scope="scope">
         <!-- 查看 -->
-        <div v-if="preview || startReview || startReport || reReport">
+        <div v-if="preview || startReview || startReport || reReport || templatePreview">
           <span>{{ scope.row.indexItemName || '-'}}</span>
         </div>
         <div v-else>
@@ -40,7 +40,7 @@
     </el-table-column>
     <el-table-column prop="indexItemWeight" label="权重" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport">
+        <div v-if="preview || startReview || startReport || reReport || templatePreview">
           <span>{{ scope.row.indexItemWeight || '-'}}</span>
         </div>
         <div v-else>
@@ -51,7 +51,7 @@
     </el-table-column>
     <el-table-column prop="subIndexItem" label="子指标项">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport">
+        <div v-if="preview || startReview || startReport || reReport || templatePreview">
           <span>{{ scope.row.subIndexItemName}}</span>
         </div>
         <div v-else>
@@ -62,7 +62,7 @@
     </el-table-column>
     <el-table-column label="权重" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport">
+        <div v-if="preview || startReview || startReport || reReport || templatePreview">
           <span>{{ scope.row.subIndexItemWeight}}</span>
         </div>
         <div v-else>
@@ -72,7 +72,7 @@
     </el-table-column>
     <el-table-column prop="expectations" label="期望值（%）" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport">
+        <div v-if="preview || startReview || startReport || reReport || templatePreview">
           <span>{{ scope.row.subIndexItemExpectations}}</span>
         </div>
         <div v-else>
@@ -168,8 +168,8 @@ export default {
       tempData: [] // 把单条数据里面的字段初始化【ps: 方便下一步的把父子关系的对象，合并成一条对象】,若要增删字段，则在处理这个数据时操作
     };
   },
-  // preview:查看  startReview:开始审核  startReport :开始填报 reReport:重新填报 
-  props: ["preview", "startReview", "startReport", "reReport"],
+  // preview:查看  startReview:开始审核  startReport :开始填报 reReport:重新填报  isTemplatePreview: 查看模板
+  props: ["preview", "startReview", "startReport", "reReport", "templatePreview"],
   created() {
     this.analyticTree(this.data6); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
     this.getMax(this.level); // 计算最深树枝的深度

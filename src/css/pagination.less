@@ -1,0 +1,41 @@
+.d-pagination{
+    padding: 15px 0px;
+    text-align: right;
+    .el-pagination .el-select .el-input {
+        width: 80px;
+        margin: 0 5px;
+    }
+    .el-pagination__jump {
+        margin-left: 0px;
+    }
+    button{
+        width:28px;
+        height:28px;
+        background:rgba(255,255,255,1);
+        border:1px solid rgba(217,217,217,1);
+        padding: 0px !important;
+    }
+    ul{
+        margin-right: 8px;
+        li{
+            width:28px;
+            height:28px;
+            background:rgba(255,255,255,1);
+            border:1px solid rgba(217,217,217,1);
+            margin-left: 8px;
+            font-size:12px;
+            font-family:HelveticaNeue;
+            color:rgba(102,102,102);
+            min-width: 28px !important;
+            padding: 0px !important;
+        }
+        li.active{
+            color: #ffffff;
+            background:rgba(0,138,241,0.5);
+            border-color: rgba(0,138,241,0.5);
+        }
+    }
+    .el-pager li.active+li {
+        border:1px solid rgba(217,217,217,1) !important;
+    }
+}
