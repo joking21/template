@@ -34,18 +34,19 @@
           style="width: 80%;"
           v-model="multipleSelectionName"
           @focus="approvalTableModel=true"
+          readonly
         ></el-input>
       </el-form-item>
       <el-form-item label="考评周期">
-        <el-radio v-model="form.evaluateType" :label="1">按月</el-radio>
-        <el-radio v-model="form.evaluateType" :label="2">按季度</el-radio>
-        <el-radio v-model="form.evaluateType" :label="3">按年</el-radio>
-        <div class="d-setTaskInput" v-if="form.evaluateType===1">
-          <el-col :span="8">
-            <el-radio v-model="form.radioChild" label="first">每月第一天</el-radio>
-          </el-col>
-          <el-col :span="10">
-            <el-radio v-model="form.radioChild" label="center">
+        <el-radio-group v-model="form.evaluateType">
+          <el-radio :label="1">按月</el-radio>
+          <el-radio :label="2">按季度</el-radio>
+          <el-radio :label="3">按年</el-radio>
+        </el-radio-group>
+        <div class="d-setTaskInput" v-show="form.evaluateType===1">
+          <el-radio-group v-model="form.radioChild1">
+            <el-radio label="first">每月第一天</el-radio>
+            <el-radio label="center">
               每月第
               <el-input-number
                 :min="1"
@@ -55,17 +56,13 @@
                 style="width: 60px;"
               ></el-input-number>天
             </el-radio>
-          </el-col>
-          <el-col :span="6">
-            <el-radio v-model="form.radioChild" label="last">每月最后一天</el-radio>
-          </el-col>
+            <el-radio label="last">每月最后一天</el-radio>
+          </el-radio-group>
         </div>
-        <div class="d-setTaskInput" v-if="form.evaluateType===2">
-          <el-col :span="6">
-            <el-radio v-model="form.radioChild" label="first">每季第一天</el-radio>
-          </el-col>
-          <el-col :span="12">
-            <el-radio v-model="form.radioChild" label="center">
+        <div class="d-setTaskInput" v-show="form.evaluateType===2">
+          <el-radio-group v-model="form.radioChild2">
+            <el-radio label="first">每季第一天</el-radio>
+            <el-radio label="center">
               第
               <el-input-number
                 :min="1"
@@ -83,23 +80,18 @@
                 style="width: 60px;"
               ></el-input-number>天
             </el-radio>
-          </el-col>
-          <el-col :span="6">
-            <el-radio v-model="form.radioChild" label="last">每季最后一天</el-radio>
-          </el-col>
+            <el-radio label="last">每季最后一天</el-radio>
+          </el-radio-group>
         </div>
-        <div class="d-setTaskInput" v-if="form.evaluateType===3">
-          <el-col :span="6">
-            <el-radio v-model="form.radioChild" label="first">每年第一天</el-radio>
-          </el-col>
-          <el-col :span="12">
-            <el-radio v-model="form.radioChild" label="center">
+        <div class="d-setTaskInput" v-show="form.evaluateType===3">
+          <el-radio-group v-model="form.radioChild3">
+            <el-radio label="first">每年第一天</el-radio>
+            <el-radio label="center">
               第
               <el-input-number
                 :min="1"
                 :max="12"
                 v-model="form.radioMonth"
-                :step="1"
                 :controls="false"
                 style="width: 60px;"
               ></el-input-number>月第
@@ -112,10 +104,8 @@
                 style="width: 60px;"
               ></el-input-number>天
             </el-radio>
-          </el-col>
-          <el-col :span="6">
-            <el-radio v-model="form.radioChild" label="last">每年最后一天</el-radio>
-          </el-col>
+            <el-radio label="last">每年最后一天</el-radio>
+          </el-radio-group>
         </div>
       </el-form-item>
       <el-form-item label="任务生效期" style="padding-top: 4px; ">
@@ -180,18 +170,21 @@ import Pagination from "../Common/Pagination.vue";
 import { Promise } from "q";
 import { debug, debuglog } from "util";
 import { setTimeout } from "timers";
+import Vue from "vue";
 export default {
   data() {
     return {
       form: {
         taskName: "", // 任务名称
         templateId: "", // 考评模板
-        evaluateType: "", // 考评周期
+        evaluateType: 1, // 考评周期
         date: "",
         taskDescribe: "", // 任务描述
         radioMonth: "", // 第X月
         radioDay: "", // 第X天
-        radioChild: "first"
+        radioChild1: "first",
+        radioChild2: "first",
+        radioChild3: "first"
       },
       templateList: [],
       approvalList: [],
@@ -230,22 +223,6 @@ export default {
     }
   },
   methods: {
-    showApprovalTable() {
-      this.approvalTableModel = true;
-      const multipleSelectionName = this.multipleSelectionName.split(",");
-      const temp = [];
-      for (let i = 0; i < multipleSelectionName.length; i++) {
-        for (let j = 0; j < this.approvalList.length; j++) {
-          if (this.approvalList[j].real_name === multipleSelectionName[i]) {
-            temp.push(this.approvalList[j]);
-          }
-        }
-      }
-      this.multipleSelection = temp;
-      setTimeout(() => {
-        this.$refs.multipleTable.toggleRowSelection(temp);
-      }, 1000);
-    },
     // 获取考评模板
     getTemplate() {
       this.$get("/deptOrUserQuery/getTemList", null, data => {
@@ -274,18 +251,31 @@ export default {
         };
         this.getApprovalPara.deptId = _obj.deptId;
         this.multipleSelectionName = _obj.reviewersName;
-        if (
-          _obj.taskGenerateRule === "last" ||
-          _obj.taskGenerateRule === "first"
-        ) {
-          this.form.radioChild = _obj.taskGenerateRule;
-        } else if (_obj.evaluateType != 1) {
-          this.form.radioChild = "center";
-          this.form.radioMonth = _obj.taskGenerateRule.split(":")[0];
-          this.form.radioDay = _obj.taskGenerateRule.split(":")[1];
+        if (_obj.evaluateType == 1) {
+          if (
+            _obj.taskGenerateRule === "last" ||
+            _obj.taskGenerateRule === "first"
+          ) {
+            Vue.set(this.form, "radioChild1", _obj.taskGenerateRule);
+          } else {
+            Vue.set(this.form, "radioChild1", "center");
+            this.form.radioDay = _obj.taskGenerateRule;
+          }
         } else {
-          this.form.radioChild = "center";
-          this.form.radioDay = _obj.taskGenerateRule;
+          if (
+            _obj.taskGenerateRule === "last" ||
+            _obj.taskGenerateRule === "first"
+          ) {
+            Vue.set(
+              this.form,
+              `radioChild${_obj.evaluateType}`,
+              _obj.taskGenerateRule
+            );
+          } else {
+            Vue.set(this.form, `radioChild${_obj.evaluateType}`, "center");
+            this.form.radioMonth = _obj.taskGenerateRule.split(":")[0];
+            this.form.radioDay = _obj.taskGenerateRule.split(":")[1];
+          }
         }
         this.getApproval(this.getApprovalPara);
       });
@@ -298,8 +288,6 @@ export default {
           message: "最多添加5个子指标项。",
           type: "warning"
         });
-        console.log(val);
-        console.log(this.$refs.multipleTable);
         this.$refs.multipleTable.toggleRowSelection(val[val.length - 1]);
         return;
       }
@@ -340,24 +328,28 @@ export default {
         },
         reviewerList: this.reviewerList
       };
-      if (this.form.evaluateType == 1 && this.form.radioChild == "center") {
-        para.evaluateTask.taskGenerateRule = this.form.radioDay;
-      } else if (
-        (this.form.evaluateType == 2 || this.form.evaluateType == 3) &&
-        this.form.radioChild == "center"
-      ) {
-        para.evaluateTask.taskGenerateRule = `${this.form.radioMonth}:${
-          this.form.radioDay
-        }`;
+      if (this.form.evaluateType == 1) {
+        if (this.form.radioChild1 == "center") {
+         para.evaluateTask.taskGenerateRule = this.form.radioDay;
+        } else {
+          para.evaluateTask.taskGenerateRule = this.form.radioChild1;
+        }
       } else {
-        para.evaluateTask.taskGenerateRule = this.form.radioChild;
+        if (
+         this.form[`radioChild${this.form.evaluateType}`] === "last" ||
+         this.form[`radioChild${this.form.evaluateType}`] === "first"
+        ) {
+          para.evaluateTask.taskGenerateRule = this.form[`radioChild${this.form.evaluateType}`];
+        } else {
+          para.evaluateTask.taskGenerateRule = `${this.form.radioMonth}:${this.form.radioDay}`;
+        }
       }
       this.isTaskEdit ? (para.evaluateTask.id = this.editId) : null;
       this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
         this.getList();
         this.handleCancel();
       });
-    }
+    },
   },
   watch: {
     approvalTableModel() {
