@@ -130,7 +130,6 @@ export default {
       this.multipleSelection = val;
     },
     // 删除指标项
-    // POST /MeEvaluateTask/deleteTask
     deleteTemplate(index, row) {
       this.$confirm(`是否确定删除指标【${row.taskName}】`, "删除指标", {
         confirmButtonText: "确定",
