@@ -352,6 +352,8 @@ export default {
     },
   },
   watch: {
+// 1：添加的时候，任务创建时间，任务创建人，list页面么有
+// 2：审核人里面要返回一个带有userID的列表，，因为修改的时候，要默认审核人表格的某一条被选中；
     approvalTableModel() {
       if (this.approvalTableModel === true) {
         const temp = [];

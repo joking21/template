@@ -53,9 +53,10 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 #公共文件
 header头和footer放在component文件夹
 
-#请求接口
-参照home.vue里面请求 
- this.$http.get('/operate/getTheSysNames').then((response)=>{
-        console.log(response);
-})
+#请求接口  
+this.$post('url地址',' 参数' ,'成功函数', '失败函数');
+this.$get('url地址',' 参数' ,'成功函数', '失败函数');
+若请求接口是
+GET /MeEvaluateTask/getTaskInfo/{id}
+则 this.$get('url地址/id', null ,'成功函数', '失败函数')
 
