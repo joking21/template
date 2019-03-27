@@ -18,14 +18,14 @@
       </el-menu-item>
       <el-submenu index="2">
         <template slot="title">
-           <i class="iconfont iconkaopingzhibiaoguanli"></i>
+          <i class="iconfont iconkaopingzhibiaoguanli"></i>
           <span>考评指标管理</span>
         </template>
         <el-menu-item index="2-1">指标库管理</el-menu-item>
         <el-menu-item index="2-2">考评模板管理</el-menu-item>
       </el-submenu>
       <el-menu-item index="3">
-         <i class="iconfont iconkaopingrenwushezhisvg"></i>
+        <i class="iconfont iconkaopingrenwushezhisvg"></i>
         <span slot="title">考评任务设置</span>
       </el-menu-item>
       <el-submenu index="4">
@@ -61,8 +61,8 @@ export default {
     toobarIndex() {
       return this.$store.state.toobarIndex;
     },
-    zankai(){
-       return this.$store.state.toobarIndex.split('-')[0];
+    zankai() {
+      return this.$store.state.toobarIndex.split("-")[0];
     }
   },
   methods: {
@@ -88,17 +88,17 @@ export default {
           break;
         case "4-1":
           title = "考评工作汇总 / 考评任务管理";
-          url="/taskManagement";
+          url = "/taskManagement";
           break;
         case "4-2":
           title = "考评工作汇总 / 考评分析报表";
-          url="/reportAnalysis";
+          url = "/reportAnalysis";
           break;
         default:
           title = "未知";
       }
       this.$router.push({ path: url });
-      this.$store.commit("changeToobar", {title: title, index: index});
+      this.$store.commit("changeToobar", { title: title, index: index });
     },
     changeBtn() {
       this.isCollapse ? (this.isCollapse = false) : (this.isCollapse = true);

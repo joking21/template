@@ -21,6 +21,15 @@ function failer(msg) {
         duration: 3000,
     });
 }
+// 登录失效处理
+function clearNoEffect(){
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem('toobarName');
+    sessionStorage.removeItem('toobarIndex') 
+    store.commit("changeLogin");
+    router.push({ path: "/login" });
+}
 export function post(url, para, successFun, errorFun) {
     if (store.state.token) {
         axios.defaults.headers.common["token"] = store.state.token;
@@ -33,10 +42,7 @@ export function post(url, para, successFun, errorFun) {
             } 
             else if(response.data.code === 401){
                 failer(response.data.msg);
-                sessionStorage.removeItem("token");
-                sessionStorage.removeItem("user");
-                store.commit("changeLogin");
-                router.push({ path: "/login" });
+                clearNoEffect();
             }
             else {
                 if (errorFun) errorFun();
@@ -61,10 +67,7 @@ export function get(url, para, successFun, errorFun) {
             }
             else if(response.data.code === 401){
                 failer(response.data.msg);
-                sessionStorage.removeItem("token");
-                sessionStorage.removeItem("user");
-                store.commit("changeLogin");
-                router.push({ path: "/login" });
+                clearNoEffect();
             }
             else {
                 if (errorFun) errorFun();

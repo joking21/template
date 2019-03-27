@@ -5,28 +5,26 @@
         <el-button size="small" icon="el-icon-plus" type="primary" @click="addTemplate">新增任务</el-button>
         <el-button size="small" icon="el-icon-delete" type="danger" @click="deleteTemplateAll">删除任务</el-button>
       </el-row>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form :inline="true" :model="selectPara" class="demo-form-inline">
         <el-form-item label="考评对象">
-          <el-select v-model="formInline.region" style="width: 180px;" placeholder="请选择">
-            <el-option label="组1" value="beijing"></el-option>
-            <el-option label="组2" value="beijing1"></el-option>
-            <el-option label="组3" value="beijing2"></el-option>
-            <el-option label="组4" value="beijing3"></el-option>
+          <el-select v-model="selectPara.deptId" style="width: 250px;" placeholder="请选择">
+            <el-option label="全部" value></el-option>
+            <el-option v-for="item in objectOfEvaluationData" :key="item.id" :label="item.deptName" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="任务状态">
-          <el-select v-model="formInline.region" style="width: 180px;" placeholder="请选择">
-            <el-option label="组1" value="beijing"></el-option>
-            <el-option label="组2" value="beijing1"></el-option>
-            <el-option label="组3" value="beijing2"></el-option>
-            <el-option label="组4" value="beijing3"></el-option>
+          <el-select v-model="selectPara.taskStatus" style="width: 180px;" placeholder="请选择">
+            <el-option label="全部" value></el-option>
+            <el-option label="生效中" :value="1"></el-option>
+            <el-option label="已生效" :value="2"></el-option>
+            <el-option label="未生效" :value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="任务名称">
-          <el-input v-model="formInline.name" placeholder="请输入任务名称" style="width: 150px;"></el-input>
+          <el-input v-model="selectPara.taskName" placeholder="请输入任务名称" style="width: 150px;"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary">查询</el-button>
+          <el-button size="mini" type="primary" @click="getList(selectPara)">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -36,81 +34,76 @@
       @selection-change="handleSelectionChange"
       style="width: 100%"
     >
-      <el-table-column type="selection" width="55" :selectable="disabledFun"></el-table-column>
-      <el-table-column prop="name" label="任务名称"></el-table-column>
-      <el-table-column prop="status" label="考评对象"></el-table-column>
-      <el-table-column prop="status1" label="任务状态"></el-table-column>
-      <el-table-column prop="status2" label="考评周期"></el-table-column>
-      <el-table-column prop="status3" label="任务创建时间"></el-table-column>
-      <el-table-column prop="status4" label="任务创建人"></el-table-column>
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="taskName" label="任务名称"></el-table-column>
+      <el-table-column prop="deptName" label="考评对象"></el-table-column>
+      <el-table-column prop="taskStatus" label="任务状态"></el-table-column>
+      <el-table-column prop="cycle" label="考评周期"></el-table-column>
+      <el-table-column prop="createTime" label="任务创建时间"></el-table-column>
+      <el-table-column prop="userName" label="任务创建人"></el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <!--             v-if="scope.row.id===1" -->
           <a class="operator">查看</a>
           <a class="operator" @click="editTemplate(scope.$index, scope.row)">编辑</a>
           <a class="operator" @click="deleteTemplate(scope.$index, scope.row)">删除</a>
         </template>
       </el-table-column>
     </el-table>
-    <div class="block d-pagination">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
-        layout="prev, pager, next, sizes, jumper"
-        :total="100"
-      ></el-pagination>
-    </div>
+    <Pagination :paginationPara="selectPara" :total="total" :getList="getList"/>
     <Task :taskModel="taskModel" :isTaskEdit="isTaskEdit" :changeParent="changeParent"/>
   </div>
 </template>
 <script>
+import Pagination from "../components/Common/Pagination.vue";
 import Task from "../components/PageTaskSet/Task.vue";
 export default {
   data() {
     return {
-      formInline: {
-        name: "",
-        region: "",
-        region1: ""
+      selectPara: {
+        currentPage: 1,
+        pageSize: 10,
+        deptId: "", // 考评对象
+        taskStatus: "", //任务状态
+        taskName: "", // 任务名称
       },
-      currentPage: 1,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          id: 1
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          id: 2
-        }
-      ],
+      total: '',
+      tableData: [],
+      objectOfEvaluationData: [],
       taskModel: false,
       isTaskEdit: false,
-      multipleSelection: ''
+      multipleSelection: ""
     };
   },
   components: {
-    Task
+    Task,
+    Pagination
+  },
+  created() {
+    this.getList(this.selectPara);
+    this.getObjectOfEvaluation();
   },
   methods: {
+    getList(para) {
+      this.$get("/MeEvaluateTask/getEvaluateTaskPage", para, data => {
+        console.log(data);
+        this.tableData = data.page && data.page.records
+        this.selectPara.currentPage = data.page && data.page.current;
+        this.selectPara.pageSize = data.page && data.page.size;
+        this.total =  data.page && data.page.total;
+      });
+    },
+    // 获取考评对象
+    getObjectOfEvaluation(){
+      // GET /deptOrUserQuery/getLoginUserDeptList
+      this.$get("/deptOrUserQuery/getLoginUserDeptList", null, data => {
+        this.objectOfEvaluationData = data.list;
+      });
+    },
     handleEdit(index, row) {
       console.log(index, row);
     },
     handleDelete(index, row) {
       console.log(index, row);
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
     },
     changeParent(name, value) {
       this[name] = value;
@@ -126,14 +119,7 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    // 禁用table选择框
-    disabledFun(row, index) {
-      if (row.id === 1) {
-        return false;
-      }
-      return true;
-    },
-     // 删除指标项
+    // 删除指标项
     deleteTemplate(index, row) {
       console.log(index, row);
       this.$confirm("是否确定删除指标【指标名称】", "删除指标", {
@@ -164,7 +150,7 @@ export default {
           });
         })
         .catch(() => {});
-    },
+    }
   }
 };
 </script>

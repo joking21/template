@@ -139,7 +139,6 @@ export default {
     };
   },
   created() {
-    this.$get("/meEvaluateUserTask/list", null);
     // this.$get('/api/articles/new/article');
   },
   components: {
