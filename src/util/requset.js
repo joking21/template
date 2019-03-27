@@ -27,8 +27,7 @@ function clearNoEffect(){
     sessionStorage.removeItem("user");
     sessionStorage.removeItem('toobarName');
     sessionStorage.removeItem('toobarIndex') 
-    store.commit("changeLogin");
-    router.push({ path: "/login" });
+    window.location.href="/login";
 }
 export function post(url, para, successFun, errorFun) {
     if (store.state.token) {

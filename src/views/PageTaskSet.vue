@@ -9,7 +9,12 @@
         <el-form-item label="考评对象">
           <el-select v-model="selectPara.deptId" style="width: 250px;" placeholder="请选择">
             <el-option label="全部" value></el-option>
-            <el-option v-for="item in objectOfEvaluationData" :key="item.id" :label="item.deptName" :value="item.id"></el-option>
+            <el-option
+              v-for="item in objectOfEvaluationData"
+              :key="item.id"
+              :label="item.deptName"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="任务状态">
@@ -43,19 +48,27 @@
       <el-table-column prop="userName" label="任务创建人"></el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <a class="operator">查看</a>
+          <a class="operator" @click="showPreview(scope.$index, scope.row)">查看</a>
           <a class="operator" @click="editTemplate(scope.$index, scope.row)">编辑</a>
           <a class="operator" @click="deleteTemplate(scope.$index, scope.row)">删除</a>
         </template>
       </el-table-column>
     </el-table>
     <Pagination :paginationPara="selectPara" :total="total" :getList="getList"/>
-    <Task :taskModel="taskModel" :isTaskEdit="isTaskEdit" :changeParent="changeParent"/>
+    <Task
+      :taskModel="taskModel"
+      :isTaskEdit="isTaskEdit"
+      :changeParent="changeParent"
+      :objectOfEvaluationData="objectOfEvaluationData"
+      :getList="getList"
+    />
+    <Preview :previewModel="previewModel" :changeParent="changeParent"/>
   </div>
 </template>
 <script>
 import Pagination from "../components/Common/Pagination.vue";
 import Task from "../components/PageTaskSet/Task.vue";
+import Preview from "../components/PageTaskSet/Preview.vue";
 export default {
   data() {
     return {
@@ -64,46 +77,40 @@ export default {
         pageSize: 10,
         deptId: "", // 考评对象
         taskStatus: "", //任务状态
-        taskName: "", // 任务名称
+        taskName: "" // 任务名称
       },
-      total: '',
+      total: "",
       tableData: [],
       objectOfEvaluationData: [],
       taskModel: false,
       isTaskEdit: false,
+      previewModel: false,
       multipleSelection: ""
     };
   },
   components: {
     Task,
-    Pagination
+    Pagination,
+    Preview
   },
   created() {
     this.getList(this.selectPara);
     this.getObjectOfEvaluation();
   },
   methods: {
-    getList(para) {
+    getList(para = this.selectPara) {
       this.$get("/MeEvaluateTask/getEvaluateTaskPage", para, data => {
-        console.log(data);
-        this.tableData = data.page && data.page.records
+        this.tableData = data.page && data.page.records;
         this.selectPara.currentPage = data.page && data.page.current;
         this.selectPara.pageSize = data.page && data.page.size;
-        this.total =  data.page && data.page.total;
+        this.total = data.page && data.page.total;
       });
     },
     // 获取考评对象
-    getObjectOfEvaluation(){
-      // GET /deptOrUserQuery/getLoginUserDeptList
+    getObjectOfEvaluation() {
       this.$get("/deptOrUserQuery/getLoginUserDeptList", null, data => {
         this.objectOfEvaluationData = data.list;
       });
-    },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
     },
     changeParent(name, value) {
       this[name] = value;
@@ -116,37 +123,44 @@ export default {
       this.taskModel = true;
       this.isTaskEdit = true;
     },
+    showPreview() {
+      this.previewModel = true;
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
     // 删除指标项
+    // POST /MeEvaluateTask/deleteTask
     deleteTemplate(index, row) {
-      console.log(index, row);
-      this.$confirm("是否确定删除指标【指标名称】", "删除指标", {
+      this.$confirm(`是否确定删除指标【${row.taskName}】`, "删除指标", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          this.$post("/MeEvaluateTask/deleteTask", { idList: [row.id] }, () => {
+            this.getList(this.selectPara);
           });
         })
         .catch(() => {});
     },
     // 删除选中的指标项
     deleteTemplateAll() {
-      console.log(this.multipleSelection);
+      if (this.multipleSelection.length === 0) {
+        return this.$message.error("请您先选择要删除的任务名称！");
+      }
+      const idList = [];
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        idList.push(this.multipleSelection[i].id);
+      }
       this.$confirm("是否确定删除选中的指标项", "删除指标", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          this.$post("/MeEvaluateTask/deleteTask", { idList: idList }, () => {
+            this.getList(this.selectPara);
           });
         })
         .catch(() => {});

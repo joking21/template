@@ -27,18 +27,12 @@ export default {
       return this.paginationPara;
     }
   },
-  mounted(){
-    console.log(this.total);
-    console.log(this.paginationPara);
-  },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.paginationChild.pageSize = val;
       this.getList(this.paginationChild);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.paginationChild.currentPage = val;
       this.getList(this.paginationChild);
     }
