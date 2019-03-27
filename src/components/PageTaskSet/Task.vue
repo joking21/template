@@ -15,7 +15,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="考评对象">
-        <el-select v-model="getApprovalPara.deptId" style="width: 80%;" placeholder="请选择">
+        <el-select
+          v-model="getApprovalPara.deptId"
+          style="width: 80%;"
+          placeholder="请选择"
+          @change="changeDeptId"
+        >
           <el-option
             v-for="item in objectOfEvaluationData"
             :key="item.id"
@@ -28,14 +33,14 @@
         <el-input
           style="width: 80%;"
           v-model="multipleSelectionName"
-          @focus="approvalTableModel = true"
+          @focus="approvalTableModel=true"
         ></el-input>
       </el-form-item>
       <el-form-item label="考评周期">
-        <el-radio v-model="form.evaluateType" label="1">按月</el-radio>
-        <el-radio v-model="form.evaluateType" label="2">按季度</el-radio>
-        <el-radio v-model="form.evaluateType" label="3">按年</el-radio>
-        <div class="d-setTaskInput" v-if="form.evaluateType==='1'">
+        <el-radio v-model="form.evaluateType" :label="1">按月</el-radio>
+        <el-radio v-model="form.evaluateType" :label="2">按季度</el-radio>
+        <el-radio v-model="form.evaluateType" :label="3">按年</el-radio>
+        <div class="d-setTaskInput" v-if="form.evaluateType===1">
           <el-col :span="8">
             <el-radio v-model="form.radioChild" label="first">每月第一天</el-radio>
           </el-col>
@@ -46,7 +51,6 @@
                 :min="1"
                 :max="31"
                 v-model="form.radioDay"
-                :step="1"
                 :controls="false"
                 style="width: 60px;"
               ></el-input-number>天
@@ -56,7 +60,7 @@
             <el-radio v-model="form.radioChild" label="last">每月最后一天</el-radio>
           </el-col>
         </div>
-        <div class="d-setTaskInput" v-if="form.evaluateType==='2'">
+        <div class="d-setTaskInput" v-if="form.evaluateType===2">
           <el-col :span="6">
             <el-radio v-model="form.radioChild" label="first">每季第一天</el-radio>
           </el-col>
@@ -67,7 +71,6 @@
                 :min="1"
                 :max="12"
                 v-model="form.radioMonth"
-                :step="1"
                 :controls="false"
                 style="width: 60px;"
               ></el-input-number>月第
@@ -85,7 +88,7 @@
             <el-radio v-model="form.radioChild" label="last">每季最后一天</el-radio>
           </el-col>
         </div>
-        <div class="d-setTaskInput" v-if="form.evaluateType==='3'">
+        <div class="d-setTaskInput" v-if="form.evaluateType===3">
           <el-col :span="6">
             <el-radio v-model="form.radioChild" label="first">每年第一天</el-radio>
           </el-col>
@@ -147,11 +150,11 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="realName" label="姓名"></el-table-column>
-        <el-table-column prop="userName" label="用户名"></el-table-column>
-        <el-table-column prop="status1" label="角色"></el-table-column>
-        <el-table-column prop="status2" label="所属组织"></el-table-column>
-        <el-table-column prop="status2" label="联系电话"></el-table-column>
+        <el-table-column prop="real_name" label="姓名"></el-table-column>
+        <el-table-column prop="user_name" label="用户名"></el-table-column>
+        <el-table-column prop="role_name" label="角色"></el-table-column>
+        <el-table-column prop="dept_name" label="所属组织"></el-table-column>
+        <el-table-column prop="cell_phone_number" label="联系电话"></el-table-column>
       </el-table>
       <Pagination
         :paginationPara="getApprovalPara"
@@ -174,6 +177,9 @@
 </style>
 <script>
 import Pagination from "../Common/Pagination.vue";
+import { Promise } from "q";
+import { debug, debuglog } from "util";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
@@ -201,13 +207,17 @@ export default {
       reviewerList: [] // 审批人
     };
   },
-  props: ["taskModel", "changeParent", "isTaskEdit", "objectOfEvaluationData", "getList"],
+  props: [
+    "taskModel",
+    "changeParent",
+    "isTaskEdit",
+    "objectOfEvaluationData",
+    "getList",
+    "editId"
+  ],
   computed: {
     reversedMessage: function() {
       return this.taskModel;
-    },
-    changeDeptId: function() {
-      return this.getApprovalPara.deptId;
     }
   },
   components: {
@@ -215,9 +225,27 @@ export default {
   },
   created() {
     this.getTemplate();
-    // this.getApproval(this.getApprovalPara);
+    if (this.isTaskEdit) {
+      this.getDetails();
+    }
   },
   methods: {
+    showApprovalTable() {
+      this.approvalTableModel = true;
+      const multipleSelectionName = this.multipleSelectionName.split(",");
+      const temp = [];
+      for (let i = 0; i < multipleSelectionName.length; i++) {
+        for (let j = 0; j < this.approvalList.length; j++) {
+          if (this.approvalList[j].real_name === multipleSelectionName[i]) {
+            temp.push(this.approvalList[j]);
+          }
+        }
+      }
+      this.multipleSelection = temp;
+      setTimeout(() => {
+        this.$refs.multipleTable.toggleRowSelection(temp);
+      }, 1000);
+    },
     // 获取考评模板
     getTemplate() {
       this.$get("/deptOrUserQuery/getTemList", null, data => {
@@ -230,8 +258,39 @@ export default {
       this.$get("/deptOrUserQuery/getReviewerPage", para, data => {
         this.approvalList = data.page.records;
         this.totalApprovalList = data.page.total;
-        console.log(this.approvalList);
       });
+    },
+    // 编辑-获取详情
+    getDetails() {
+      this.$get(`/MeEvaluateTask/getTaskInfo/${this.editId}`, null, data => {
+        console.log(data);
+        const _obj = data.object;
+        this.form = {
+          taskName: _obj.taskName, // 任务名称
+          templateId: _obj.templateId, // 考评模板
+          evaluateType: _obj.evaluateType, // 考评周期
+          date: [_obj.startCycle, _obj.endCycle],
+          taskDescribe: _obj.taskDescribe // 任务描述
+        };
+        this.getApprovalPara.deptId = _obj.deptId;
+        this.multipleSelectionName = _obj.reviewersName;
+        if (
+          _obj.taskGenerateRule === "last" ||
+          _obj.taskGenerateRule === "first"
+        ) {
+          this.form.radioChild = _obj.taskGenerateRule;
+        } else if (_obj.evaluateType != 1) {
+          this.form.radioChild = "center";
+          this.form.radioMonth = _obj.taskGenerateRule.split(":")[0];
+          this.form.radioDay = _obj.taskGenerateRule.split(":")[1];
+        } else {
+          this.form.radioChild = "center";
+          this.form.radioDay = _obj.taskGenerateRule;
+        }
+        this.getApproval(this.getApprovalPara);
+      });
+      // multipleSelection: [],
+      // reviewerList: [] // 审批人
     },
     handleSelectionChange(val) {
       if (val.length > 5) {
@@ -239,6 +298,8 @@ export default {
           message: "最多添加5个子指标项。",
           type: "warning"
         });
+        console.log(val);
+        console.log(this.$refs.multipleTable);
         this.$refs.multipleTable.toggleRowSelection(val[val.length - 1]);
         return;
       }
@@ -252,12 +313,18 @@ export default {
       let tempArr = [];
       let selectArr = [];
       for (let i = 0; i < temp.length; i++) {
-        tempArr.push(temp[i].userName);
+        tempArr.push(temp[i].real_name);
         selectArr.push({ userId: temp[i].id });
       }
       this.reviewerList = selectArr;
-      this.multipleSelectionName = tempArr.join("、");
+      this.multipleSelectionName = tempArr.join(",");
       this.approvalTableModel = false;
+    },
+    changeDeptId() {
+      this.getApproval(this.getApprovalPara);
+      this.multipleSelection = [];
+      this.multipleSelectionName = "";
+      this.reviewerList = []; // 审批人
     },
     submit() {
       const date = this.form.date;
@@ -285,16 +352,34 @@ export default {
       } else {
         para.evaluateTask.taskGenerateRule = this.form.radioChild;
       }
-      // {evaluateTaskInsert: para}
-      this.$post('/MeEvaluateTask/insertOrUpdate', para, ()=>{
+      this.isTaskEdit ? (para.evaluateTask.id = this.editId) : null;
+      this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
         this.getList();
         this.handleCancel();
-      })
+      });
     }
   },
   watch: {
-    changeDeptId() {
-      this.getApproval(this.getApprovalPara);
+    approvalTableModel() {
+      if (this.approvalTableModel === true) {
+        const temp = [];
+        new Promise((resolve, reject) => {
+          const multipleSelectionName = this.multipleSelectionName.split(",");
+          for (let i = 0; i < multipleSelectionName.length; i++) {
+            for (let j = 0; j < this.approvalList.length; j++) {
+              if (this.approvalList[j].real_name === multipleSelectionName[i]) {
+                temp.push(this.approvalList[j]);
+              }
+            }
+          }
+          resolve();
+        }).then(() => {
+          this.$refs.multipleTable.clearSelection();
+          temp.forEach(temp => {
+            this.$refs.multipleTable.toggleRowSelection(temp, true);
+          });
+        });
+      }
     }
   }
 };

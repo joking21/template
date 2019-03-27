@@ -56,13 +56,15 @@
     </el-table>
     <Pagination :paginationPara="selectPara" :total="total" :getList="getList"/>
     <Task
+       v-if="taskModel"
       :taskModel="taskModel"
       :isTaskEdit="isTaskEdit"
+      :editId="editId"
       :changeParent="changeParent"
       :objectOfEvaluationData="objectOfEvaluationData"
       :getList="getList"
     />
-    <Preview :previewModel="previewModel" :changeParent="changeParent"/>
+    <Preview  v-if="previewModel" :previewModel="previewModel" :previewId="previewId" :changeParent="changeParent"/>
   </div>
 </template>
 <script>
@@ -85,7 +87,9 @@ export default {
       taskModel: false,
       isTaskEdit: false,
       previewModel: false,
-      multipleSelection: ""
+      multipleSelection: "",
+      editId: "",
+      previewId: "",
     };
   },
   components: {
@@ -119,11 +123,13 @@ export default {
       this.taskModel = true;
       this.isTaskEdit = false;
     },
-    editTemplate() {
+    editTemplate(index, row) {
+      this.editId = row.id;
       this.taskModel = true;
       this.isTaskEdit = true;
     },
-    showPreview() {
+    showPreview(index, row) {
+      this.previewId = row.id;
       this.previewModel = true;
     },
     handleSelectionChange(val) {
@@ -137,7 +143,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$post("/MeEvaluateTask/deleteTask", { idList: [row.id] }, () => {
+          this.$post("/MeEvaluateTask/deleteTask", [row.id], () => {
             this.getList(this.selectPara);
           });
         })
@@ -158,7 +164,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$post("/MeEvaluateTask/deleteTask", { idList: idList }, () => {
+          this.$post("/MeEvaluateTask/deleteTask", idList, () => {
             this.getList(this.selectPara);
           });
         })
