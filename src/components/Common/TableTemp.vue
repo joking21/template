@@ -169,7 +169,7 @@ export default {
     };
   },
   // preview:查看  startReview:开始审核  startReport :开始填报 reReport:重新填报  isTemplatePreview: 查看模板
-  props: ["preview", "startReview", "startReport", "reReport", "templatePreview"],
+  props: ["preview", "startReview", "startReport", "reReport", "templatePreview", "dataList"],
   created() {
     this.analyticTree(this.data6); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
     this.getMax(this.level); // 计算最深树枝的深度

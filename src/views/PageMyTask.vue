@@ -41,38 +41,38 @@
       </el-form>
     </div>
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="name" label="任务名称"></el-table-column>
-      <el-table-column prop="status" label="任务状态"></el-table-column>
-      <el-table-column prop="status1" label="考评周期"></el-table-column>
-      <el-table-column prop="status2" label="派发时间"></el-table-column>
+      <el-table-column prop="taskName" label="任务名称"></el-table-column>
+      <el-table-column prop="taskStatus" label="任务状态"></el-table-column>
+      <el-table-column prop="evaluateCycle" label="考评周期"></el-table-column>
+      <el-table-column prop="distributeDate" label="派发时间"></el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
           <a
             class="operator"
-            v-if="scope.row.id===1"
+            v-if="scope.row.taskStatus==='待填报'"
             @click="handleStartReport(scope.$index, scope.row)"
           >开始填报</a>
           <a
             class="operator"
-            v-if="scope.row.id===2"
+            v-if="scope.row.taskStatus==='已完成'"
             @click="handleViewDetails(scope.$index, scope.row)"
           >查看详情</a>
           <a
             class="operator"
-            v-if="scope.row.id===3"
+            v-if="scope.row.taskStatus==='待审核'"
             @click="handlestartReview(scope.$index, scope.row)"
           >开始审核</a>
-          <a
+          <!-- <a
             class="operator"
             v-if="scope.row.id===4"
             @click="handleReReport(scope.$index, scope.row)"
-          >重新填报</a>
+          >重新填报</a> -->
         </template>
       </el-table-column>
     </el-table>
     <Pagination :paginationPara="paginationPara" :total="total" :getList="getList"/>
     <!-- 查看详情 -->
-    <ViewDetails :viewDetailsModel="viewDetailsModel" :changeParent="changeParent"/>
+    <ViewDetails v-if="viewDetailsModel" :viewDetailsModel="viewDetailsModel" :changeParent="changeParent" :checkId='checkId'/>
     <!-- 开始填报 -->
     <StartReport :startReportModel="startReportModel" :changeParent="changeParent"/>
     <!-- 开始审核 -->
@@ -104,14 +104,15 @@ export default {
       },
       tableData: [],
       total: 0,
+      checkId: '',
       paginationPara: {
         currentPage: 1, // 当前页码
         pageSize: 10, //每页大小
         queryType: 1, //查询类型(1、我的代办填报，2、我的待办审核)
-        evaluateStatus: 0, //任务状态(0、待填报，1、待审核，3、已完成)
-        startDate: "", // 派发任务开始
-        endDate: "", //派发任务结束
-        taskName: "" // 任务名称
+        // evaluateStatus: 0, //任务状态(0、待填报，1、待审核，3、已完成)
+        // startDate: "", // 派发任务开始
+        // endDate: "", //派发任务结束
+        // taskName: "" // 任务名称
       },
       startReportModel: false,
       startReviewVisible: false,
@@ -151,7 +152,8 @@ export default {
     searchFun() {
       this.getList(this.paginationPara);
     },
-    handleViewDetails() {
+    handleViewDetails(index, row) {
+      this.checkId = row.id;
       this.viewDetailsModel = true;
     },
     handleStartReport() {
