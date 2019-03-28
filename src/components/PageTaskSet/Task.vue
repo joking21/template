@@ -240,7 +240,6 @@ export default {
     // 编辑-获取详情
     getDetails() {
       this.$get(`/MeEvaluateTask/getTaskInfo/${this.editId}`, null, data => {
-        console.log(data);
         const _obj = data.object;
         this.form = {
           taskName: _obj.taskName, // 任务名称
@@ -251,6 +250,10 @@ export default {
         };
         this.getApprovalPara.deptId = _obj.deptId;
         this.multipleSelectionName = _obj.reviewersName;
+        const reviewersIds = (_obj.reviewersIds && _obj.reviewersIds.split(',')) || [];
+        for(let item of reviewersIds){
+          this.reviewerList.push({userId: item});
+        }
         if (_obj.evaluateType == 1) {
           if (
             _obj.taskGenerateRule === "last" ||
@@ -356,10 +359,9 @@ export default {
       if (this.approvalTableModel === true) {
         const temp = [];
         new Promise((resolve, reject) => {
-          const multipleSelectionName = this.multipleSelectionName.split(",");
-          for (let i = 0; i < multipleSelectionName.length; i++) {
+          for (let i = 0; i < this.reviewerList.length; i++) {
             for (let j = 0; j < this.approvalList.length; j++) {
-              if (this.approvalList[j].real_name === multipleSelectionName[i]) {
+              if (this.approvalList[j].id === this.reviewerList[i].userId) {
                 temp.push(this.approvalList[j]);
               }
             }
