@@ -176,6 +176,8 @@ export default {
     this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
     this.handleRowspan(); // 处理rowspan
     console.log("最最最忠", this.tableData);
+
+    console.log(this.tempData);
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
