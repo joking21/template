@@ -6,7 +6,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './css/main.less';
 import './css/font.css';
-import {post, get } from './util/requset';
+import {post, get } from './util/request';
 Vue.prototype.$post = post;
 Vue.prototype.$get = get;
 Vue.config.productionTip = false;

@@ -51,9 +51,10 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 放在assets文件夹，用相对路径去取
 
 #公共文件
-header头和footer放在component文件夹
+header头和footer放在component文件夹下面的Common
 
 #请求接口  
+参照（util/request.js）方法重写
 this.$post('url地址',' 参数' ,'成功函数', '失败函数');
 this.$get('url地址',' 参数' ,'成功函数', '失败函数');
 若请求接口是

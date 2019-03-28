@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       rulesForm: {
-        name: [
+        username: [
           { required: true, message: "用户名不能为空!", trigger: "change" }
         ],
         password: [
