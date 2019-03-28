@@ -41,7 +41,7 @@
       <el-table-column prop="status11" label="填报人"></el-table-column>
       <el-table-column prop="status1" label="任务状态"></el-table-column>
       <el-table-column prop="status2" label="考评周期"></el-table-column>
-      <el-table-column prop="status3" label="考评截至日期"></el-table-column>
+      <el-table-column prop="status3" label="派发时间"></el-table-column>
       <el-table-column prop="status4" label="审核人"></el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">

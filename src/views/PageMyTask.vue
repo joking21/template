@@ -12,12 +12,12 @@
     <div class="search" style="padding: 10px 14px 6px 14px;">
       <el-form :inline="true" :model="form" class="demo-form-inline">
         <el-form-item label="任务状态">
-          <el-select v-model="form.type" style="width: 180px;">
+          <el-select v-model="paginationPara.evaluateStatus" style="width: 180px;">
             <el-option
               v-for="(item, index) in form.typeArr"
               :key="index"
               :label="item.name"
-              :value="item.name"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -27,14 +27,16 @@
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            @change="changeDate"
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="任务名称">
-          <el-input v-model="form.name" placeholder="任务名称" style="width: 150px;"></el-input>
+          <el-input v-model="paginationPara.taskName" placeholder="任务名称" style="width: 150px;"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary">查询</el-button>
+          <el-button size="mini" type="primary" @click="searchFun">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -42,7 +44,7 @@
       <el-table-column prop="name" label="任务名称"></el-table-column>
       <el-table-column prop="status" label="任务状态"></el-table-column>
       <el-table-column prop="status1" label="考评周期"></el-table-column>
-      <el-table-column prop="status2" label="考评截止时间"></el-table-column>
+      <el-table-column prop="status2" label="派发时间"></el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
           <a
@@ -68,7 +70,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <Pagination :paginationPara="paginationPara" :getList="getList" />
+    <Pagination :paginationPara="paginationPara" :total="total" :getList="getList"/>
     <!-- 查看详情 -->
     <ViewDetails :viewDetailsModel="viewDetailsModel" :changeParent="changeParent"/>
     <!-- 开始填报 -->
@@ -91,46 +93,25 @@ export default {
     return {
       active: 1,
       form: {
-        name: "",
-        type: "待填报",
+        // type: "待填报",
         typeArr: [
-          { name: "全部" },
-          { name: "待填报" },
-          { name: "待审核" },
-          { name: "已完成" }
+          { name: "全部", id: "" },
+          { name: "待填报", id: 0 },
+          { name: "待审核", id: 1 },
+          { name: "已完成", id: 3 }
         ],
         date: ""
       },
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          id: 1
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          id: 2
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-          id: 3
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-          id: 4
-        }
-      ],
+      tableData: [],
+      total: 0,
       paginationPara: {
-        total: 100,
-        pagesize: 10,
-        test: "11"
+        currentPage: 1, // 当前页码
+        pageSize: 10, //每页大小
+        queryType: 1, //查询类型(1、我的代办填报，2、我的待办审核)
+        evaluateStatus: 0, //任务状态(0、待填报，1、待审核，3、已完成)
+        startDate: "", // 派发任务开始
+        endDate: "", //派发任务结束
+        taskName: "" // 任务名称
       },
       startReportModel: false,
       startReviewVisible: false,
@@ -139,7 +120,7 @@ export default {
     };
   },
   created() {
-    // this.$get('/api/articles/new/article');
+    this.getList(this.paginationPara);
   },
   components: {
     StartReport,
@@ -149,18 +130,26 @@ export default {
     Pagination
   },
   methods: {
-    getList(para){
-      console.log(para);
+    // 获取列表
+    getList(para) {
+      this.$get("/meEvaluateUserTask/getTaskUserPage", para, data => {
+        this.tableData = data.page.records;
+        this.total = data.page.total;
+        this.paginationPara.pageSize = data.page.size;
+        this.paginationPara.currentPage = data.page.current;
+      });
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
+    // 修改时间
+    changeDate() {
+      this.paginationPara.startDate = this.form.date[0];
+      this.paginationPara.endDate = this.form.date[1];
     },
     changeParent(name, value) {
-      console.log(name, value);
       this[name] = value;
+    },
+    // 查询
+    searchFun() {
+      this.getList(this.paginationPara);
     },
     handleViewDetails() {
       this.viewDetailsModel = true;
@@ -178,26 +167,38 @@ export default {
     handleFillIn() {
       this.active = 1;
       this.form = {
-        name: "",
-        type: "待填报",
         typeArr: [
-          { name: "全部" },
-          { name: "待填报" },
-          { name: "待审核" },
-          { name: "已完成" }
+          { name: "全部", id: "" },
+          { name: "待填报", id: 0 },
+          { name: "待审核", id: 1 },
+          { name: "已完成", id: 3 }
         ],
         date: ""
       };
+      this.paginationPara.queryType = 1;
+      this.paginationPara.evaluateStatus = 0;
+      this.paginationPara.startDate = "";
+      this.paginationPara.endDate = "";
+      this.paginationPara.taskName = "";
+      this.getList(this.paginationPara);
     },
     // 代办审核
     handleToExamine() {
       this.active = 2;
       this.form = {
-        name: "",
-        type: "待审核",
-        typeArr: [{ name: "全部" }, { name: "待审核" }, { name: "已完成" }],
+        typeArr: [
+          { name: "全部", id: "" },
+          { name: "待审核", id: 1 },
+          { name: "已完成", id: 3 }
+        ],
         date: ""
       };
+      this.paginationPara.queryType = 2;
+      this.paginationPara.evaluateStatus = 1;
+      this.paginationPara.startDate = "";
+      this.paginationPara.endDate = "";
+      this.paginationPara.taskName = "";
+      this.getList(this.paginationPara);
     }
   }
 };
