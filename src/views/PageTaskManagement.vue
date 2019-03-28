@@ -70,9 +70,9 @@
       ></el-pagination>
     </div>
        <!-- 查看详情 -->
-    <ViewDetails :viewDetailsModel="viewDetailsModel" :changeParent="changeParent"/>
+    <ViewDetails v-if="viewDetailsModel" :viewDetailsModel="viewDetailsModel" :changeParent="changeParent"/>
         <!-- 开始审核 -->
-    <StartReview :startReviewVisible="startReviewVisible" :changeParent="changeParent"/>
+    <StartReview v-if="startReviewVisible" :startReviewVisible="startReviewVisible" :changeParent="changeParent"/>
   </div>
 </template>
 <script>

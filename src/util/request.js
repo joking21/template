@@ -62,7 +62,7 @@ export function get(url, para, successFun, errorFun) {
     })
         .then(function (response) {
             if (response.data.code === 200) {
-                if (successFun) successFun(response.data.data);
+                if (successFun) successFun(response.data.data || response.data.treeMenus);
             }
             else if(response.data.code === 401){
                 failer(response.data.msg);
