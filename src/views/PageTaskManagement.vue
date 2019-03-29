@@ -10,7 +10,7 @@
             <el-option
               v-for="item in objectOfEvaluationData"
               :key="item.id"
-              :label="item.deptName"
+              :label="item.deptStructureName"
               :value="item.id"
             ></el-option>
           </el-select>
