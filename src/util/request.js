@@ -25,8 +25,6 @@ function failer(msg) {
 function clearNoEffect(){
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
-    sessionStorage.removeItem('toobarName');
-    sessionStorage.removeItem('toobarIndex') 
     window.location.href="/login";
 }
 export function post(url, para, successFun, errorFun) {

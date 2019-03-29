@@ -18,11 +18,46 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      toobarName: ""
+    };
   },
-  computed: {
-    toobarName() {
-      return this.$store.state.toobarName;
+  created() {
+    const href = window.location.pathname;
+    this.changeName(href);
+  },
+  methods: {
+    changeName(href) {
+      let title = "";
+      switch (href) {
+        case "/":
+          title = "我的考评任务";
+          break;
+        case "/indexBaseManage":
+          title = "考评指标管理 / 指标库管理";
+          break;
+        case "/templateManage":
+          title = "考评指标管理 / 考评模板管理";
+          break;
+        case "/taskSet":
+          title = "考评任务设置";
+          break;
+        case "/taskManagement":
+          title = "考评工作汇总 / 考评任务管理";
+          break;
+        case "/reportAnalysis":
+          title = "考评工作汇总 / 考评分析报表";
+          break;
+        default:
+          title = "未知";
+      }
+      this.toobarName = title;
+    }
+  },
+  watch: {
+    $route(to, from) {
+      const href = to.fullPath;
+      this.changeName(href);
     }
   }
 };
