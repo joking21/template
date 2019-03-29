@@ -60,7 +60,9 @@ export default {
   },
   created() {
     this.reviewerList = JSON.parse(JSON.stringify(this.reviewerListParent));
-    this.reviewerName = (this.multipleSelectionName && this.multipleSelectionName.split(",")) || [];
+    this.reviewerName =
+      (this.multipleSelectionName && this.multipleSelectionName.split(",")) ||
+      [];
     this.getApprovalPara.deptId = this.deptId;
     this.getApproval(this.getApprovalPara);
   },
@@ -120,6 +122,14 @@ export default {
         }
       }
       if (temp.length === this.reviewerList.length) {
+        if (this.reviewerList.length >= 5) {
+          this.$message({
+            message: "最多添加5个子指标项。",
+            type: "warning"
+          });
+          this.playUp(this.reviewerList);
+          return;
+        }
         this.reviewerList.push({ userId: row.id });
         this.reviewerName.push(row.real_name);
       }
@@ -133,10 +143,19 @@ export default {
           }
         }
         if (temp.length === this.reviewerList.length) {
+          if (this.reviewerList.length >= 5) {
+            this.$message({
+              message: "最多添加5个子指标项。",
+              type: "warning"
+            });
+            this.playUp(this.reviewerList);
+            return;
+          }
           this.reviewerList.push({ userId: selection[i].id });
-          this.reviewerName.push(row.real_name);
+          this.reviewerName.push(selection[i].real_name);
         }
       }
+      this.playUp(this.reviewerList);
     },
     // 确定
     selectApproval() {
