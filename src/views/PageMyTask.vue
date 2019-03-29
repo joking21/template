@@ -55,18 +55,13 @@
           <a
             class="operator"
             v-if="scope.row.taskStatus==='已完成'"
-            @click="handlestartReview(scope.$index, scope.row)"
-          >开始审核</a>
-          <!-- <a
-            class="operator"
-            v-if="scope.row.taskStatus==='已完成'"
             @click="handleViewDetails(scope.$index, scope.row)"
           >查看详情</a>
           <a
             class="operator"
             v-if="scope.row.taskStatus==='待审核'"
             @click="handlestartReview(scope.$index, scope.row)"
-          >开始审核</a> -->
+          >开始审核</a>
           <!-- <a
             class="operator"
             v-if="scope.row.id===4"
