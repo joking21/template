@@ -4,6 +4,7 @@ import store from '../store';
 import router from '../router';
 // charset=UTF-8
 axios.defaults.headers.common['Content-Type'] = "application/json";
+const prefix = '/eva';
 function success(msg) {
     Notification({
         title: '成功',
@@ -31,7 +32,7 @@ export function post(url, para, successFun, errorFun) {
     if (store.state.token) {
         axios.defaults.headers.common["token"] = store.state.token;
     }
-    axios.post(url, para)
+    axios.post(prefix+url, para)
         .then(function (response) {
             if (response.data.code === 200) {
                 success(response.data.msg);
@@ -55,7 +56,7 @@ export function get(url, para, successFun, errorFun) {
     if (store.state.token) {
         axios.defaults.headers.common["token"] = store.state.token;
     }
-    axios.get(url, {
+    axios.get(prefix+url, {
         params: para
     })
         .then(function (response) {

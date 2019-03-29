@@ -21,8 +21,8 @@
         <el-input type="textarea" v-model="form.desc" :disabled="isPreview"></el-input>
       </el-form-item>
       <el-form-item label="选择指标项">
-        <TableTemp v-if="isPreview" :templatePreview='true'/>
-        <TableTemp v-else :templateEdit='true'/>
+        <TableTemp v-if="isPreview" :templatePreview='true' :dataList='[]' />
+        <TableTemp v-else :templateEdit='true' :dataList='[]' />
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
     </el-form>
