@@ -15,12 +15,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="考评对象">
-        <el-select
-          v-model="getApprovalPara.deptId"
-          style="width: 80%;"
-          placeholder="请选择"
-          @change="changeDeptId"
-        >
+        <el-select v-model="form.deptId" style="width: 80%;" placeholder="请选择"  @change="changeDeptId">
           <el-option
             v-for="item in objectOfEvaluationData"
             :key="item.id"
@@ -34,6 +29,7 @@
           style="width: 80%;"
           v-model="multipleSelectionName"
           @focus="approvalTableModel=true"
+          :disabled="!form.deptId"
           readonly
         ></el-input>
       </el-form-item>
@@ -127,35 +123,13 @@
       <el-button size="medium" @click="handleCancel">取 消</el-button>
       <el-button size="medium" type="primary" @click="submit">确 定</el-button>
     </div>
-    <el-dialog title="选择用户" :visible.sync="approvalTableModel" append-to-body>
-      <div style="margin-bottom: 10px; padding-left: 46%;">
-        <el-input placeholder="请输入姓名/用户名" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
-        </el-input>
-      </div>
-      <el-table
-        :data="approvalList"
-        ref="multipleTable"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="real_name" label="姓名"></el-table-column>
-        <el-table-column prop="user_name" label="用户名"></el-table-column>
-        <el-table-column prop="role_name" label="角色"></el-table-column>
-        <el-table-column prop="dept_name" label="所属组织"></el-table-column>
-        <el-table-column prop="cell_phone_number" label="联系电话"></el-table-column>
-      </el-table>
-      <Pagination
-        :paginationPara="getApprovalPara"
-        :total="totalApprovalList"
-        :getList="getApproval"
-      />
-      <div slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="approvalTableModel=false">取 消</el-button>
-        <el-button size="medium" type="primary" @click="selectApproval">确 定</el-button>
-      </div>
-    </el-dialog>
+    <SelectUser
+      v-if="approvalTableModel && form.deptId"
+      :approvalTableModel="approvalTableModel"
+      :changeParent="changeSelectUser"
+      :deptId="form.deptId"
+      :reviewerListParent="reviewerList"
+    />
   </el-dialog>
 </template>
 <style lang="less">
@@ -166,17 +140,15 @@
 }
 </style>
 <script>
-import Pagination from "../Common/Pagination.vue";
-import { Promise } from "q";
-import { debug, debuglog } from "util";
-import { setTimeout } from "timers";
 import Vue from "vue";
+import SelectUser from "./SelectUser.vue";
 export default {
   data() {
     return {
       form: {
         taskName: "", // 任务名称
         templateId: "", // 考评模板
+        deptId: "", // 考评对象
         evaluateType: 1, // 考评周期
         date: "",
         taskDescribe: "", // 任务描述
@@ -187,17 +159,9 @@ export default {
         radioChild3: "first"
       },
       templateList: [],
-      approvalList: [],
       approvalTableModel: false,
-      getApprovalPara: {
-        current: 1,
-        pageSize: 10,
-        deptId: ""
-      },
-      totalApprovalList: "",
-      multipleSelection: [],
       multipleSelectionName: "",
-      reviewerList: [] // 审批人
+      reviewerList: []
     };
   },
   props: [
@@ -214,7 +178,8 @@ export default {
     }
   },
   components: {
-    Pagination
+    // Pagination
+    SelectUser
   },
   created() {
     this.getTemplate();
@@ -229,13 +194,13 @@ export default {
         this.templateList = data.list;
       });
     },
-    // 获取审批人
-    getApproval(para) {
-      para.pageNumber = para.current;
-      this.$get("/deptOrUserQuery/getReviewerPage", para, data => {
-        this.approvalList = data.page.records;
-        this.totalApprovalList = data.page.total;
-      });
+    changeSelectUser(name, value) {
+      this[name] = value;
+    },
+    // 修改考评对象
+    changeDeptId() {
+      this.multipleSelectionName = "";
+      this.reviewerList = []; // 审批人
     },
     // 编辑-获取详情
     getDetails() {
@@ -244,15 +209,16 @@ export default {
         this.form = {
           taskName: _obj.taskName, // 任务名称
           templateId: _obj.templateId, // 考评模板
+          deptId: _obj.deptId, // 考评对象
           evaluateType: _obj.evaluateType, // 考评周期
           date: [_obj.startCycle, _obj.endCycle],
           taskDescribe: _obj.taskDescribe // 任务描述
         };
-        this.getApprovalPara.deptId = _obj.deptId;
         this.multipleSelectionName = _obj.reviewersName;
-        const reviewersIds = (_obj.reviewersIds && _obj.reviewersIds.split(',')) || [];
-        for(let item of reviewersIds){
-          this.reviewerList.push({userId: item});
+        const reviewersIds =
+          (_obj.reviewersIds && _obj.reviewersIds.split(",")) || [];
+        for (let item of reviewersIds) {
+          this.reviewerList.push({ userId: item });
         }
         if (_obj.evaluateType == 1) {
           if (
@@ -280,42 +246,10 @@ export default {
             this.form.radioDay = _obj.taskGenerateRule.split(":")[1];
           }
         }
-        this.getApproval(this.getApprovalPara);
       });
-      // multipleSelection: [],
-      // reviewerList: [] // 审批人
-    },
-    handleSelectionChange(val) {
-      if (val.length > 5) {
-        this.$message({
-          message: "最多添加5个子指标项。",
-          type: "warning"
-        });
-        this.$refs.multipleTable.toggleRowSelection(val[val.length - 1]);
-        return;
-      }
-      this.multipleSelection = val;
     },
     handleCancel() {
       this.changeParent("taskModel", false);
-    },
-    selectApproval() {
-      const temp = this.multipleSelection;
-      let tempArr = [];
-      let selectArr = [];
-      for (let i = 0; i < temp.length; i++) {
-        tempArr.push(temp[i].real_name);
-        selectArr.push({ userId: temp[i].id });
-      }
-      this.reviewerList = selectArr;
-      this.multipleSelectionName = tempArr.join(",");
-      this.approvalTableModel = false;
-    },
-    changeDeptId() {
-      this.getApproval(this.getApprovalPara);
-      this.multipleSelection = [];
-      this.multipleSelectionName = "";
-      this.reviewerList = []; // 审批人
     },
     submit() {
       const date = this.form.date;
@@ -323,7 +257,7 @@ export default {
         evaluateTask: {
           taskName: this.form.taskName,
           templateId: this.form.templateId,
-          deptId: this.getApprovalPara.deptId,
+          deptId: this.form.deptId,
           evaluateType: this.form.evaluateType,
           taskDescribe: this.form.taskDescribe,
           startCycle: date[0],
@@ -333,47 +267,30 @@ export default {
       };
       if (this.form.evaluateType == 1) {
         if (this.form.radioChild1 == "center") {
-         para.evaluateTask.taskGenerateRule = this.form.radioDay;
+          para.evaluateTask.taskGenerateRule = this.form.radioDay;
         } else {
           para.evaluateTask.taskGenerateRule = this.form.radioChild1;
         }
       } else {
         if (
-         this.form[`radioChild${this.form.evaluateType}`] === "last" ||
-         this.form[`radioChild${this.form.evaluateType}`] === "first"
+          this.form[`radioChild${this.form.evaluateType}`] === "last" ||
+          this.form[`radioChild${this.form.evaluateType}`] === "first"
         ) {
-          para.evaluateTask.taskGenerateRule = this.form[`radioChild${this.form.evaluateType}`];
+          para.evaluateTask.taskGenerateRule = this.form[
+            `radioChild${this.form.evaluateType}`
+          ];
         } else {
-          para.evaluateTask.taskGenerateRule = `${this.form.radioMonth}:${this.form.radioDay}`;
+          para.evaluateTask.taskGenerateRule = `${this.form.radioMonth}:${
+            this.form.radioDay
+          }`;
         }
       }
       this.isTaskEdit ? (para.evaluateTask.id = this.editId) : null;
-      this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
-        this.getList();
-        this.handleCancel();
-      });
-    },
-  },
-  watch: {
-    approvalTableModel() {
-      if (this.approvalTableModel === true) {
-        const temp = [];
-        new Promise((resolve, reject) => {
-          for (let i = 0; i < this.reviewerList.length; i++) {
-            for (let j = 0; j < this.approvalList.length; j++) {
-              if (this.approvalList[j].id === this.reviewerList[i].userId) {
-                temp.push(this.approvalList[j]);
-              }
-            }
-          }
-          resolve();
-        }).then(() => {
-          this.$refs.multipleTable.clearSelection();
-          temp.forEach(temp => {
-            this.$refs.multipleTable.toggleRowSelection(temp, true);
-          });
-        });
-      }
+      // this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
+      //   this.getList();
+      //   this.handleCancel();
+      // });
+      console.log(para);
     }
   }
 };
