@@ -96,70 +96,71 @@
 export default {
   data() {
     return {
-      data6: [
-        {
-          id: 1,
-          label: "一级1a",
-          children: [
-            {
-              id: 2,
-              label: "二级2a",
-              children: [
-                {
-                  id: 3,
-                  label: "指标项3a",
-                  children: [
-                    {
-                      id: 4,
-                      label: "子指标项4a"
-                    },
-                    {
-                      id: 12,
-                      label: "子指标项4a"
-                    },
-                    {
-                      id: 13,
-                      label: "子指标项4a"
-                    },
-                    {
-                      id: 14,
-                      label: "子指标项4a"
-                    }
-                  ]
-                },
-                {
-                  id: 5,
-                  label: "子指标项5a"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 7,
-          label: "一级b",
-          children: [
-            {
-              id: 8,
-              label: "二级b"
-            },
-            {
-              id: 9,
-              label: "指标项b",
-              children: [
-                {
-                  id: 10,
-                  label: "子指标项10b"
-                },
-                {
-                  id: 11,
-                  label: "子指标项11b"
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      // data6: [
+      //   {
+      //     id: 1,
+      //     label: "一级1a",
+      //     children: [
+      //       {
+      //         id: 2,
+      //         label: "二级2a",
+      //         children: [
+      //           {
+      //             id: 3,
+      //             label: "指标项3a",
+      //             children: [
+      //               {
+      //                 id: 4,
+      //                 label: "子指标项4a"
+      //               },
+      //               {
+      //                 id: 12,
+      //                 label: "子指标项4a"
+      //               },
+      //               {
+      //                 id: 13,
+      //                 label: "子指标项4a"
+      //               },
+      //               {
+      //                 id: 14,
+      //                 label: "子指标项4a"
+      //               }
+      //             ]
+      //           },
+      //           {
+      //             id: 5,
+      //             label: "子指标项5a"
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     id: 7,
+      //     label: "一级b",
+      //     children: [
+      //       {
+      //         id: 8,
+      //         label: "二级b"
+      //       },
+      //       {
+      //         id: 9,
+      //         label: "指标项b",
+      //         children: [
+      //           {
+      //             id: 10,
+      //             label: "子指标项10b"
+      //           },
+      //           {
+      //             id: 11,
+      //             label: "子指标项11b"
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   }
+      // ],
+      uniquenessId:1,
       level: [], // 所有树枝深度
       columnArr: [], // 此表格应该有的级别数    1级指标分类->2级指标分类
       dataArr: [], // 如果后台传回来的是一颗树，则把树转换成单挑数据解析    【过程：计算数的深度、解析成单条数据->再把单条数据弄成表格想要的】
@@ -171,13 +172,15 @@ export default {
   // preview:查看  startReview:开始审核  startReport :开始填报 reReport:重新填报  isTemplatePreview: 查看模板
   props: ["preview", "startReview", "startReport", "reReport", "templatePreview", "dataList"],
   created() {
-    this.analyticTree(this.data6); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
+    console.log(this.dataList);
+    this.analyticTree(this.dataList); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
+    console.log(this.dataArr);
     this.getMax(this.level); // 计算最深树枝的深度
     this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
     this.handleRowspan(); // 处理rowspan
     console.log("最最最忠", this.tableData);
 
-    console.log(this.tempData);
+    // console.log(this.tempData);
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
@@ -222,15 +225,20 @@ export default {
         tempIndex = index === undefined ? -2 : index;
         const temp = {
           pid: tempIndex,
-          id: data[i].id,
-          label: data[i].label,
+          id: this.uniquenessId,
+          label: data[i].categoryName || data[i].itemName,
           level: tempLevel,
-          rowspan: 1
+          rowspan: 1,
+          weightId: data[i].itemId,
+          actualScore: data[i].actualScore,
+          itemExp: data[i].itemExp,
+          itemWeight: data[i].itemWeight,
         };
+        this.uniquenessId += 1;
         this.dataArr.push(temp);
-        if (data[i].children && data[i].children.length > 0) {
+        if (data[i].itemList && data[i].itemList.length > 0) {
           tempLevel += 1;
-          this.analyticTree(data[i].children, data[i].id, tempLevel);
+          this.analyticTree(data[i].itemList, temp.id, tempLevel);
         }
         // else {
         //     delete data[i].children;   // 如果后台传回来的是pid的形式，则需要计算出最深的层级，然后把之前递归增加多出来的children清空
@@ -253,18 +261,30 @@ export default {
       let tempData = JSON.parse(JSON.stringify(data));
       const comData = JSON.parse(JSON.stringify(data));
       for (let i = 0; i < tempData.length; i++) {
+
+          // pid: tempIndex,
+          // id: this.uniquenessId,
+          // label: data[i].categoryName || data[i].itemName,
+          // level: tempLevel,
+          // rowspan: 1,
+          // weightId: data[i].itemId,
+          // actualScore: data[i].actualScore,
+          // itemExp: data[i].itemExp,
+          // itemWeight: data[i].itemWeight,
         if (this.isSubIndexItem(tempData[i].id, comData)) {
           tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-          tempData[i].subIndexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-          tempData[i].subIndexItemExpectations = ""; // 期望值  逻辑同权重
-          tempData[i].subIndexItemactualvalues = ""; // 实际值 
+          tempData[i].subIndexItemWeight = tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+          tempData[i].subIndexItemExpectations = tempData[i].itemExp; // 期望值  逻辑同权重
+          tempData[i].subIndexItemactualvalues = tempData[i].actualScore; // 实际值 
           tempData[i].subIndexItemId = tempData[i].id;
+          tempData[i].subIndexSaveId = tempData[i].itemId;
           tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
         } else if (this.isIndexItem(tempData[i].id, comData)) {
           tempData[i].indexItemId = tempData[i].id;
+          tempData[i].indexSaveId = tempData[i].itemId;
           tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
           tempData[i].indexItemNamerowspan = tempData[i].rowspan;
-          tempData[i].indexItemWeight = ""; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+          tempData[i].indexItemWeight = tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
         } else {
           const name = `name${tempData[i].level + 2}`;
           tempData[i][name] = tempData[i].label;

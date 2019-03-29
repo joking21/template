@@ -88,10 +88,7 @@ export default {
   },
   methods: {
     getList(){
-      // /getLoginUserMenus
       this.$get("/getLoginUserMenus",null,(data)=>{
-        console.log(data);
-        // this.menuLis;
         const temp = [];
         for(let i =0;i<data.length;i++){
             temp.push(data[i].id);
@@ -102,7 +99,6 @@ export default {
               }
             }
         }
-        console.log(temp);
         this.menuList = temp;
       })
     },

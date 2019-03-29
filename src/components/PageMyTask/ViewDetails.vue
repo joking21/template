@@ -6,7 +6,7 @@
       </el-col>
       <el-form-item label="任务描述">{{form.taskDescribe}}</el-form-item>
       <el-form-item label="考核信息">
-        <TableTemp :preview="true" :dataList="actualList"/>
+        <TableTemp :preview="true" v-if="actualList.length !== 0" :dataList="actualList"/>
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
       <div class="d-auditOpinion">
