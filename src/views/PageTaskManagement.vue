@@ -41,7 +41,7 @@
       @selection-change="handleSelectionChange"
       style="width: 100%"
     >
-      <el-table-column type="selection" width="55" :selectable="disabledFun"></el-table-column>
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="taskName" label="任务名称"></el-table-column>
       <el-table-column prop="deptName" label="考评对象"></el-table-column>
       <el-table-column prop="fillUserName" label="填报人"></el-table-column>
@@ -60,12 +60,12 @@
             class="operator"
             v-if="scope.row.id===2"
             @click="handlestartReview(scope.$index, scope.row)"
-          >开始审核</a> -->
+          >开始审核</a>-->
           <!-- <a
             class="operator"
             v-if="scope.row.taskStatus==='待填报'"
             @click="handleViewDetails(scope.$index, scope.row)"
-          >查看详情</a> -->
+          >查看详情</a>-->
           <a
             class="operator"
             v-if="scope.row.taskStatus==='已完成' || scope.row.taskStatus==='待填报'"
@@ -85,7 +85,7 @@
       v-if="viewDetailsModel"
       :viewDetailsModel="viewDetailsModel"
       :changeParent="changeParent"
-      :checkId='checkId'
+      :checkId="checkId"
     />
     <!-- 开始审核 -->
     <StartReview
@@ -93,7 +93,7 @@
       :getList="getList"
       :startReviewVisible="startReviewVisible"
       :changeParent="changeParent"
-      :checkId='checkId'
+      :checkId="checkId"
     />
   </div>
 </template>
@@ -118,7 +118,7 @@ export default {
       startReviewVisible: false,
       objectOfEvaluationData: [], // 考评对象
       total: 0,
-      checkId: '',
+      checkId: ""
     };
   },
   components: {
@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     // 获取列表信息
-    getList(para=this.paginationPara) {
+    getList(para = this.paginationPara) {
       this.$get("/taskManager/getTaskPage", para, data => {
         this.tableData = data.page.records;
         this.total = data.page.total;
@@ -149,12 +149,6 @@ export default {
     searchFun() {
       this.getList(this.paginationPara);
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
-    },
 
     changeParent(name, value) {
       this[name] = value;
@@ -170,25 +164,23 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    // 禁用table选择框
-    disabledFun(row, index) {
-      if (row.id === 1) {
-        return false;
-      }
-      return true;
-    },
     // 删除选中的指标项
     deleteTemplateAll() {
-      console.log(this.multipleSelection);
+      if (this.multipleSelection.length === 0) {
+        return this.$message.error("请您先选择要删除的任务名称！");
+      }
+      const idList = [];
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        idList.push(this.multipleSelection[i].id);
+      }
       this.$confirm("是否确定删除选中的任务", "删除任务", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          this.$post("/taskManager/deleteUserTask", idList, () => {
+            this.getList();
           });
         })
         .catch(() => {});

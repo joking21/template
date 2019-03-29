@@ -120,9 +120,16 @@ export default {
       const tableData = this.$refs.tableTemp.tableData;
       let score = 0;
       for (let i = 0; i < tableData.length; i++) {
-        score += parseInt(tableData[i].subIndexItemactualvalues, 10);
+        const scoreChild = (
+          (tableData[i].subIndexItemactualvalues /
+            tableData[i].subIndexItemExpectations) *
+          tableData[i].subIndexItemWeight
+        ).toFixed(2);
+        if (!isNaN(parseFloat(scoreChild))) {
+          score += parseFloat(scoreChild);
+        }
       }
-      this.totalScore = score;
+      this.totalScore = score.toFixed(2);
     },
     handleCancel() {
       this.changeParent("startReviewVisible", false);
@@ -144,10 +151,10 @@ export default {
         };
         para.actualList.push(temp);
       }
-      this.$post('/meEvaluateUserTask/auditOrFillTask', para, (data)=>{
+      this.$post("/meEvaluateUserTask/auditOrFillTask", para, data => {
         this.getList();
         this.handleCancel();
-      })
+      });
     }
   }
 };

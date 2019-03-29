@@ -74,9 +74,9 @@
     <!-- 查看详情 -->
     <ViewDetails v-if="viewDetailsModel" :viewDetailsModel="viewDetailsModel" :changeParent="changeParent" :checkId='checkId'/>
     <!-- 开始填报 -->
-    <StartReport  v-if="startReportModel" :startReportModel="startReportModel" :changeParent="changeParent" :checkId='checkId'/>
+    <StartReport  v-if="startReportModel" :getList="getList" :startReportModel="startReportModel" :changeParent="changeParent" :checkId='checkId'/>
     <!-- 开始审核 -->
-    <StartReview v-if="startReviewVisible" :startReviewVisible="startReviewVisible" :changeParent="changeParent" :checkId='checkId' />
+    <StartReview v-if="startReviewVisible" :getList="getList" :startReviewVisible="startReviewVisible" :changeParent="changeParent" :checkId='checkId' />
     <!-- 重新填报 -->
     <!-- <ReReport :reReportVisible="reReportVisible" :changeParent="changeParent"/> -->
   </div>

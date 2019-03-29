@@ -137,7 +137,7 @@ export default {
     },
     // 删除指标项
     deleteTemplate(index, row) {
-      this.$confirm(`是否确定删除指标【${row.taskName}】`, "删除指标", {
+      this.$confirm(`是否确定删除任务【${row.taskName}】`, "删除任务", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -158,7 +158,7 @@ export default {
       for (let i = 0; i < this.multipleSelection.length; i++) {
         idList.push(this.multipleSelection[i].id);
       }
-      this.$confirm("是否确定删除选中的指标项", "删除指标", {
+      this.$confirm("是否确定删除选中的任务", "删除任务", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
