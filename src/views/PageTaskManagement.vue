@@ -90,6 +90,7 @@
     <!-- 开始审核 -->
     <StartReview
       v-if="startReviewVisible"
+      :getList="getList"
       :startReviewVisible="startReviewVisible"
       :changeParent="changeParent"
       :checkId='checkId'
@@ -131,7 +132,7 @@ export default {
   },
   methods: {
     // 获取列表信息
-    getList(para) {
+    getList(para=this.paginationPara) {
       this.$get("/taskManager/getTaskPage", para, data => {
         this.tableData = data.page.records;
         this.total = data.page.total;

@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     // 获取列表
-    getList(para) {
+    getList(para=this.paginationPara) {
       this.$get("/meEvaluateUserTask/getTaskUserPage", para, data => {
         this.tableData = data.page.records;
         this.total = data.page.total;

@@ -92,7 +92,7 @@ export default {
       totalScore: 100,
     };
   },
-  props: ["startReportModel", "changeParent", "checkId"],
+  props: ["startReportModel", "changeParent", "checkId", "getList"],
   computed: {
     reversedMessage: function() {
       return this.startReportModel;
@@ -145,6 +145,7 @@ export default {
         para.actualList.push(temp);
       }
       this.$post('/meEvaluateUserTask/auditOrFillTask', para, (data)=>{
+        this.getList();
         this.handleCancel();
       })
     }

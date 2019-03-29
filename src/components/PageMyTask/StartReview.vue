@@ -90,7 +90,7 @@ export default {
       totalScore: ""
     };
   },
-  props: ["startReviewVisible", "changeParent", "checkId"],
+  props: ["startReviewVisible", "changeParent", "checkId", "getList"],
   computed: {
     reversedMessage: function() {
       return this.startReviewVisible;
@@ -145,6 +145,7 @@ export default {
         para.actualList.push(temp);
       }
       this.$post('/meEvaluateUserTask/auditOrFillTask', para, (data)=>{
+        this.getList();
         this.handleCancel();
       })
     }
