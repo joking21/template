@@ -55,13 +55,18 @@
           <a
             class="operator"
             v-if="scope.row.taskStatus==='已完成'"
+            @click="handlestartReview(scope.$index, scope.row)"
+          >开始审核</a>
+          <!-- <a
+            class="operator"
+            v-if="scope.row.taskStatus==='已完成'"
             @click="handleViewDetails(scope.$index, scope.row)"
           >查看详情</a>
           <a
             class="operator"
             v-if="scope.row.taskStatus==='待审核'"
             @click="handlestartReview(scope.$index, scope.row)"
-          >开始审核</a>
+          >开始审核</a> -->
           <!-- <a
             class="operator"
             v-if="scope.row.id===4"
@@ -74,11 +79,11 @@
     <!-- 查看详情 -->
     <ViewDetails v-if="viewDetailsModel" :viewDetailsModel="viewDetailsModel" :changeParent="changeParent" :checkId='checkId'/>
     <!-- 开始填报 -->
-    <StartReport :startReportModel="startReportModel" :changeParent="changeParent"/>
+    <StartReport  v-if="startReportModel" :startReportModel="startReportModel" :changeParent="changeParent" :checkId='checkId'/>
     <!-- 开始审核 -->
-    <StartReview :startReviewVisible="startReviewVisible" :changeParent="changeParent"/>
+    <StartReview v-if="startReviewVisible" :startReviewVisible="startReviewVisible" :changeParent="changeParent" :checkId='checkId' />
     <!-- 重新填报 -->
-    <ReReport :reReportVisible="reReportVisible" :changeParent="changeParent"/>
+    <!-- <ReReport :reReportVisible="reReportVisible" :changeParent="changeParent"/> -->
   </div>
 </template>
 
@@ -86,7 +91,7 @@
 import ViewDetails from "../components/PageMyTask/ViewDetails.vue";
 import StartReport from "../components/PageMyTask/StartReport.vue";
 import StartReview from "../components/PageMyTask/StartReview.vue";
-import ReReport from "../components/PageMyTask/ReReport.vue";
+// import ReReport from "../components/PageMyTask/ReReport.vue";
 import Pagination from "../components/Common/Pagination.vue";
 export default {
   data() {
@@ -109,10 +114,10 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, //每页大小
         queryType: 1, //查询类型(1、我的代办填报，2、我的待办审核)
-        // evaluateStatus: 0, //任务状态(0、待填报，1、待审核，3、已完成)
-        // startDate: "", // 派发任务开始
-        // endDate: "", //派发任务结束
-        // taskName: "" // 任务名称
+        evaluateStatus: 0, //任务状态(0、待填报，1、待审核，3、已完成)
+        startDate: "", // 派发任务开始
+        endDate: "", //派发任务结束
+        taskName: "" // 任务名称
       },
       startReportModel: false,
       startReviewVisible: false,
@@ -126,7 +131,7 @@ export default {
   components: {
     StartReport,
     StartReview,
-    ReReport,
+    // ReReport,
     ViewDetails,
     Pagination
   },
@@ -156,10 +161,12 @@ export default {
       this.checkId = row.id;
       this.viewDetailsModel = true;
     },
-    handleStartReport() {
+    handleStartReport(index, row) {
+      this.checkId = row.id;
       this.startReportModel = true;
     },
-    handlestartReview() {
+    handlestartReview(index, row) {
+      this.checkId = row.id;
       this.startReviewVisible = true;
     },
     handleReReport() {

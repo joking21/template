@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="tableData" :span-method="objectSpanMethod" border>
+  <el-table :data="tableData" :span-method="objectSpanMethod" border class="d-temp-table">
     <el-table-column
       prop="name"
       v-for="item in columnArr"
@@ -44,7 +44,12 @@
           <span>{{ scope.row.indexItemWeight || '-'}}</span>
         </div>
         <div v-else>
-          <el-input v-if="scope.row.indexItemName" v-model="scope.row.indexItemWeight"></el-input>
+          <el-input-number
+            :min="0"
+            v-model="scope.row.indexItemName"
+            :controls="false"
+            style="width: 60px"
+          ></el-input-number>
           <span v-if="!scope.row.indexItemName">-</span>
         </div>
       </template>
@@ -66,7 +71,12 @@
           <span>{{ scope.row.subIndexItemWeight}}</span>
         </div>
         <div v-else>
-          <el-input v-model="scope.row.subIndexItemWeight"></el-input>
+          <el-input-number
+            :min="0"
+            v-model="scope.row.subIndexItemWeight"
+            :controls="false"
+            style="width: 60px"
+          ></el-input-number>
         </div>
       </template>
     </el-table-column>
@@ -76,27 +86,55 @@
           <span>{{ scope.row.subIndexItemExpectations}}</span>
         </div>
         <div v-else>
-          <el-input v-model="scope.row.subIndexItemExpectations"></el-input>
+          <el-input-number
+            :min="0"
+            v-model="scope.row.subIndexItemExpectations"
+            :controls="false"
+            style="width: 60px"
+          ></el-input-number>
         </div>
       </template>
     </el-table-column>
-    <el-table-column v-if="preview || startReview || startReport || reReport" label="实际值" width="80">
+    <el-table-column
+      v-if="preview || startReview || startReport || reReport"
+      label="实际值"
+      width="80"
+    >
       <template slot-scope="scope">
         <div v-if="preview">
           <span>{{ scope.row.subIndexItemactualvalues}}</span>
         </div>
         <div v-else>
-          <el-input v-model="scope.row.subIndexItemactualvalues"></el-input>
+          <el-input-number
+            :min="0"
+            v-model="scope.row.subIndexItemactualvalues"
+            :controls="false"
+            style="width: 60px"
+            @change="changeTotal"
+          ></el-input-number>
         </div>
       </template>
     </el-table-column>
   </el-table>
 </template>
+<style lang="less">
+.d-temp-table {
+  .el-input-number.is-without-controls .el-input__inner {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .el-input__inner {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+</style>
+
 <script>
 export default {
   data() {
     return {
-      uniquenessId:1,
+      uniquenessId: 1,
       level: [], // 所有树枝深度
       columnArr: [], // 此表格应该有的级别数    1级指标分类->2级指标分类
       dataArr: [], // 如果后台传回来的是一颗树，则把树转换成单挑数据解析    【过程：计算数的深度、解析成单条数据->再把单条数据弄成表格想要的】
@@ -106,17 +144,28 @@ export default {
     };
   },
   // preview:查看  startReview:开始审核  startReport :开始填报 reReport:重新填报  isTemplatePreview: 查看模板
-  props: ["preview", "startReview", "startReport", "reReport", "templatePreview", "dataList"],
+  props: [
+    "preview",
+    "startReview",
+    "startReport",
+    "reReport",
+    "templatePreview",
+    "dataList",
+    "changeTotalScore"
+  ],
   created() {
-    console.log(this.dataList);
+    // console.log(this.dataList);
     this.analyticTree(this.dataList); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
-    console.log(this.dataArr);
+    // console.log(this.dataArr);
     this.getMax(this.level); // 计算最深树枝的深度
     this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
     this.handleRowspan(); // 处理rowspan
-    console.log("最最最忠", this.tableData);
+    // console.log("最最最忠", this.tableData);
   },
   methods: {
+    changeTotal() {
+      this.changeTotalScore ? this.changeTotalScore() : null;
+    },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       //  以下代码不要轻易改的，连顺序都是有要求的
       const maxLevel = this.maxLevel;
@@ -163,11 +212,11 @@ export default {
           label: data[i].categoryName || data[i].itemName,
           level: tempLevel,
           rowspan: 1,
-          weightId: data[i].itemId,
+          itemId: data[i].itemId,
           actualScore: data[i].actualScore,
           itemExp: data[i].itemExp,
           itemWeight: data[i].itemWeight,
-          actualId:  data[i].actualId,
+          actualId: data[i].actualId
         };
         this.uniquenessId += 1;
         this.dataArr.push(temp);
@@ -198,19 +247,19 @@ export default {
       for (let i = 0; i < tempData.length; i++) {
         if (this.isSubIndexItem(tempData[i].id, comData)) {
           tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-          tempData[i].subIndexItemWeight = tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-          tempData[i].subIndexItemExpectations = tempData[i].itemExp; // 期望值  逻辑同权重
-          tempData[i].subIndexItemactualvalues = tempData[i].actualScore; // 实际值 
+          tempData[i].subIndexItemWeight = tempData[i].itemWeight === null ? undefined : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+          tempData[i].subIndexItemExpectations = tempData[i].itemExp === null ? undefined : tempData[i].itemExp; // 期望值  逻辑同权重
+          tempData[i].subIndexItemactualvalues = tempData[i].actualScore === null ? undefined : tempData[i].actualScore; // 实际值
           tempData[i].subIndexItemId = tempData[i].id;
-          tempData[i].subIndexSaveId = tempData[i].itemId;   // 要传的id
-          tempData[i].subIndexActualId = tempData[i].actualId;   // 审批时传的id
+          tempData[i].subIndexSaveId = tempData[i].itemId; // 要传的id
+          tempData[i].subIndexActualId = tempData[i].actualId; // 审批时传的id
           tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
         } else if (this.isIndexItem(tempData[i].id, comData)) {
           tempData[i].indexItemId = tempData[i].id;
           tempData[i].indexSaveId = tempData[i].itemId;
           tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
           tempData[i].indexItemNamerowspan = tempData[i].rowspan;
-          tempData[i].indexItemWeight = tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+          tempData[i].indexItemWeight = tempData[i].itemWeight === null ? undefined : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
         } else {
           const name = `name${tempData[i].level + 2}`;
           tempData[i][name] = tempData[i].label;
