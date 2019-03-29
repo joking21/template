@@ -96,70 +96,6 @@
 export default {
   data() {
     return {
-      // data6: [
-      //   {
-      //     id: 1,
-      //     label: "一级1a",
-      //     children: [
-      //       {
-      //         id: 2,
-      //         label: "二级2a",
-      //         children: [
-      //           {
-      //             id: 3,
-      //             label: "指标项3a",
-      //             children: [
-      //               {
-      //                 id: 4,
-      //                 label: "子指标项4a"
-      //               },
-      //               {
-      //                 id: 12,
-      //                 label: "子指标项4a"
-      //               },
-      //               {
-      //                 id: 13,
-      //                 label: "子指标项4a"
-      //               },
-      //               {
-      //                 id: 14,
-      //                 label: "子指标项4a"
-      //               }
-      //             ]
-      //           },
-      //           {
-      //             id: 5,
-      //             label: "子指标项5a"
-      //           }
-      //         ]
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     id: 7,
-      //     label: "一级b",
-      //     children: [
-      //       {
-      //         id: 8,
-      //         label: "二级b"
-      //       },
-      //       {
-      //         id: 9,
-      //         label: "指标项b",
-      //         children: [
-      //           {
-      //             id: 10,
-      //             label: "子指标项10b"
-      //           },
-      //           {
-      //             id: 11,
-      //             label: "子指标项11b"
-      //           }
-      //         ]
-      //       }
-      //     ]
-      //   }
-      // ],
       uniquenessId:1,
       level: [], // 所有树枝深度
       columnArr: [], // 此表格应该有的级别数    1级指标分类->2级指标分类
@@ -179,8 +115,6 @@ export default {
     this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
     this.handleRowspan(); // 处理rowspan
     console.log("最最最忠", this.tableData);
-
-    // console.log(this.tempData);
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
@@ -233,6 +167,7 @@ export default {
           actualScore: data[i].actualScore,
           itemExp: data[i].itemExp,
           itemWeight: data[i].itemWeight,
+          actualId:  data[i].actualId,
         };
         this.uniquenessId += 1;
         this.dataArr.push(temp);
@@ -261,23 +196,14 @@ export default {
       let tempData = JSON.parse(JSON.stringify(data));
       const comData = JSON.parse(JSON.stringify(data));
       for (let i = 0; i < tempData.length; i++) {
-
-          // pid: tempIndex,
-          // id: this.uniquenessId,
-          // label: data[i].categoryName || data[i].itemName,
-          // level: tempLevel,
-          // rowspan: 1,
-          // weightId: data[i].itemId,
-          // actualScore: data[i].actualScore,
-          // itemExp: data[i].itemExp,
-          // itemWeight: data[i].itemWeight,
         if (this.isSubIndexItem(tempData[i].id, comData)) {
           tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
           tempData[i].subIndexItemWeight = tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
           tempData[i].subIndexItemExpectations = tempData[i].itemExp; // 期望值  逻辑同权重
           tempData[i].subIndexItemactualvalues = tempData[i].actualScore; // 实际值 
           tempData[i].subIndexItemId = tempData[i].id;
-          tempData[i].subIndexSaveId = tempData[i].itemId;
+          tempData[i].subIndexSaveId = tempData[i].itemId;   // 要传的id
+          tempData[i].subIndexActualId = tempData[i].actualId;   // 审批时传的id
           tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
         } else if (this.isIndexItem(tempData[i].id, comData)) {
           tempData[i].indexItemId = tempData[i].id;
