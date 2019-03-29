@@ -9,7 +9,8 @@
       :data="approvalList"
       ref="multipleTable"
       style="width: 100%"
-      @selection-change="handleSelectionChange"
+      @select="selectionChange"
+      @select-all="selectAll"
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="real_name" label="姓名"></el-table-column>
@@ -40,29 +41,26 @@ export default {
         keyWord: ""
       },
       totalApprovalList: "",
-      multipleSelection: [],
-      multipleList: [],
       approvalList: [], // 用户列表
-      // reviewerListTemp: []
+      reviewerList: [],
+      reviewerName: []
     };
   },
-  props: ["changeParent", "approvalTableModel", "deptId", "reviewerListParent"],
+  props: [
+    "changeParent",
+    "approvalTableModel",
+    "deptId",
+    "reviewerListParent",
+    "multipleSelectionName"
+  ],
   computed: {
     reversedMessage: function() {
       return this.approvalTableModel;
-    },
-    reviewerList: {
-      get: function() {
-        return this.reviewerListParent;
-      },
-      // set: function(newValue) {
-      //   console.log(newValue);
-      //   // debugger
-      //   return (this.reviewerListTemp = newValue);
-      // }
     }
   },
   created() {
+    this.reviewerList = JSON.parse(JSON.stringify(this.reviewerListParent));
+    this.reviewerName = (this.multipleSelectionName && this.multipleSelectionName.split(",")) || [];
     this.getApprovalPara.deptId = this.deptId;
     this.getApproval(this.getApprovalPara);
   },
@@ -75,12 +73,7 @@ export default {
       this.$get("/deptOrUserQuery/getReviewerPage", para, data => {
         this.approvalList = data.page.records;
         this.totalApprovalList = data.page.total;
-        // if (this.reviewerListTemp.length > 0) {
-        //   this.playUp(this.reviewerListTemp);
-        // } else if (this.reviewerList.length > 0) {
-        //   this.playUp(this.reviewerList);
-        // }
-         if (this.reviewerList.length > 0) {
+        if (this.reviewerList.length > 0) {
           this.playUp(this.reviewerList);
         }
       });
@@ -90,31 +83,10 @@ export default {
     },
     // 搜索
     searchFun() {
-      // this.reviewerList = this.reviewerListTemp.concat(this.multipleList);
       this.getApproval(this.getApprovalPara);
-    },
-    // 选择
-    handleSelectionChange(val) {
-      console.log("选择的", val);
-      if (val.length > 5) {
-        this.$message({
-          message: "最多添加5个子指标项。",
-          type: "warning"
-        });
-        this.$refs.multipleTable.toggleRowSelection(val[val.length - 1]);
-        return;
-      }
-      this.multipleSelection = val;
-      const temp = [];
-      for (let i = 0; i < val.length; i++) {
-        temp.push({ userId: val[i].id });
-      }
-      this.multipleList = temp;
-      // console.log("最终拥有的", temp);
     },
     // 渲染
     playUp(list) {
-      console.log(list);
       const temp = [];
       new Promise((resolve, reject) => {
         for (let i = 0; i < list.length; i++) {
@@ -132,15 +104,44 @@ export default {
         });
       });
     },
+    selectionChange(selection, row) {
+      const temp = [];
+      for (let i = 0; i < this.reviewerList.length; i++) {
+        if (row.id === this.reviewerList[i].userId) {
+          this.reviewerList.splice(i, 1);
+          for (let k = 0; k < this.reviewerName.length; k++) {
+            if (this.reviewerName[k] === row.real_name) {
+              this.reviewerName.splice(k, 1);
+            }
+          }
+          return;
+        } else {
+          temp.push(1);
+        }
+      }
+      if (temp.length === this.reviewerList.length) {
+        this.reviewerList.push({ userId: row.id });
+        this.reviewerName.push(row.real_name);
+      }
+    },
+    selectAll(selection) {
+      for (let i = 0; i < selection.length; i++) {
+        const temp = [];
+        for (let j = 0; j < this.reviewerList.length; j++) {
+          if (selection[i].id !== this.reviewerList[j].userId) {
+            temp.push(1);
+          }
+        }
+        if (temp.length === this.reviewerList.length) {
+          this.reviewerList.push({ userId: selection[i].id });
+          this.reviewerName.push(row.real_name);
+        }
+      }
+    },
     // 确定
     selectApproval() {
-      const temp = this.multipleSelection;
-      let tempArr = [];
-      for (let i = 0; i < temp.length; i++) {
-        tempArr.push(temp[i].real_name);
-      }
-      this.changeParent("multipleSelectionName", tempArr.join(","));
-      this.changeParent("reviewerList", this.multipleList);
+      this.changeParent("multipleSelectionName", this.reviewerName.join(","));
+      this.changeParent("reviewerList", this.reviewerList);
       this.handleCancel();
     }
   }

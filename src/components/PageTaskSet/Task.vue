@@ -129,6 +129,7 @@
       :changeParent="changeSelectUser"
       :deptId="form.deptId"
       :reviewerListParent="reviewerList"
+      :multipleSelectionName="multipleSelectionName"
     />
   </el-dialog>
 </template>
@@ -286,12 +287,13 @@ export default {
         }
       }
       this.isTaskEdit ? (para.evaluateTask.id = this.editId) : null;
-      // this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
-      //   this.getList();
-      //   this.handleCancel();
-      // });
-      console.log(para);
+      this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
+        this.getList();
+        this.handleCancel();
+      });
     }
+  },
+  watch:{
   }
 };
 </script>
