@@ -112,7 +112,7 @@ export default {
         null,
         data => {
           this.form.taskName = data.object.taskName;
-          this.form.reviewerName = data.object.reviewerName;
+          this.form.taskDescribe = data.object.taskDescribe;
           this.form.historyReviewerList = data.object.historyReviewerList;
           this.actualList = data.object.actualList;
           this.totalScore = data.object.totalScore;
