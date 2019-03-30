@@ -5,9 +5,9 @@
         <el-button size="small" icon="el-icon-plus" type="primary" @click="addTemplate">新增模板</el-button>
         <el-button size="small" icon="el-icon-delete" type="danger" @click="deleteTemplateAll">删除模板</el-button>
       </el-row>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form :inline="true" :model="paginationPara" class="demo-form-inline">
         <el-form-item label="所属组织">
-          <el-select v-model="formInline.region" style="width: 180px;" placeholder="请选择">
+          <el-select v-model="paginationPara.depId" style="width: 180px;" placeholder="请选择">
             <el-option label="组1" value="beijing"></el-option>
             <el-option label="组2" value="beijing1"></el-option>
             <el-option label="组3" value="beijing2"></el-option>
@@ -16,15 +16,21 @@
         </el-form-item>
         <el-form-item label="创建时间" style="padding-top: 4px; ">
           <el-date-picker
-            v-model="formInline.date"
-            type="daterange"
+            v-model="date"
+            type="datetimerange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
+            format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            @change="changeDate"
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="模板名称">
-          <el-input v-model="formInline.name" placeholder="请输入模板名称" style="width: 150px;"></el-input>
+          <el-input
+            v-model="paginationPara.templateName"
+            placeholder="请输入模板名称"
+            style="width: 150px;"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary">查询</el-button>
@@ -38,32 +44,21 @@
       style="width: 100%"
     >
       <el-table-column type="selection" width="55" :selectable="disabledFun"></el-table-column>
-      <el-table-column prop="name" label="模板名称"></el-table-column>
-      <el-table-column prop="status" label="所属组织"></el-table-column>
-      <el-table-column prop="status1" label="创建时间"></el-table-column>
-      <el-table-column prop="status2" label="创建人"></el-table-column>
-      <el-table-column prop="status3" label="最后修改时间"></el-table-column>
-      <el-table-column prop="status4" label="修改人"></el-table-column>
+      <el-table-column prop="template_name" label="模板名称"></el-table-column>
+      <el-table-column prop="dept_name" label="所属组织"></el-table-column>
+      <el-table-column prop="create_time" label="创建时间"></el-table-column>
+      <el-table-column prop="create_user" label="创建人"></el-table-column>
+      <el-table-column prop="modified_time" label="最后修改时间"></el-table-column>
+      <el-table-column prop="modified_user" label="修改人"></el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
-          <!--             v-if="scope.row.id===1" -->
           <a class="operator" @click="previewTemplate(scope.$index, scope.row)">查看</a>
           <a class="operator" @click="editTemplate(scope.$index, scope.row)">编辑</a>
           <a class="operator" @click="deleteTemplate(scope.$index, scope.row)">删除</a>
         </template>
       </el-table-column>
     </el-table>
-    <div class="block d-pagination">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
-        layout="prev, pager, next, sizes, jumper"
-        :total="100"
-      ></el-pagination>
-    </div>
+    <Pagination :paginationPara="paginationPara" :total="total" :getList="getList"/>
     <Template
       :templateModel="templateModel"
       :isTemplateEdit="isTemplateEdit"
@@ -74,27 +69,38 @@
 </template>
 <script>
 import Template from "../components/PageTemplateManage/Template.vue";
+import Pagination from "../components/Common/Pagination.vue";
 export default {
   data() {
     return {
-      formInline: {
-        name: "",
-        region: "",
-        date: ""
+      paginationPara: {
+        currentPage: 1, // 当前页码
+        pageSize: 10, //每页大小
+        depId: "", //组织机构id
+        startDate: "", // 派发任务开始
+        endDate: "", //派发任务结束
+        templateName: "" // 考评模板名字
       },
-      currentPage: 1,
+      date: "",
+      total: 0,
       tableData: [
         {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          id: 1
+          modified_user: null,
+          template_name: "模板名称1",
+          modified_time: null,
+          create_time: 1553865728000,
+          dept_name: "内江市人力资源和社会保障局",
+          id: 1,
+          create_user: null
         },
         {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          id: 2
+          modified_user: null,
+          template_name: "模板名称2",
+          modified_time: null,
+          create_time: 1553935475000,
+          dept_name: "内江市人力资源和社会保障局",
+          id: 2,
+          create_user: null
         }
       ],
       templateModel: false,
@@ -104,20 +110,25 @@ export default {
     };
   },
   components: {
-    Template
+    Template,
+    Pagination
+  },
+  created() {
+    this.getList(this.paginationPara);
   },
   methods: {
-    handleEdit(index, row) {
-      console.log(index, row);
+    getList(para) {
+      this.$get("/meEvaluateTemplate/list", para, data => {
+        // this.tableData = data.page.records;
+        this.total = data.page.total;
+        this.paginationPara.pageSize = data.page.size;
+        this.paginationPara.currentPage = data.page.current;
+      });
     },
-    handleDelete(index, row) {
-      console.log(index, row);
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    changeDate() {
+      console.log(this.date);
+      this.paginationPara.startDate = this.date[0];
+      this.paginationPara.endDate = this.date[1];
     },
     changeParent(name, value) {
       this[name] = value;
@@ -142,10 +153,10 @@ export default {
     },
     // 禁用table选择框
     disabledFun(row, index) {
-      if (row.id === 1) {
-        return false;
-      }
-      return true;
+      // if (row.id === 1) {
+      //   return false;
+      // }
+      // return true;
     },
     // 删除指标项
     deleteTemplate(index, row) {
