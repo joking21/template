@@ -7,21 +7,20 @@
   >
     <el-form ref="form" :model="form" label-width="150px">
       <el-form-item label="指标分类名称" width="100">
-        <el-input style="width: 220px;" :disabled="NewclassificationIsEdit" v-model="form.name"></el-input>
+        <el-input style="width: 220px;"  v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="上级指标分类" width="100">
-        <el-select v-model="form.type" disabled>
-          <el-option label="指标一" value="shanghai"></el-option>
-          <el-option label="指标二" value="beijing"></el-option>
+        <el-select v-model="form.pId" disabled>
+          <el-option :label="form.pIdName" :value="form.pId"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="描述" width="180">
-        <el-input type="textarea" v-model="form.desc"></el-input>
+        <el-input type="textarea" v-model="form.information"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
-      <el-button size="medium" type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      <el-button size="medium" type="primary" @click="handleSubmit">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -31,15 +30,36 @@ export default {
     return {
       form: {
         name: "",
-        type: "shanghai",
-        desc: ""
+        information: "",
+        pIdName: "",
+        pId: ""
       }
     };
   },
-  props: ["NewclassificationModel", "changeParent", "NewclassificationIsEdit"],
+  props: [
+    "NewclassificationModel",
+    "changeParent",
+    "NewclassificationIsEdit",
+    "selectData",
+    "getList"
+  ],
   computed: {
     reversedMessage: function() {
       return this.NewclassificationModel;
+    }
+  },
+  created() {
+    if (this.NewclassificationIsEdit) {
+      this.form.name = this.selectData.name;
+      this.form.pIdName = this.selectData.pIdName;
+      this.form.pId = this.selectData.pId;
+      // 获取详细信息
+       this.$get(`/meIndicatorsCategory/info/${this.selectData.id}`, null , (data)=>{
+         this.form.information = data.object.information;
+       })
+    } else {
+      this.form.pIdName = this.selectData.name;
+      this.form.pId = this.selectData.id;
     }
   },
   methods: {
@@ -48,11 +68,21 @@ export default {
     },
     closeModel() {
       this.handleCancel();
-      this.form = {
-        name: "",
-        type: "shanghai",
-        desc: ""
+    },
+    handleSubmit() {
+      const para = {
+        name: this.form.name,
+        information: this.form.information,
+        pId: this.form.pId
       };
+      this.NewclassificationIsEdit ? (para.id = this.selectData.id) : null;
+      const url = this.NewclassificationIsEdit
+        ? "/meIndicatorsCategory/update"
+        : "/meIndicatorsCategory/save";
+      this.$post(url, para, () => {
+        this.getList();
+        this.handleCancel();
+      });
     }
   }
 };
