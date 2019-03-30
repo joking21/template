@@ -6,7 +6,6 @@
       :data="dataTree"
       :props="defaultProps"
       :highlight-current="true"
-
       node-key="id"
       ref="tree"
       :auto-expand-parent="true"
@@ -196,6 +195,7 @@ export default {
         // this.selectTreeId = data.list.id; // 默认展开第一个子节点
         // this.openParentId = data.list.id;
         this.changeId(data.list.id);
+        this.$refs.tree.setCurrentKey(data.list.id);  // 重新渲染树，默认选中
         // this.dataTree = data.list;
       });
     },
