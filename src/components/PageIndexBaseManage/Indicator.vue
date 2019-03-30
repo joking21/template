@@ -79,8 +79,6 @@ export default {
   methods: {
     getDetail() {
       this.$get(`/meIndicatorsItems/info/${this.editId}`, null, data => {
-        console.log(data);
-        // this.form.indicatorsName = data.
         this.form.indicatorsName = data.object.indicatorsName;
         this.form.indicatorsSource = data.object.indicatorsSource;
         this.form.indicatorsDescribe = data.object.indicatorsDescribe;

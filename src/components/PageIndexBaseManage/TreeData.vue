@@ -183,7 +183,6 @@ export default {
     );
     this.getList();
     // this.changeFirst(this.dataTree[0].children); // 获取所有的子节点
-    console.log(this.selectTreeId, this.openParentId);
   },
   components: {
     Newclassification

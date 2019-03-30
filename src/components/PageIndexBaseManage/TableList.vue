@@ -119,8 +119,6 @@ export default {
     },
     // 删除指标项
     deleteIndicator(index, row) {
-      console.log(index, row);
-      //id
       this.$confirm(`是否确定删除指标【${row.indicatorsName}】`, "删除指标", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
