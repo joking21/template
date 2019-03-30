@@ -1,11 +1,12 @@
 <template>
   <div>
+    <!--       :current-node-key="selectTreeId"
+      :default-expanded-keys="[openParentId]" -->
     <el-tree
       :data="dataTree"
       :props="defaultProps"
       :highlight-current="true"
-      :current-node-key="selectTreeId"
-      :default-expanded-keys="[openParentId]"
+
       node-key="id"
       ref="tree"
       :auto-expand-parent="true"
@@ -181,18 +182,21 @@ export default {
       false
     );
     this.getList();
-    this.changeFirst(this.dataTree[0].children); // 获取所有的子节点
-    this.selectTreeId = this.childrenIds[0]; // 默认展开第一个子节点
-    this.openParentId = this.childrenIds[0];
+    // this.changeFirst(this.dataTree[0].children); // 获取所有的子节点
+    console.log(this.selectTreeId, this.openParentId);
   },
   components: {
     Newclassification
   },
+  props: ["changeId"],
   methods: {
     // 获取列表
     getList() {
       this.$get("/meIndicatorsCategory/list", null, data => {
         console.log(data);
+        // this.selectTreeId = data.list.id; // 默认展开第一个子节点
+        // this.openParentId = data.list.id;
+        this.changeId(data.list.id);
         // this.dataTree = data.list;
       });
     },
@@ -211,18 +215,9 @@ export default {
     // 选择树
     handleNodeClick(data, node) {
       this.menuVisible = false;
-      console.log(data);
-      console.log(node);
+      this.changeId(data.id);
     },
-    // 选中变化时
-    // handleChangeCurrentData(data, node) {
-    //   console.log("改变时", data);
-    // },
     handleRightClick(event, data, node, self) {
-      // console.log(event);
-      console.log(data);
-      //   console.log(node.parent.id);
-      console.log(node.parent);
       this.selectData = {
         pId: data.pId,
         pIdName: node.parent.label,

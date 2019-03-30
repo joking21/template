@@ -33,10 +33,10 @@
         </div>
       </div>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <!-- <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
       <el-button size="medium" type="primary" @click="dialogFormVisible = false">确 定</el-button>
-    </div>
+    </div> -->
   </el-dialog>
 </template>
 <style lang="less" scoped>

@@ -2,7 +2,7 @@
   <el-dialog
     :title="NewclassificationIsEdit?'编辑分类':'新增分类'"
     :visible="reversedMessage"
-    @close="closeModel"
+    @close="handleCancel"
     width="300"
   >
     <el-form ref="form" :model="form" label-width="150px">
@@ -65,9 +65,6 @@ export default {
   methods: {
     handleCancel() {
       this.changeParent("NewclassificationModel", false);
-    },
-    closeModel() {
-      this.handleCancel();
     },
     handleSubmit() {
       const para = {

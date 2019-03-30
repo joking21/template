@@ -1,10 +1,10 @@
 <template>
   <div class="d-content">
     <div class="d-left" id="leftTree">
-      <TreeData />
+      <TreeData :changeId="changeId" />
     </div>
     <div class="d-right">
-     <TableList />
+     <TableList :treeId="treeId" />
     </div>
   </div>
 </template>
@@ -31,14 +31,9 @@ export default {
        })
    },
    changeId(id){
-
+     this.treeId = id;
    }
   },
-  watch:{
-    treeId(){
-      console.log(this.treeId);
-    }
-  }
 };
 </script>
 
