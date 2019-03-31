@@ -173,7 +173,7 @@ export default {
       for (let i = 0; i < this.multipleSelection.length; i++) {
         idList.push(this.multipleSelection[i].id);
       }
-      this.$confirm("是否确定删除选中的任务", "删除任务", {
+      this.$confirm("是否确定删除选中的任务？", "删除任务", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

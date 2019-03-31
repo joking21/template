@@ -119,7 +119,7 @@ export default {
     },
     // 删除指标项
     deleteIndicator(index, row) {
-      this.$confirm(`是否确定删除指标【${row.indicatorsName}】`, "删除指标", {
+      this.$confirm(`是否确定删除指标【${row.indicatorsName}】？`, "删除指标", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -142,7 +142,7 @@ export default {
       for (let i = 0; i < this.multipleSelection.length; i++) {
         idList.push(this.multipleSelection[i].id);
       }
-      this.$confirm("是否确定删除选中的指标项", "删除指标", {
+      this.$confirm("是否确定删除选中的指标项？", "删除指标", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

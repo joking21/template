@@ -43,7 +43,7 @@
       @selection-change="handleSelectionChange"
       style="width: 100%"
     >
-      <el-table-column type="selection" width="55" :selectable="disabledFun"></el-table-column>
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="template_name" label="模板名称"></el-table-column>
       <el-table-column prop="dept_name" label="所属组织"></el-table-column>
       <el-table-column prop="create_time" label="创建时间"></el-table-column>
@@ -152,40 +152,45 @@ export default {
       this.multipleSelection = val;
     },
     // 禁用table选择框
-    disabledFun(row, index) {
-      // if (row.id === 1) {
-      //   return false;
-      // }
-      // return true;
-    },
-    // 删除指标项
+    // :selectable="disabledFun"
+    // disabledFun(row, index) {
+    //   if (row.id === 1) {
+    //     return false;
+    //   }
+    //   return true;
+    // },
+    // 删除模板
     deleteTemplate(index, row) {
       console.log(index, row);
-      this.$confirm("是否确定删除任务【任务名称】", "刪除任务", {
+      this.$confirm(`是否确定删除模板【${row.template_name}】？`, "删除模板", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          this.$post("/meEvaluateTemplate/delete", {ids:[row.id]}, () => {
+            this.getList();
           });
         })
         .catch(() => {});
     },
-    // 删除选中的指标项
+    // 删除选中的模板
     deleteTemplateAll() {
-      console.log(this.multipleSelection);
-      this.$confirm("是否确定删除选中的任务", "刪除任务", {
+       if (this.multipleSelection.length === 0) {
+        return this.$message.error("请您先选择要删除的模板名称！");
+      }
+      const idList = [];
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        idList.push(this.multipleSelection[i].id);
+      }
+      this.$confirm("是否确定删除选中的模板？", "删除模板", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
+          this.$post("/meEvaluateTemplate/delete", {ids:idList}, () => {
+            this.getList();
           });
         })
         .catch(() => {});

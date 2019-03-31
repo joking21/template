@@ -246,7 +246,7 @@ export default {
     //删除分类
     deleteType() {
       this.$confirm(
-        `是否确定删除指标分类【${this.selectData.name}】`,
+        `是否确定删除指标分类【${this.selectData.name}】？`,
         "删除分类",
         {
           confirmButtonText: "确定",
