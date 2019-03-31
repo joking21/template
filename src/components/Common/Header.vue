@@ -13,11 +13,9 @@
             <i v-else style="margin-left: 5px;" class="el-icon-caret-top"></i>
           </p>
           <ul v-if="isShow">
-            <li>选项1</li>
-            <li>选项1</li>
-            <li>选项1</li>
-            <li>选项1</li>
-            <li>选项1</li>
+            <li v-for="(item,index) in menuList" :key="index">
+              <a :href="item.ssoPath" target="_black">{{item.productShowName}}</a>
+            </li>
           </ul>
         </div>
       </el-col>
@@ -52,7 +50,8 @@ export default {
   data() {
     return {
       isShow: false,
-      isShowLoginout: false
+      isShowLoginout: false,
+      menuList: [],
     };
   },
   computed: {
@@ -60,7 +59,15 @@ export default {
       return this.$store.state.user;
     }
   },
+  created(){
+    this.getList();
+  },
   methods: {
+    getList(){
+      this.$get("/getProductIntegrateList", null, (data)=>{
+        this.menuList = data;
+      })
+    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
