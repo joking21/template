@@ -8,8 +8,8 @@
       width="100"
     >
       <template slot-scope="scope">
-        <!-- 查看详情、开始审核、开始填报、重新填报、查看模板-->
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
+        <!-- 查看模板-->
+        <div v-if="templatePreview">
           <span>{{ scope.row[`name${item}`] || '-'}}</span>
         </div>
         <div v-else>
@@ -25,7 +25,7 @@
     <el-table-column prop="indexItem" label="指标项">
       <template slot-scope="scope">
         <!-- 查看 -->
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
+        <div v-if="templatePreview">
           <span>{{ scope.row.indexItemName || '-'}}</span>
         </div>
         <div v-else>
@@ -40,23 +40,24 @@
     </el-table-column>
     <el-table-column prop="indexItemWeight" label="权重" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
+        <div v-if="templatePreview">
           <span>{{ scope.row.indexItemWeight || '-'}}</span>
         </div>
         <div v-else>
+          <span v-if="!scope.row.indexItemName">-</span>
           <el-input-number
+            v-else
             :min="0"
-            v-model="scope.row.indexItemName"
+            v-model="scope.row.indexItemWeight"
             :controls="false"
             style="width: 60px"
           ></el-input-number>
-          <span v-if="!scope.row.indexItemName">-</span>
         </div>
       </template>
     </el-table-column>
     <el-table-column prop="subIndexItem" label="子指标项">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
+        <div v-if="templatePreview">
           <span>{{ scope.row.subIndexItemName}}</span>
         </div>
         <div v-else>
@@ -67,7 +68,7 @@
     </el-table-column>
     <el-table-column label="权重" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
+        <div v-if="templatePreview">
           <span>{{ scope.row.subIndexItemWeight}}</span>
         </div>
         <div v-else>
@@ -82,7 +83,7 @@
     </el-table-column>
     <el-table-column prop="expectations" label="期望值（%）" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
+        <div v-if="templatePreview">
           <span>{{ scope.row.subIndexItemExpectations}}</span>
         </div>
         <div v-else>
@@ -91,26 +92,6 @@
             v-model="scope.row.subIndexItemExpectations"
             :controls="false"
             style="width: 60px"
-          ></el-input-number>
-        </div>
-      </template>
-    </el-table-column>
-    <el-table-column
-      v-if="preview || startReview || startReport || reReport"
-      label="实际值"
-      width="80"
-    >
-      <template slot-scope="scope">
-        <div v-if="preview">
-          <span>{{ scope.row.subIndexItemactualvalues}}</span>
-        </div>
-        <div v-else>
-          <el-input-number
-            :min="0"
-            v-model="scope.row.subIndexItemactualvalues"
-            :controls="false"
-            style="width: 60px"
-            @change="changeTotal"
           ></el-input-number>
         </div>
       </template>
@@ -151,21 +132,18 @@ export default {
               id: 3,
               name: "业务类1",
               pId: 2,
-              // children: [],
-              pIdName: null,
-              information: null,
               children: [
                 {
                   id: 3,
-                  name: "指标项3",
+                  indicatorsName: "指标项3",
                   children: [
                     {
                       id: 5,
-                      name: "子指标项名称5"
+                      indicatorsLoverName: "子指标项名称5"
                     },
                     {
                       id: 6,
-                      name: "子指标项名称6"
+                      indicatorsLoverName: "子指标项名称6"
                     }
                   ]
                 }
@@ -179,7 +157,7 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              // childrenItems: [],
+              childrenItems: [],
               level: false
             },
             {
@@ -189,13 +167,13 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              // childrenItems: [],
+              childrenItems: [],
               level: false
             }
           ],
           pIdName: null,
           information: null,
-          // childrenItems: [],
+          childrenItems: [],
           level: true
         },
         {
@@ -207,49 +185,49 @@ export default {
               id: 7,
               name: "技术类--1",
               pId: 6,
-              // children: [],
+              children: [],
               pIdName: null,
               information: null,
               childrenItems: [
                 {
                   id: 11114,
-                  name: "指标项save1",
+                  indicatorsName: "指标项save1",
                   children: [
                     {
                       id: 8,
-                      name: "子指标项名称save1"
+                      indicatorsLoverName: "子指标项名称save1"
                     },
                     {
                       id: 9,
-                      name: "子指标项名称save2"
+                      indicatorsLoverName: "子指标项名称save2"
                     }
                   ]
                 },
                 {
                   id: 11115,
-                  name: "指标项save1",
+                  indicatorsName: "指标项save1",
                   children: [
                     {
                       id: 10,
-                      name: "子指标项名称save1"
+                      indicatorsLoverName: "子指标项名称save1"
                     },
                     {
                       id: 11,
-                      name: "子指标项名称save2"
+                      indicatorsLoverName: "子指标项名称save2"
                     }
                   ]
                 },
                 {
                   id: 11116,
-                  name: "指标项save1",
+                  indicatorsName: "指标项save1",
                   children: [
                     {
                       id: 12,
-                      name: "子指标项名称save1"
+                      indicatorsLoverName: "子指标项名称save1"
                     },
                     {
                       id: 13,
-                      name: "子指标项名称save2"
+                      indicatorsLoverName: "子指标项名称save2"
                     }
                   ]
                 }
@@ -263,7 +241,7 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              // childrenItems: [],
+              childrenItems: [],
               level: false
             },
             {
@@ -273,30 +251,30 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              // childrenItems: [],
+              childrenItems: [],
               level: false
             }
           ],
           pIdName: null,
           information: null,
-          // childrenItems: [],
+          childrenItems: [],
           level: true
         },
         {
           id: 10,
           name: "其他类",
           pId: 1,
-          // children: [],
+          children: [],
           pIdName: null,
           information: null,
-          children: [
+          childrenItems: [
             {
               id: 4,
-              name: "指标项4",
+              indicatorsName: "指标项4",
               children: [
                 {
                   id: 7,
-                  name: "子指标项名称7"
+                  indicatorsLoverName: "子指标项名称7"
                 }
               ]
             }
@@ -306,15 +284,10 @@ export default {
       ]
     };
   },
-  // preview:查看  startReview:开始审核  startReport :开始填报 reReport:重新填报  isTemplatePreview: 查看模板
+  //isTemplatePreview: 查看模板
   props: [
-    "preview",
-    "startReview",
-    "startReport",
-    "reReport",
-    "templatePreview",
+    "templatePreview"
     // "dataList",
-    "changeTotalScore"
   ],
   created() {
     // console.log(this.dataList);
@@ -323,12 +296,9 @@ export default {
     this.getMax(this.level); // 计算最深树枝的深度
     this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
     this.handleRowspan(); // 处理rowspan
-    // console.log("最最最忠", this.tableData);
+    console.log("最最最忠", this.tableData);
   },
   methods: {
-    changeTotal() {
-      this.changeTotalScore ? this.changeTotalScore() : null;
-    },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       //  以下代码不要轻易改的，连顺序都是有要求的
       const maxLevel = this.maxLevel;
@@ -394,9 +364,6 @@ export default {
             tempLevel
           );
         }
-        // else {
-        //     delete data[i].children;   // 如果后台传回来的是pid的形式，则需要计算出最深的层级，然后把之前递归增加多出来的children清空
-        // }
         this.level.push(tempLevel);
       }
     },
@@ -423,14 +390,10 @@ export default {
               : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
           tempData[i].subIndexItemExpectations =
             tempData[i].itemExp === null ? undefined : tempData[i].itemExp; // 期望值  逻辑同权重
-          tempData[i].subIndexItemactualvalues =
-            tempData[i].actualScore === null
-              ? undefined
-              : tempData[i].actualScore; // 实际值
           tempData[i].subIndexItemId = tempData[i].id;
           tempData[i].subIndexSaveId = tempData[i].itemId; // 要传的id
-          tempData[i].subIndexActualId = tempData[i].actualId; // 审批时传的id
           tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
+          tempData[i].subIndexItemChecked = false;
         } else if (this.isIndexItem(tempData[i].id, comData)) {
           tempData[i].indexItemId = tempData[i].id;
           tempData[i].indexSaveId = tempData[i].itemId;
@@ -440,12 +403,14 @@ export default {
             tempData[i].itemWeight === null
               ? undefined
               : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+          tempData[i].indexItemChecked = false;
         } else {
           const name = `name${tempData[i].level + 2}`;
           tempData[i][name] = tempData[i].label;
           tempData[i][`${name}rowspan`] = tempData[i].rowspan;
           tempData[i][`${name}Id`] = tempData[i].id;
           tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
+          tempData[i][`${name}Checked`] = false;
         }
       }
       this.tempData = tempData;
