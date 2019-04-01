@@ -2,7 +2,7 @@
   <div>
     <div class="search">
       <el-row style="margin-bottom: 8px;">
-        <el-button size="small" icon="el-icon-plus" type="primary" @click="handleAddIndicator">新增指标</el-button>
+        <el-button size="small" icon="el-icon-plus" type="primary" :disabled="!treeData.level" @click="handleAddIndicator">新增指标</el-button>
         <el-button size="small" icon="el-icon-delete" type="danger" @click="handledeleteSelect">删除指标</el-button>
       </el-row>
       <el-row>
@@ -69,7 +69,8 @@ export default {
       treeData: {
         name: "",
         pIdName: "",
-        information: ""
+        information: "",
+        level: false,
       },
       paginationPara: {
         currentPage: 1,
@@ -109,6 +110,7 @@ export default {
         this.treeData.name = data.object.name;
         this.treeData.pIdName = data.object.pIdName;
         this.treeData.information = data.object.information;
+        this.treeData.level = data.object.level;
       });
     },
     changeParent(name, value) {

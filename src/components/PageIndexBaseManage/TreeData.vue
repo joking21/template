@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--       :current-node-key="selectTreeId"
-      :default-expanded-keys="[openParentId]" -->
+    :default-expanded-keys="[openParentId]"-->
     <el-tree
       :data="dataTree"
       :props="defaultProps"
@@ -50,6 +50,8 @@
 </style>
 <script>
 import Newclassification from "./Newclassification.vue";
+import { setTimeout } from "timers";
+import { Promise } from "q";
 export default {
   data() {
     return {
@@ -57,110 +59,7 @@ export default {
         children: "children",
         label: "name"
       },
-      dataTree: [
-        {
-          id: 1,
-          name: "分类顶级",
-          pId: 0,
-          children: [
-            {
-              id: 2,
-              name: "业务类",
-              pId: 1,
-              children: [
-                {
-                  id: 3,
-                  name: "业务类1",
-                  pId: 2,
-                  children: [],
-                  pIdName: null,
-                  childrenItems: null,
-                  level: false
-                },
-                {
-                  id: 4,
-                  name: "业务类--2",
-                  pId: 2,
-                  children: [],
-                  pIdName: null,
-                  childrenItems: null,
-                  level: false
-                },
-                {
-                  id: 5,
-                  name: "业务类--3",
-                  pId: 2,
-                  children: [],
-                  pIdName: null,
-                  childrenItems: null,
-                  level: false
-                },
-                {
-                  id: 1117,
-                  name: "业务类dd---4",
-                  pId: 2,
-                  children: [],
-                  pIdName: null,
-                  childrenItems: null,
-                  level: false
-                }
-              ],
-              pIdName: null,
-              childrenItems: null,
-              level: false
-            },
-            {
-              id: 6,
-              name: "技术类",
-              pId: 1,
-              children: [
-                {
-                  id: 7,
-                  name: "技术类--1",
-                  pId: 6,
-                  children: [],
-                  pIdName: null,
-                  childrenItems: null,
-                  level: false
-                },
-                {
-                  id: 8,
-                  name: "技术类--2",
-                  pId: 6,
-                  children: [],
-                  pIdName: null,
-                  childrenItems: null,
-                  level: false
-                },
-                {
-                  id: 9,
-                  name: "技术类--3",
-                  pId: 6,
-                  children: [],
-                  pIdName: null,
-                  childrenItems: null,
-                  level: false
-                }
-              ],
-              pIdName: null,
-              childrenItems: null,
-              level: false
-            },
-            {
-              id: 10,
-              name: "其他类",
-              pId: 1,
-              children: [],
-              pIdName: null,
-              childrenItems: null,
-              level: false
-            }
-          ],
-          pIdName: null,
-          childrenItems: null,
-          level: false
-        }
-      ],
+      dataTree: [],
       selectTreeId: 0, // 默认选中的字节
       openParentId: 0, // 默认选中的子节点
       NewclassificationModel: false,
@@ -191,12 +90,15 @@ export default {
     // 获取列表
     getList() {
       this.$get("/meIndicatorsCategory/list", null, data => {
-        console.log(data);
         // this.selectTreeId = data.list.id; // 默认展开第一个子节点
         // this.openParentId = data.list.id;
-        this.changeId(data.list.id);
-        this.$refs.tree.setCurrentKey(data.list.id);  // 重新渲染树，默认选中
-        // this.dataTree = data.list;
+        new Promise((resolve, reject) => {
+          this.dataTree = [data.list];
+          resolve();
+        }).then(() => {
+          this.changeId(data.list.id);
+          this.$refs.tree.setCurrentKey(data.list.id); // 重新渲染树，默认选中
+        });
       });
     },
     changeFirst(data) {
