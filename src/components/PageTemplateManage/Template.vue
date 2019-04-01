@@ -44,10 +44,16 @@ export default {
         templateDescribe: "",
         deptId: "" // 所属组织
       },
-      dataList: [],
+      dataList: []
     };
   },
-  props: ["templateModel", "changeParent", "isTemplateEdit", "isPreview", "objectOfEvaluationData"],
+  props: [
+    "templateModel",
+    "changeParent",
+    "isTemplateEdit",
+    "isPreview",
+    "objectOfEvaluationData"
+  ],
   created() {
     this.getTableTemp();
   },
@@ -75,7 +81,7 @@ export default {
         this.dataList = data.list;
       });
     },
-  
+
     handleCancel() {
       this.changeParent("templateModel", false);
     },
@@ -87,17 +93,11 @@ export default {
       const tableData = this.$refs.tableTemp.tableData;
       const name = this.$refs.tableTemp.columnArr;
       const meEvaluateTemplateWeightList = [];
-      console.log(tableData);
-      // "childItemsId": 子指标项id,
-      // "expectations":子指标项期望值,
-      // "itemsId": 指标项id,
-      // "itemsWeight": 指标项权重,
-      // "weight": 子指标项权重
       for (let i = 0; i < tableData.length; i++) {
-        if (this.checkData(tableData[i], name)) {
+        if (this.checkData(tableData[i], name, tableData)) {
           const _obj = {
             itemsId: tableData[i].indexSaveId, // 指标项id
-            itemsWeight: tableData[i].indexItemWeight, // 指标项权重
+            itemsWeight: this.getItemsWeight(tableData, tableData[i].indexItemId), // 指标项权重
             childItemsId: tableData[i].subIndexSaveId, // 子指标项id
             expectations: tableData[i].subIndexItemExpectations, // 子指标项期望值
             weight: tableData[i].subIndexItemWeight // 子指标项权重
@@ -111,19 +111,46 @@ export default {
         deptId: this.form.deptId, // 所属组织
         meEvaluateTemplateWeightList: meEvaluateTemplateWeightList
       };
-      console.log(para);
-      // this.$post("/meEvaluateTemplate/save", para, ()=>{
-      //   this.handleCancel();
-      // })
+      this.$post("/meEvaluateTemplate/save", para, ()=>{
+        this.handleCancel();
+      })
     },
-    checkData(data, name) {
-      for (let j = 0; j < name.length; j++) {
-        if (data[`name${name[j]}`] && data[`name${name[j]}Checked`] === false) {
-          return false;
+    // 因为指标项的权重如果是多条数据合并表单，则只有第一条数据有值
+    getItemsWeight(list, id) {
+      for (let j = 0; j < list.length; j++) {
+        if (id === list[j].indexItemId && list[j].indexItemWeight !== undefined) {
+            return list[j].indexItemWeight;
         }
       }
-      if (data.indexItemName && data.indexItemChecked === false) {
-        return false;
+    },
+    // 检查数据是否传给后台
+    checkData(data, nameArr, list) {
+      for (let i = 0; i < nameArr.length; i++) {
+        const name = `name${nameArr[i]}`;
+        if (data[name]) {
+          const temp = [];
+          for (let j = 0; j < list.length; j++) {
+            if (
+              data[`${name}Id`] === list[j][`${name}Id`] &&
+              list[j][`${name}Checked`] === true
+            ) {
+              temp.push(1);
+            }
+          }
+          if (temp.length === 0) return false;
+        }
+      }
+      if (data.indexItemName) {
+        const temp = [];
+        for (let j = 0; j < list.length; j++) {
+          if (
+            data.indexItemId === list[j].indexItemId &&
+            list[j].indexItemChecked === true
+          ) {
+            temp.push(1);
+          }
+        }
+        if (temp.length === 0) return false;
       }
       if (!data.subIndexItemName || data.subIndexItemChecked === false) {
         return false;
