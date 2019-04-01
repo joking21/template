@@ -135,15 +135,15 @@ export default {
               children: [
                 {
                   id: 3,
-                  indicatorsName: "指标项3",
+                  name: "指标项3",
                   children: [
                     {
                       id: 5,
-                      indicatorsLoverName: "子指标项名称5"
+                      name: "子指标项名称5"
                     },
                     {
                       id: 6,
-                      indicatorsLoverName: "子指标项名称6"
+                      name: "子指标项名称6"
                     }
                   ]
                 }
@@ -157,7 +157,6 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              childrenItems: [],
               level: false
             },
             {
@@ -167,13 +166,9 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              childrenItems: [],
               level: false
             }
           ],
-          pIdName: null,
-          information: null,
-          childrenItems: [],
           level: true
         },
         {
@@ -185,49 +180,46 @@ export default {
               id: 7,
               name: "技术类--1",
               pId: 6,
-              children: [],
-              pIdName: null,
-              information: null,
-              childrenItems: [
+              children: [
                 {
                   id: 11114,
-                  indicatorsName: "指标项save1",
+                  name: "指标项save1",
                   children: [
                     {
                       id: 8,
-                      indicatorsLoverName: "子指标项名称save1"
+                      name: "子指标项名称save1"
                     },
                     {
                       id: 9,
-                      indicatorsLoverName: "子指标项名称save2"
+                      name: "子指标项名称save2"
                     }
                   ]
                 },
                 {
                   id: 11115,
-                  indicatorsName: "指标项save1",
+                  name: "指标项save1",
                   children: [
                     {
                       id: 10,
-                      indicatorsLoverName: "子指标项名称save1"
+                      name: "子指标项名称save1"
                     },
                     {
                       id: 11,
-                      indicatorsLoverName: "子指标项名称save2"
+                      name: "子指标项名称save2"
                     }
                   ]
                 },
                 {
                   id: 11116,
-                  indicatorsName: "指标项save1",
+                  name: "指标项save1",
                   children: [
                     {
                       id: 12,
-                      indicatorsLoverName: "子指标项名称save1"
+                      name: "子指标项名称save1"
                     },
                     {
                       id: 13,
-                      indicatorsLoverName: "子指标项名称save2"
+                      name: "子指标项名称save2"
                     }
                   ]
                 }
@@ -239,9 +231,6 @@ export default {
               name: "技术类--2",
               pId: 6,
               children: [],
-              pIdName: null,
-              information: null,
-              childrenItems: [],
               level: false
             },
             {
@@ -249,32 +238,23 @@ export default {
               name: "技术类--3",
               pId: 6,
               children: [],
-              pIdName: null,
-              information: null,
-              childrenItems: [],
               level: false
             }
           ],
-          pIdName: null,
-          information: null,
-          childrenItems: [],
           level: true
         },
         {
           id: 10,
           name: "其他类",
           pId: 1,
-          children: [],
-          pIdName: null,
-          information: null,
-          childrenItems: [
+          children: [
             {
               id: 4,
-              indicatorsName: "指标项4",
+              name: "指标项4",
               children: [
                 {
                   id: 7,
-                  indicatorsLoverName: "子指标项名称7"
+                  name: "子指标项名称7"
                 }
               ]
             }
@@ -378,6 +358,8 @@ export default {
       }
       this.maxLevel = max;
     },
+
+    /// 错错错
     analyticArr(data) {
       let tempData = JSON.parse(JSON.stringify(data));
       const comData = JSON.parse(JSON.stringify(data));
