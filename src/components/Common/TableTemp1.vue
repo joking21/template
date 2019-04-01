@@ -329,7 +329,8 @@ export default {
           actualScore: data[i].actualScore,
           itemExp: data[i].itemExp,
           itemWeight: data[i].itemWeight,
-          actualId: data[i].actualId
+          actualId: data[i].actualId,
+          isTitle: data[i].level,
         };
         this.uniquenessId += 1;
         this.dataArr.push(temp);
@@ -364,29 +365,8 @@ export default {
       let tempData = JSON.parse(JSON.stringify(data));
       const comData = JSON.parse(JSON.stringify(data));
       for (let i = 0; i < tempData.length; i++) {
-        if (this.isSubIndexItem(tempData[i].id, comData)) {
-          tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-          tempData[i].subIndexItemWeight =
-            tempData[i].itemWeight === null
-              ? undefined
-              : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-          tempData[i].subIndexItemExpectations =
-            tempData[i].itemExp === null ? undefined : tempData[i].itemExp; // 期望值  逻辑同权重
-          tempData[i].subIndexItemId = tempData[i].id;
-          tempData[i].subIndexSaveId = tempData[i].itemId; // 要传的id
-          tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
-          tempData[i].subIndexItemChecked = false;
-        } else if (this.isIndexItem(tempData[i].id, comData)) {
-          tempData[i].indexItemId = tempData[i].id;
-          tempData[i].indexSaveId = tempData[i].itemId;
-          tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-          tempData[i].indexItemNamerowspan = tempData[i].rowspan;
-          tempData[i].indexItemWeight =
-            tempData[i].itemWeight === null
-              ? undefined
-              : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-          tempData[i].indexItemChecked = false;
-        } else {
+        console.log(tempData[i].isTitle);
+        if(tempData[i].isTitle === true || tempData[i].isTitle === false){
           const name = `name${tempData[i].level + 2}`;
           tempData[i][name] = tempData[i].label;
           tempData[i][`${name}rowspan`] = tempData[i].rowspan;
@@ -394,6 +374,37 @@ export default {
           tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
           tempData[i][`${name}Checked`] = false;
         }
+        
+        // if (this.isSubIndexItem(tempData[i].id, comData)) {
+        //   tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
+        //   tempData[i].subIndexItemWeight =
+        //     tempData[i].itemWeight === null
+        //       ? undefined
+        //       : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+        //   tempData[i].subIndexItemExpectations =
+        //     tempData[i].itemExp === null ? undefined : tempData[i].itemExp; // 期望值  逻辑同权重
+        //   tempData[i].subIndexItemId = tempData[i].id;
+        //   tempData[i].subIndexSaveId = tempData[i].itemId; // 要传的id
+        //   tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
+        //   tempData[i].subIndexItemChecked = false;
+        // } else if (this.isIndexItem(tempData[i].id, comData)) {
+        //   tempData[i].indexItemId = tempData[i].id;
+        //   tempData[i].indexSaveId = tempData[i].itemId;
+        //   tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
+        //   tempData[i].indexItemNamerowspan = tempData[i].rowspan;
+        //   tempData[i].indexItemWeight =
+        //     tempData[i].itemWeight === null
+        //       ? undefined
+        //       : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+        //   tempData[i].indexItemChecked = false;
+        // } else {
+        //   const name = `name${tempData[i].level + 2}`;
+        //   tempData[i][name] = tempData[i].label;
+        //   tempData[i][`${name}rowspan`] = tempData[i].rowspan;
+        //   tempData[i][`${name}Id`] = tempData[i].id;
+        //   tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
+        //   tempData[i][`${name}Checked`] = false;
+        // }
       }
       this.tempData = tempData;
       this.tableData = this.concatArr();
