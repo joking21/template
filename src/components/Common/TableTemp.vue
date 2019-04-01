@@ -1,102 +1,45 @@
 <template>
   <el-table :data="tableData" :span-method="objectSpanMethod" border class="d-temp-table">
+    <!-- :label="`${item}级指标分类`" -->
     <el-table-column
       prop="name"
       v-for="item in columnArr"
       :key="item"
-      :label="`${item}级指标分类`"
+      label="指标分类"
       width="100"
     >
       <template slot-scope="scope">
-        <!-- 查看详情、开始审核、开始填报、重新填报、查看模板-->
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
-          <span>{{ scope.row[`name${item}`] || '-'}}</span>
-        </div>
-        <div v-else>
-          <el-checkbox
-            v-if="scope.row[`name${item}`]"
-            :name="scope.row[`name${item}`]"
-            style="margin-right: 5px"
-          ></el-checkbox>
-          <span>{{ scope.row[`name${item}`] || '-'}}</span>
-        </div>
+        <!-- 查看详情、开始审核、开始填报、重新填报-->
+        {{ scope.row[`name${item}`]}}
       </template>
     </el-table-column>
     <el-table-column prop="indexItem" label="指标项">
       <template slot-scope="scope">
         <!-- 查看 -->
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
-          <span>{{ scope.row.indexItemName || '-'}}</span>
-        </div>
-        <div v-else>
-          <el-checkbox
-            v-if="scope.row.indexItemName"
-            name="scope.row.indexItemName"
-            style="margin-right: 5px"
-          ></el-checkbox>
-          <span>{{ scope.row.indexItemName || '-'}}</span>
-        </div>
+       {{ scope.row.indexItemName}}
       </template>
     </el-table-column>
     <el-table-column prop="indexItemWeight" label="权重" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
-          <span>{{ scope.row.indexItemWeight || '-'}}</span>
-        </div>
-        <div v-else>
-          <el-input-number
-            :min="0"
-            v-model="scope.row.indexItemName"
-            :controls="false"
-            style="width: 60px"
-          ></el-input-number>
-          <span v-if="!scope.row.indexItemName">-</span>
-        </div>
+        {{ scope.row.indexItemWeight}}
       </template>
     </el-table-column>
     <el-table-column prop="subIndexItem" label="子指标项">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
-          <span>{{ scope.row.subIndexItemName}}</span>
-        </div>
-        <div v-else>
-          <el-checkbox name="subIndexItemName" style="margin-right: 5px"></el-checkbox>
-          <span>{{ scope.row.subIndexItemName }}</span>
-        </div>
+       {{ scope.row.subIndexItemName}}
       </template>
     </el-table-column>
     <el-table-column label="权重" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
-          <span>{{ scope.row.subIndexItemWeight}}</span>
-        </div>
-        <div v-else>
-          <el-input-number
-            :min="0"
-            v-model="scope.row.subIndexItemWeight"
-            :controls="false"
-            style="width: 60px"
-          ></el-input-number>
-        </div>
+        {{ scope.row.subIndexItemWeight}}
       </template>
     </el-table-column>
     <el-table-column prop="expectations" label="期望值（%）" width="80">
       <template slot-scope="scope">
-        <div v-if="preview || startReview || startReport || reReport || templatePreview">
-          <span>{{ scope.row.subIndexItemExpectations}}</span>
-        </div>
-        <div v-else>
-          <el-input-number
-            :min="0"
-            v-model="scope.row.subIndexItemExpectations"
-            :controls="false"
-            style="width: 60px"
-          ></el-input-number>
-        </div>
+        {{ scope.row.subIndexItemExpectations}}
       </template>
     </el-table-column>
     <el-table-column
-      v-if="preview || startReview || startReport || reReport"
       label="实际值"
       width="80"
     >
