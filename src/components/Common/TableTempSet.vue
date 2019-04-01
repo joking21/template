@@ -17,6 +17,7 @@
             v-if="scope.row[`name${item}`]"
             :name="scope.row[`name${item}`]"
             style="margin-right: 5px"
+            v-model="scope.row[`name${item}Checked`]"
           ></el-checkbox>
           <span>{{ scope.row[`name${item}`] || '-'}}</span>
         </div>
@@ -33,6 +34,7 @@
             v-if="scope.row.indexItemName"
             name="scope.row.indexItemName"
             style="margin-right: 5px"
+            v-model="scope.row.indexItemChecked"
           ></el-checkbox>
           <span>{{ scope.row.indexItemName || '-'}}</span>
         </div>
@@ -57,19 +59,19 @@
     </el-table-column>
     <el-table-column prop="subIndexItem" label="子指标项">
       <template slot-scope="scope">
-        <div v-if="templatePreview">
-          <span>{{ scope.row.subIndexItemName}}</span>
+        <div v-if="templatePreview || !scope.row.subIndexItemName">
+          <span>{{ scope.row.subIndexItemName || '-'}}</span>
         </div>
         <div v-else>
-          <el-checkbox name="subIndexItemName" style="margin-right: 5px"></el-checkbox>
+          <el-checkbox name="subIndexItemName" style="margin-right: 5px" v-model="scope.row.subIndexItemChecked"></el-checkbox>
           <span>{{ scope.row.subIndexItemName }}</span>
         </div>
       </template>
     </el-table-column>
     <el-table-column label="权重" width="80">
       <template slot-scope="scope">
-        <div v-if="templatePreview">
-          <span>{{ scope.row.subIndexItemWeight}}</span>
+        <div v-if="templatePreview || !scope.row.subIndexItemName">
+          <span>{{ scope.row.subIndexItemWeight || '-'}}</span>
         </div>
         <div v-else>
           <el-input-number
@@ -83,8 +85,8 @@
     </el-table-column>
     <el-table-column prop="expectations" label="期望值（%）" width="80">
       <template slot-scope="scope">
-        <div v-if="templatePreview">
-          <span>{{ scope.row.subIndexItemExpectations}}</span>
+        <div v-if="templatePreview || !scope.row.subIndexItemName">
+          <span>{{ scope.row.subIndexItemExpectations || '-'}}</span>
         </div>
         <div v-else>
           <el-input-number
@@ -136,19 +138,22 @@ export default {
                 {
                   id: 3,
                   name: "指标项3",
+                  superior: 1,
                   children: [
                     {
                       id: 5,
-                      name: "子指标项名称5"
+                      name: "子指标项名称5",
+                      superior: 2
                     },
                     {
                       id: 6,
-                      name: "子指标项名称6"
+                      name: "子指标项名称6",
+                      superior: 2,
                     }
                   ]
                 }
               ],
-              level: false
+              level: true
             },
             {
               id: 4,
@@ -157,7 +162,7 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              level: false
+              level: true
             },
             {
               id: 5,
@@ -166,7 +171,7 @@ export default {
               children: [],
               pIdName: null,
               information: null,
-              level: false
+              level: true
             }
           ],
           level: true
@@ -184,61 +189,70 @@ export default {
                 {
                   id: 11114,
                   name: "指标项save1",
+                  superior: 1,
                   children: [
                     {
                       id: 8,
-                      name: "子指标项名称save1"
+                      name: "子指标项名称save1",
+                      superior: 2,
                     },
                     {
                       id: 9,
-                      name: "子指标项名称save2"
+                      name: "子指标项名称save2",
+                      superior: 2
                     }
                   ]
                 },
                 {
                   id: 11115,
                   name: "指标项save1",
+                  superior: 1,
                   children: [
                     {
                       id: 10,
-                      name: "子指标项名称save1"
+                      name: "子指标项名称save1",
+                      superior: 2
                     },
                     {
                       id: 11,
-                      name: "子指标项名称save2"
+                      name: "子指标项名称save2",
+                      superior: 2
                     }
                   ]
                 },
                 {
                   id: 11116,
                   name: "指标项save1",
+                  superior: 1,
                   children: [
                     {
                       id: 12,
-                      name: "子指标项名称save1"
+                      name: "子指标项名称save1",
+                      superior: 2
                     },
                     {
                       id: 13,
-                      name: "子指标项名称save2"
+                      name: "子指标项名称save2",
+                      superior: 2,
                     }
                   ]
                 }
               ],
-              level: false
+              level: true
             },
             {
               id: 8,
               name: "技术类--2",
               pId: 6,
               children: [],
-              level: false
+              level: true
             },
             {
               id: 9,
               name: "技术类--3",
               pId: 6,
               children: [],
-              level: false
+              level: true
             }
           ],
           level: true
@@ -251,15 +265,17 @@ export default {
             {
               id: 4,
               name: "指标项4",
+              superior: 1,
               children: [
                 {
                   id: 7,
-                  name: "子指标项名称7"
+                  name: "子指标项名称7",
+                  superior: 2
                 }
               ]
             }
           ],
-          level: false
+          level: true
         }
       ]
     };
@@ -272,11 +288,11 @@ export default {
   created() {
     // console.log(this.dataList);
     this.analyticTree(this.dataList); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
-    console.log(this.dataArr);
+    // console.log(this.dataArr);
     this.getMax(this.level); // 计算最深树枝的深度
     this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
     this.handleRowspan(); // 处理rowspan
-    console.log("最最最忠", this.tableData);
+    // console.log("最最最忠", this.tableData);
   },
   methods: {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
@@ -322,15 +338,14 @@ export default {
         const temp = {
           pid: tempIndex,
           id: this.uniquenessId,
-          label: data[i].categoryName || data[i].itemName || data[i].name,
           level: tempLevel,
           rowspan: 1,
-          itemId: data[i].itemId || data[i].id,
-          actualScore: data[i].actualScore,
+          label: data[i].name,
+          itemId: data[i].id, 
           itemExp: data[i].itemExp,
           itemWeight: data[i].itemWeight,
-          actualId: data[i].actualId,
           isTitle: data[i].level,
+          superior:  data[i].superior,
         };
         this.uniquenessId += 1;
         this.dataArr.push(temp);
@@ -365,8 +380,7 @@ export default {
       let tempData = JSON.parse(JSON.stringify(data));
       const comData = JSON.parse(JSON.stringify(data));
       for (let i = 0; i < tempData.length; i++) {
-        console.log(tempData[i].isTitle);
-        if(tempData[i].isTitle === true || tempData[i].isTitle === false){
+        if(tempData[i].isTitle === true){
           const name = `name${tempData[i].level + 2}`;
           tempData[i][name] = tempData[i].label;
           tempData[i][`${name}rowspan`] = tempData[i].rowspan;
@@ -374,37 +388,24 @@ export default {
           tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
           tempData[i][`${name}Checked`] = false;
         }
-        
-        // if (this.isSubIndexItem(tempData[i].id, comData)) {
-        //   tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-        //   tempData[i].subIndexItemWeight =
-        //     tempData[i].itemWeight === null
-        //       ? undefined
-        //       : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-        //   tempData[i].subIndexItemExpectations =
-        //     tempData[i].itemExp === null ? undefined : tempData[i].itemExp; // 期望值  逻辑同权重
-        //   tempData[i].subIndexItemId = tempData[i].id;
-        //   tempData[i].subIndexSaveId = tempData[i].itemId; // 要传的id
-        //   tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
-        //   tempData[i].subIndexItemChecked = false;
-        // } else if (this.isIndexItem(tempData[i].id, comData)) {
-        //   tempData[i].indexItemId = tempData[i].id;
-        //   tempData[i].indexSaveId = tempData[i].itemId;
-        //   tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
-        //   tempData[i].indexItemNamerowspan = tempData[i].rowspan;
-        //   tempData[i].indexItemWeight =
-        //     tempData[i].itemWeight === null
-        //       ? undefined
-        //       : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
-        //   tempData[i].indexItemChecked = false;
-        // } else {
-        //   const name = `name${tempData[i].level + 2}`;
-        //   tempData[i][name] = tempData[i].label;
-        //   tempData[i][`${name}rowspan`] = tempData[i].rowspan;
-        //   tempData[i][`${name}Id`] = tempData[i].id;
-        //   tempData[i][`levelId-${tempData[i].id}`] = tempData[i].id;
-        //   tempData[i][`${name}Checked`] = false;
-        // }
+        // tempData[i].isTitle === false 
+        else if(!tempData[i].isTitle && tempData[i].superior===1){
+          tempData[i].indexItemId = tempData[i].id;
+          tempData[i].indexSaveId = tempData[i].itemId;
+          tempData[i].indexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
+          tempData[i].indexItemNamerowspan = tempData[i].rowspan;
+          tempData[i].indexItemWeight = tempData[i].itemWeight === null ? undefined : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+          tempData[i].indexItemChecked = false;
+        }
+        else if(!tempData[i].isTitle && tempData[i].superior===2){
+          tempData[i].subIndexItemName = tempData[i].label; // label为后台传到前端的每条数据的名字
+          tempData[i].subIndexItemWeight = tempData[i].itemWeight === null ? undefined : tempData[i].itemWeight; //权重   若后端有返回权重，就把这个权重赋值，否则为空权重
+          tempData[i].subIndexItemExpectations = tempData[i].itemExp === null ? undefined : tempData[i].itemExp; // 期望值  逻辑同权重
+          tempData[i].subIndexItemId = tempData[i].id;
+          tempData[i].subIndexSaveId = tempData[i].itemId; // 要传的id
+          tempData[i].subIndexItemNamerowspan = tempData[i].rowspan;
+          tempData[i].subIndexItemChecked = false;
+        }
       }
       this.tempData = tempData;
       this.tableData = this.concatArr();

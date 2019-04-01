@@ -8,10 +8,13 @@
       <el-form :inline="true" :model="paginationPara" class="demo-form-inline">
         <el-form-item label="所属组织">
           <el-select v-model="paginationPara.depId" style="width: 180px;" placeholder="请选择">
-            <el-option label="组1" value="beijing"></el-option>
-            <el-option label="组2" value="beijing1"></el-option>
-            <el-option label="组3" value="beijing2"></el-option>
-            <el-option label="组4" value="beijing3"></el-option>
+            <el-option label="全部" value></el-option>
+            <el-option
+              v-for="item in objectOfEvaluationData"
+              :key="item.id"
+              :label="item.deptStructureName"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="创建时间" style="padding-top: 4px; ">
@@ -60,10 +63,12 @@
     </el-table>
     <Pagination :paginationPara="paginationPara" :total="total" :getList="getList"/>
     <Template
+      v-if="templateModel"
       :templateModel="templateModel"
       :isTemplateEdit="isTemplateEdit"
       :isPreview="isPreview"
       :changeParent="changeParent"
+      :objectOfEvaluationData="objectOfEvaluationData"
     />
   </div>
 </template>
@@ -103,6 +108,7 @@ export default {
           create_user: null
         }
       ],
+      objectOfEvaluationData: [],
       templateModel: false,
       isTemplateEdit: false, // 编辑
       isPreview: false, // 查看
@@ -115,6 +121,7 @@ export default {
   },
   created() {
     this.getList(this.paginationPara);
+    this.getObjectOfEvaluation();
   },
   methods: {
     getList(para) {
@@ -123,6 +130,12 @@ export default {
         this.total = data.page.total;
         this.paginationPara.pageSize = data.page.size;
         this.paginationPara.currentPage = data.page.current;
+      });
+    },
+      // 获取所属组织
+    getObjectOfEvaluation() {
+      this.$get("/deptOrUserQuery/getLoginUserDeptList", null, data => {
+        this.objectOfEvaluationData = data.list;
       });
     },
     changeDate() {
