@@ -22,12 +22,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="模板描述">
-        <span v-if="isPreview">{{form.templateName}}</span>
-        <el-input v-else type="textarea" v-model="form.desc"></el-input>
+        <span v-if="isPreview">{{form.templateDescribe}}</span>
+        <el-input v-else type="textarea" v-model="form.templateDescribe"></el-input>
       </el-form-item>
       <el-form-item label="选择指标项">
         <TableTemp v-if="isPreview && isShow" :templatePreview="true" :dataList="dataList"/>
-        <TableTemp v-else-if="isShow" ref="tableTemp" :templateEdit="true" :dataList="dataList"/>
+        <TableTemp v-else-if="isShow" ref="tableTemp" :isAdd="isAdd" :templateEdit="true" :dataList="dataList"/>
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
     </el-form>
@@ -98,7 +98,7 @@ export default {
     // 查看详情
     getDetail() {
       this.$get(`/meEvaluateTemplate/info/${this.selectedId}`, null, data => {
-        // console.log(data);
+        console.log(data);
         this.form.templateName = data.object.templateName;
         this.form.templateDescribe = data.object.templateDescribe;
         this.form.deptId = data.object.deptId;
@@ -139,10 +139,11 @@ export default {
         deptId: this.form.deptId, // 所属组织
         meEvaluateTemplateWeightList: meEvaluateTemplateWeightList
       };
-      this.$post("/meEvaluateTemplate/save", para, () => {
-        this.getList();
-        this.handleCancel();
-      });
+      console.log(para);
+      // this.$post("/meEvaluateTemplate/save", para, () => {
+      //   this.getList();
+      //   this.handleCancel();
+      // });
     },
     // 因为指标项的权重如果是多条数据合并表单，则只有第一条数据有值
     getItemsWeight(list, id) {
