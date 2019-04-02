@@ -65,11 +65,13 @@
     <Template
       v-if="templateModel"
       :templateModel="templateModel"
+      :isAdd="isAdd"
       :isTemplateEdit="isTemplateEdit"
       :isPreview="isPreview"
       :changeParent="changeParent"
       :objectOfEvaluationData="objectOfEvaluationData"
       :getList="getList"
+      :selectedId="selectedId"
     />
   </div>
 </template>
@@ -94,6 +96,8 @@ export default {
       templateModel: false,
       isTemplateEdit: false, // 编辑
       isPreview: false, // 查看
+      isAdd: false,
+      selectedId: '',
       multipleSelection: ""
     };
   },
@@ -130,16 +134,21 @@ export default {
     },
     addTemplate() {
       this.templateModel = true;
+      this.isAdd = true;
       this.isTemplateEdit = false;
       this.isPreview = false;
     },
-    editTemplate() {
+    editTemplate(index, row) {
+      this.selectedId = row.id;
       this.templateModel = true;
+      this.isAdd = false;
       this.isTemplateEdit = true;
       this.isPreview = false;
     },
-    previewTemplate() {
+    previewTemplate(index, row) {
+      this.selectedId = row.id;
       this.templateModel = true;
+      this.isAdd = false;
       this.isTemplateEdit = false;
       this.isPreview = true;
     },

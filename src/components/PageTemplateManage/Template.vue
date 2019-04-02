@@ -2,12 +2,14 @@
   <el-dialog :title="templateTitle" :visible="reversedMessage" @close="handleCancel" width="70%">
     <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="模板名称">
-        <el-input style="width: 220px;" :disabled="isPreview" v-model="form.templateName"></el-input>
+        <span v-if="isPreview">{{form.templateName}}</span>
+        <el-input v-else style="width: 220px;" v-model="form.templateName"></el-input>
       </el-form-item>
       <el-form-item label="所属组织">
+        <span v-if="isPreview">{{form.deptName}}</span>
         <el-select
+          v-else
           v-model="form.deptId"
-          :disabled="isPreview"
           style="width: 100%"
           placeholder="请选择"
         >
@@ -20,11 +22,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="模板描述">
-        <el-input type="textarea" v-model="form.desc" :disabled="isPreview"></el-input>
+        <span v-if="isPreview">{{form.templateName}}</span>
+        <el-input v-else type="textarea" v-model="form.desc"></el-input>
       </el-form-item>
       <el-form-item label="选择指标项">
-        <TableTemp v-if="isPreview" :templatePreview="true" :dataList="dataList"/>
-        <TableTemp v-else ref="tableTemp" :templateEdit="true" :dataList="dataList"/>
+        <TableTemp v-if="isPreview && isShow" :templatePreview="true" :dataList="dataList"/>
+        <TableTemp v-else-if="isShow" ref="tableTemp" :templateEdit="true" :dataList="dataList"/>
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
     </el-form>
@@ -42,21 +45,29 @@ export default {
       form: {
         templateName: "",
         templateDescribe: "",
-        deptId: "" // 所属组织
+        deptId: "", // 所属组织
+        deptName: "",
       },
-      dataList: []
+      dataList: [],
+      isShow: false,
     };
   },
   props: [
     "templateModel",
     "changeParent",
+    "isAdd",
     "isTemplateEdit",
     "isPreview",
     "objectOfEvaluationData",
-    "getList"
+    "getList",
+    "selectedId",
   ],
   created() {
-    this.getTableTemp();
+    if (this.isAdd) {
+      this.getTableTemp();
+    } else {
+      this.getDetail();
+    }
   },
   computed: {
     reversedMessage() {
@@ -76,13 +87,26 @@ export default {
     TableTemp
   },
   methods: {
+    // 新增的时候，获取表格模板
     getTableTemp() {
       this.$get("/meIndicatorsCategory/treeAndIndicate", null, data => {
         console.log(data);
         this.dataList = data.list;
+        this.isShow = true;
       });
     },
-
+    // 查看详情
+    getDetail() {
+      this.$get(`/meEvaluateTemplate/info/${this.selectedId}`, null, data => {
+        // console.log(data);
+        this.form.templateName = data.object.templateName;
+        this.form.templateDescribe = data.object.templateDescribe;
+        this.form.deptId = data.object.deptId;
+        this.form.deptName = data.object.deptName;
+        this.isShow = true;
+        // dataList: []
+      });
+    },
     handleCancel() {
       this.changeParent("templateModel", false);
     },
@@ -98,7 +122,10 @@ export default {
         if (this.checkData(tableData[i], name, tableData)) {
           const _obj = {
             itemsId: tableData[i].indexSaveId, // 指标项id
-            itemsWeight: this.getItemsWeight(tableData, tableData[i].indexItemId), // 指标项权重
+            itemsWeight: this.getItemsWeight(
+              tableData,
+              tableData[i].indexItemId
+            ), // 指标项权重
             childItemsId: tableData[i].subIndexSaveId, // 子指标项id
             expectations: tableData[i].subIndexItemExpectations, // 子指标项期望值
             weight: tableData[i].subIndexItemWeight // 子指标项权重
@@ -112,16 +139,19 @@ export default {
         deptId: this.form.deptId, // 所属组织
         meEvaluateTemplateWeightList: meEvaluateTemplateWeightList
       };
-      this.$post("/meEvaluateTemplate/save", para, ()=>{
+      this.$post("/meEvaluateTemplate/save", para, () => {
         this.getList();
         this.handleCancel();
-      })
+      });
     },
     // 因为指标项的权重如果是多条数据合并表单，则只有第一条数据有值
     getItemsWeight(list, id) {
       for (let j = 0; j < list.length; j++) {
-        if (id === list[j].indexItemId && list[j].indexItemWeight !== undefined) {
-            return list[j].indexItemWeight;
+        if (
+          id === list[j].indexItemId &&
+          list[j].indexItemWeight !== undefined
+        ) {
+          return list[j].indexItemWeight;
         }
       }
     },
