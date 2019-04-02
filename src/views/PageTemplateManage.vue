@@ -47,12 +47,12 @@
       style="width: 100%"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="template_name" label="模板名称"></el-table-column>
-      <el-table-column prop="dept_name" label="所属组织"></el-table-column>
-      <el-table-column prop="create_time" label="创建时间"></el-table-column>
-      <el-table-column prop="create_user" label="创建人"></el-table-column>
-      <el-table-column prop="modified_time" label="最后修改时间"></el-table-column>
-      <el-table-column prop="modified_user" label="修改人"></el-table-column>
+      <el-table-column prop="templateName" label="模板名称"></el-table-column>
+      <el-table-column prop="deptName" label="所属组织"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间"></el-table-column>
+      <el-table-column prop="createUser" label="创建人"></el-table-column>
+      <el-table-column prop="modifiedTime" label="最后修改时间"></el-table-column>
+      <el-table-column prop="modifiedUser" label="修改人"></el-table-column>
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
           <a class="operator" @click="previewTemplate(scope.$index, scope.row)">查看</a>
@@ -69,6 +69,7 @@
       :isPreview="isPreview"
       :changeParent="changeParent"
       :objectOfEvaluationData="objectOfEvaluationData"
+      :getList="getList"
     />
   </div>
 </template>
@@ -82,32 +83,13 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, //每页大小
         depId: "", //组织机构id
-        startDate: "", // 派发任务开始
-        endDate: "", //派发任务结束
+        // startDate: "", // 派发任务开始
+        // endDate: "", //派发任务结束
         templateName: "" // 考评模板名字
       },
       date: "",
       total: 0,
-      tableData: [
-        {
-          modified_user: null,
-          template_name: "模板名称1",
-          modified_time: null,
-          create_time: 1553865728000,
-          dept_name: "内江市人力资源和社会保障局",
-          id: 1,
-          create_user: null
-        },
-        {
-          modified_user: null,
-          template_name: "模板名称2",
-          modified_time: null,
-          create_time: 1553935475000,
-          dept_name: "内江市人力资源和社会保障局",
-          id: 2,
-          create_user: null
-        }
-      ],
+      tableData: [],
       objectOfEvaluationData: [],
       templateModel: false,
       isTemplateEdit: false, // 编辑
@@ -124,9 +106,9 @@ export default {
     this.getObjectOfEvaluation();
   },
   methods: {
-    getList(para) {
+    getList(para=this.paginationPara) {
       this.$get("/meEvaluateTemplate/list", para, data => {
-        // this.tableData = data.page.records;
+        this.tableData = data.page.records;
         this.total = data.page.total;
         this.paginationPara.pageSize = data.page.size;
         this.paginationPara.currentPage = data.page.current;
@@ -175,7 +157,7 @@ export default {
     // 删除模板
     deleteTemplate(index, row) {
       console.log(index, row);
-      this.$confirm(`是否确定删除模板【${row.template_name}】？`, "删除模板", {
+      this.$confirm(`是否确定删除模板【${row.templateName}】？`, "删除模板", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

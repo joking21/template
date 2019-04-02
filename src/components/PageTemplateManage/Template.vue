@@ -52,7 +52,8 @@ export default {
     "changeParent",
     "isTemplateEdit",
     "isPreview",
-    "objectOfEvaluationData"
+    "objectOfEvaluationData",
+    "getList"
   ],
   created() {
     this.getTableTemp();
@@ -112,6 +113,7 @@ export default {
         meEvaluateTemplateWeightList: meEvaluateTemplateWeightList
       };
       this.$post("/meEvaluateTemplate/save", para, ()=>{
+        this.getList();
         this.handleCancel();
       })
     },
