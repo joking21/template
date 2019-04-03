@@ -85,8 +85,8 @@ export default {
         currentPage: 1, // 当前页码
         pageSize: 10, //每页大小
         depId: "", //组织机构id
-        // startDate: "", // 派发任务开始
-        // endDate: "", //派发任务结束
+        startDate: "", // 派发任务开始
+        endDate: "", //派发任务结束
         templateName: "" // 考评模板名字
       },
       date: "",
