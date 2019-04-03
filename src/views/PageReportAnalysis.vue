@@ -2,7 +2,7 @@
   <div class="d-content">
     <div class="d-left" id="leftTree">
       <el-tree
-        :data="data"
+        :data="treeData"
         :props="defaultProps"
         :highlight-current="true"
         :current-node-key="selectTreeId"
@@ -12,39 +12,35 @@
         :auto-expand-parent="true"
         :check-on-click-node="true"
         :accordion="true"
-        @node-contextmenu="handleRightClick"
         @node-click="handleNodeClick"
-        @check-change="handleChangeCurrentData"
       ></el-tree>
     </div>
     <div class="d-right">
       <div class="search">
         <el-row>
           <el-col :span="12">
-             <label class="el-form-item__label">考评任务</label>
+            <label class="el-form-item__label">考评任务</label>
             <el-select v-model="region" style="width: 180px; padding-top: 5px;" placeholder="请选择">
-            <el-option label="组1" value="beijing"></el-option>
-            <el-option label="组2" value="beijing1"></el-option>
-            <el-option label="组3" value="beijing2"></el-option>
-            <el-option label="组4" value="beijing3"></el-option>
-          </el-select>
+              <el-option label="组1" value="beijing"></el-option>
+              <el-option label="组2" value="beijing1"></el-option>
+              <el-option label="组3" value="beijing2"></el-option>
+              <el-option label="组4" value="beijing3"></el-option>
+            </el-select>
           </el-col>
           <el-col :span="12" style="text-align: right;">
-              <el-tooltip class="item" effect="dark" content="打印" placement="bottom">
-                <!-- <el-button>下边</el-button> -->
-                 <i class="el-icon-printer" @click="printFun" style="font-size: 20px; margin-top: 10px; cursor: pointer"></i>
-             </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="打印" placement="bottom">
+              <!-- <el-button>下边</el-button> -->
+              <i
+                class="el-icon-printer"
+                @click="printFun"
+                style="font-size: 20px; margin-top: 10px; cursor: pointer"
+              ></i>
+            </el-tooltip>
           </el-col>
         </el-row>
       </div>
-      <el-table
-        id="printf"
-        :data="tableData"
-        style="width: 100%"
-      >
-        <el-table-column prop="name" label="指标项"></el-table-column>
-        <el-table-column prop="status" label="指标来源"></el-table-column>
-        <el-table-column prop="status1" label="指标描述"></el-table-column>
+      <el-table id="printf" :data="tableData" style="width: 100%">
+        <el-table-column v-for="item in nameArr" :key="item" :prop="`name${item}`" :label="titleArr[item]"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -55,69 +51,208 @@ export default {
     return {
       region: "",
       currentPage: 1,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          id: 1
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          id: 2
-        }
-      ],
+      nameArr: [],
+      tableData: [],
+      temp: {
+        size: 10,
+        list: [
+          {
+            name6: "2018年7月",
+            name5: "2018年6月",
+            name4: "2018年5月",
+            name3: "2018年4月",
+            name9: "平均分",
+            name8: "2018年9月",
+            name7: "2018年8月",
+            name2: "2018年3月",
+            name1: "2018年2月",
+            name0: ""
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户0"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户1"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户2"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户3"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户4"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户5"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户6"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "用户7"
+          },
+          {
+            name6: 100,
+            name5: 100,
+            name4: 100,
+            name3: 100,
+            name9: 100,
+            name8: 100,
+            name7: 100,
+            name2: 100,
+            name1: 100,
+            name0: "部门平均分"
+          }
+        ]
+      },
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "deptShortName"
       },
-      data: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 2,
-              label: "二级 1-1"
-            },
-            {
-              id: 3,
-              label: "二级 1-1"
-            },
-            {
-              id: 4,
-              label: "二级 1-1"
-            }
-          ]
-        }
-      ],
+      treeData: [],
       selectTreeId: 2, // 默认选中的字节
-      openParentId: 1 // 默认选中的子节点
+      openParentId: 1, // 默认选中的子节点
+      loginDeptId: "",
+      firstPid: "",
+      treeList: []
     };
   },
-  mounted() {},
+  created() {
+    this.getTreeList();
+    this.getTableList();
+  },
   methods: {
-    changeParent(name, value) {
-      this[name] = value;
+    // 获取表格
+    getTableList(){
+      const size = this.temp.size;
+      let tempArr = [];
+      for(let i =0; i<size;i++){
+        tempArr.push(i);
+      }
+      this.nameArr = tempArr;
+      this.titleArr = this.temp.list[0];
+      this.tableData = this.temp.list.slice(1);
+    },
+    // 获取左边树的list
+    getTreeList() {
+      this.$get("/deptOrUserQuery/getLoginUserDeptList", null, data => {
+        this.treeList = data.list;
+        this.getUserInfo();
+      });
+    },
+    // 获取登录用户的组织id  登录用户的组织id即为最顶层id
+    getUserInfo() {
+      this.$get("/user/loginUserInfo", null, data => {
+        this.loginDeptId = data.object.deptId;
+        new Promise((resolve, reject)=>{
+          this.handleTree(this.loginDeptId, this.treeList);
+          resolve();
+        }).then(()=>{
+          this.treeData = this.getTree(this.treeList, this.firstPid);
+        })
+      });
+    },
+    //转成树
+    getTree(data, Pid) {
+      let result = [];
+      let temp;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].fid == Pid) {
+          temp = this.getTree(data, data[i].id);
+          if (temp.length > 0) {
+            data[i].children = temp;
+          }
+          result.push(data[i]);
+        }
+      }
+      return result;
+    },
+    // 找最顶层id的父元素
+    handleTree(id, list) {
+      const tempArr = [];
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].id === id) {
+          this.firstPid = list[i].fid;
+          return;
+        }
+      }
     },
     // 选择树
     handleNodeClick(data, node) {
       console.log(data);
-    },
-    // 选中变化时
-    handleChangeCurrentData(data, node) {
-      console.log("改变时", data);
-    },
-    setCheckedKeys() {
-      this.$refs.tree.setCurrentKey(3);
-    },
-    getCurrentNode() {
-      console.log(this.$refs.tree.getCurrentNode());
-    },
-    handleRightClick(event, data, node) {
-      console.log(event, data, node);
     },
     // 打印
     printFun() {
