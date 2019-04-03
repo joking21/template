@@ -142,8 +142,9 @@ export default {
     },
     // 修改时间
     changeDate() {
-      this.paginationPara.startDate = this.form.date[0];
-      this.paginationPara.endDate = this.form.date[1];
+      const tempDate = this.form.date || [];
+      this.paginationPara.startDate = tempDate[0];
+      this.paginationPara.endDate = tempDate[1];
     },
     changeParent(name, value) {
       this[name] = value;

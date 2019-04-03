@@ -36,7 +36,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary">查询</el-button>
+          <el-button size="mini" type="primary" @click="searchFun">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -118,6 +118,9 @@ export default {
         this.paginationPara.currentPage = data.page.current;
       });
     },
+    searchFun(){
+      this.getList();
+    },
       // 获取所属组织
     getObjectOfEvaluation() {
       this.$get("/deptOrUserQuery/getLoginUserDeptList", null, data => {
@@ -125,9 +128,9 @@ export default {
       });
     },
     changeDate() {
-      console.log(this.date);
-      this.paginationPara.startDate = this.date[0];
-      this.paginationPara.endDate = this.date[1];
+      const tempDate = this.date || [];
+      this.paginationPara.startDate = tempDate[0];
+      this.paginationPara.endDate = tempDate[1];
     },
     changeParent(name, value) {
       this[name] = value;

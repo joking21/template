@@ -253,7 +253,7 @@ export default {
       this.changeParent("taskModel", false);
     },
     submit() {
-      const date = this.form.date;
+      const date = this.form.date || [];
       const para = {
         evaluateTask: {
           taskName: this.form.taskName,
