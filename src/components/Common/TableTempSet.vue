@@ -55,7 +55,7 @@
     </el-table-column>
     <el-table-column prop="subIndexItem" label="子指标项">
       <template slot-scope="scope">
-        <div>
+        <div v-if="scope.row.subIndexItemName">
           <el-checkbox
             :disabled="templatePreview"
             name="subIndexItemName"
@@ -64,6 +64,7 @@
           ></el-checkbox>
           <span>{{ scope.row.subIndexItemName }}</span>
         </div>
+        <span v-else>-</span>
       </template>
     </el-table-column>
     <el-table-column label="权重" width="80">
@@ -122,168 +123,6 @@ export default {
       tableData: [], // 表格最终数据
       maxLevel: 0, // 深度
       tempData: [], // 把单条数据里面的字段初始化【ps: 方便下一步的把父子关系的对象，合并成一条对象】,若要增删字段，则在处理这个数据时操作
-      // dataList: [
-      //   {
-      //     id: 2,
-      //     name: "业务类",
-      //     pId: 1,
-      //     children: [
-      //       {
-      //         id: 3,
-      //         name: "业务类1",
-      //         pId: 2,
-      //         children: [
-      //           {
-      //             id: 3,
-      //             name: "指标项3",
-      //             superior: 1,
-      //             weight: 100,
-      //             children: [
-      //               {
-      //                 id: 5,
-      //                 name: "子指标项名称5",
-      //                 superior: 2,
-      //                 weight: 10,
-      //                 expectations: 20
-      //               },
-      //               {
-      //                 id: 6,
-      //                 name: "子指标项名称6",
-      //                 superior: 2,
-      //                 weight: 10,
-      //                 expectations: 20
-      //               }
-      //             ]
-      //           }
-      //         ],
-      //         level: true
-      //       },
-      //       {
-      //         id: 4,
-      //         name: "业务类--2",
-      //         pId: 2,
-      //         children: [],
-      //         pIdName: null,
-      //         information: null,
-      //         level: true
-      //       },
-      //       {
-      //         id: 5,
-      //         name: "业务类--3",
-      //         pId: 2,
-      //         children: [],
-      //         pIdName: null,
-      //         information: null,
-      //         level: true
-      //       }
-      //     ],
-      //     level: true
-      //   },
-      //   {
-      //     id: 6,
-      //     name: "技术类",
-      //     pId: 1,
-      //     children: [
-      //       {
-      //         id: 7,
-      //         name: "技术类--1",
-      //         pId: 6,
-      //         weight: 100,
-      //         children: [
-      //           {
-      //             id: 11114,
-      //             name: "指标项save1",
-      //             superior: 1,
-      //             children: [
-      //               {
-      //                 id: 8,
-      //                 name: "子指标项名称save1",
-      //                 superior: 2
-      //               },
-      //               {
-      //                 id: 9,
-      //                 name: "子指标项名称save2",
-      //                 superior: 2,
-      //                 weight: 10,
-      //                 expectations: 20
-      //               }
-      //             ]
-      //           },
-      //           {
-      //             id: 11115,
-      //             name: "指标项save1",
-      //             superior: 1,
-      //             children: [
-      //               {
-      //                 id: 10,
-      //                 name: "子指标项名称save1",
-      //                 superior: 2
-      //               },
-      //               {
-      //                 id: 11,
-      //                 name: "子指标项名称save2",
-      //                 superior: 2
-      //               }
-      //             ]
-      //           },
-      //           {
-      //             id: 11116,
-      //             name: "指标项save1",
-      //             superior: 1,
-      //             children: [
-      //               {
-      //                 id: 12,
-      //                 name: "子指标项名称save1",
-      //                 superior: 2
-      //               },
-      //               {
-      //                 id: 13,
-      //                 name: "子指标项名称save2",
-      //                 superior: 2
-      //               }
-      //             ]
-      //           }
-      //         ],
-      //         level: true
-      //       },
-      //       {
-      //         id: 8,
-      //         name: "技术类--2",
-      //         pId: 6,
-      //         children: [],
-      //         level: true
-      //       },
-      //       {
-      //         id: 9,
-      //         name: "技术类--3",
-      //         pId: 6,
-      //         children: [],
-      //         level: true
-      //       }
-      //     ],
-      //     level: true
-      //   },
-      //   {
-      //     id: 10,
-      //     name: "其他类",
-      //     pId: 1,
-      //     children: [
-      //       {
-      //         id: 4,
-      //         name: "指标项4",
-      //         superior: 1,
-      //         children: [
-      //           {
-      //             id: 7,
-      //             name: "子指标项名称7",
-      //             superior: 2
-      //           }
-      //         ]
-      //       }
-      //     ],
-      //     level: true
-      //   }
-      // ]
     };
   },
   //isTemplatePreview: 查看模板

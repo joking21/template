@@ -104,7 +104,7 @@ export default {
         this.form.deptId = data.object.deptId;
         this.form.deptName = data.object.deptName;
         this.isShow = true;
-        // dataList: []
+        this.dataList = data.object.templateTreeVos;
       });
     },
     handleCancel() {
@@ -139,11 +139,12 @@ export default {
         deptId: this.form.deptId, // 所属组织
         meEvaluateTemplateWeightList: meEvaluateTemplateWeightList
       };
-      console.log(para);
-      // this.$post("/meEvaluateTemplate/save", para, () => {
-      //   this.getList();
-      //   this.handleCancel();
-      // });
+      if(this.isTemplateEdit) para.id = this.selectedId;
+      const url = this.isTemplateEdit?'/meEvaluateTemplate/update':'/meEvaluateTemplate/save';
+      this.$post(url, para, () => {
+        this.getList();
+        this.handleCancel();
+      });
     },
     // 因为指标项的权重如果是多条数据合并表单，则只有第一条数据有值
     getItemsWeight(list, id) {
