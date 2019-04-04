@@ -40,11 +40,17 @@
         </el-row>
       </div>
       <el-table id="printf" :data="tableData" style="width: 100%">
-        <el-table-column v-for="item in nameArr" :key="item" :prop="`name${item}`" :label="titleArr[item]"></el-table-column>
+        <el-table-column
+          v-for="item in nameArr"
+          :key="item"
+          :prop="`name${item}`"
+          :label="titleArr[`name${item}`]"
+        ></el-table-column>
       </el-table>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -196,10 +202,10 @@ export default {
   },
   methods: {
     // 获取表格
-    getTableList(){
+    getTableList() {
       const size = this.temp.size;
       let tempArr = [];
-      for(let i =0; i<size;i++){
+      for (let i = 0; i < size; i++) {
         tempArr.push(i);
       }
       this.nameArr = tempArr;
@@ -217,12 +223,12 @@ export default {
     getUserInfo() {
       this.$get("/user/loginUserInfo", null, data => {
         this.loginDeptId = data.object.deptId;
-        new Promise((resolve, reject)=>{
+        new Promise((resolve, reject) => {
           this.handleTree(this.loginDeptId, this.treeList);
           resolve();
-        }).then(()=>{
+        }).then(() => {
           this.treeData = this.getTree(this.treeList, this.firstPid);
-        })
+        });
       });
     },
     //转成树
