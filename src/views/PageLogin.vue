@@ -59,22 +59,28 @@ export default {
       }
     };
   },
-  // beforeCreate() {
-  //   // 若有什么统一登录，在此设置
-  //   const token = sessionStorage.getItem("token");  // 获取统一登录的某个标识
-  //   if (token) {
-  //     sessionStorage.setItem("token", token);
-  //     this.$store.commit("changeLogin");
-  //     if (token) {
-  //       this.$get("/user/loginUserInfo", null, data => {
-  //         sessionStorage.setItem("user", JSON.stringify(data.object));
-  //         this.$store.commit("changeLogin");
-  //         this.$router.push({ path: "/" });
-  //       });
-  //     }
-  //   }
-  // },
+  created() {
+    // 若有什么统一登录，在此设置
+    const token = this.getToken("token");  // 获取统一登录的某个标识
+    if (token) {
+      sessionStorage.setItem("token", token);
+      this.$store.commit("changeLogin");
+      if (token) {
+        this.$get("/user/loginUserInfo", null, data => {
+          sessionStorage.setItem("user", JSON.stringify(data.object));
+          this.$store.commit("changeLogin");
+          this.$router.push({ path: "/" });
+        });
+      }
+    }
+  },
   methods: {
+    getToken(name) {
+      let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      let r = window.location.search.substr(1).match(reg);
+      if (r != null) return decodeURI(r[2]);
+      return null;
+    },
     submit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

@@ -14,7 +14,7 @@
           </p>
           <ul v-if="isShow">
             <li v-for="(item,index) in menuList" :key="index">
-              <a :href="item.ssoPath" target="_black">{{item.productShowName}}</a>
+              <a :href="`/eva?${item.jumpUrl}`" target="_black">{{item.productShowName}}</a>
             </li>
           </ul>
         </div>
