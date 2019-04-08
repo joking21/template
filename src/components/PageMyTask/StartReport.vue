@@ -146,6 +146,7 @@ export default {
       const tableData = this.$refs.tableTemp.tableData;
       for (let i = 0; i < tableData.length; i++) {
         const temp = {
+          id: tableData[i].subIndexActualId,
           actualScore: tableData[i].subIndexItemactualvalues, // 分数
           weightId: tableData[i].subIndexSaveId //指标项id
         };

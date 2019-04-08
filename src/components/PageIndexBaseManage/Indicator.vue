@@ -7,7 +7,7 @@
   >
     <el-form ref="form" :model="form" label-width="150px">
       <el-form-item label="指标项">
-        <el-input style="width: 220px;" :disabled="IndicatorIsEdit" v-model="form.indicatorsName"></el-input>
+        <el-input style="width: 220px;" v-model="form.indicatorsName"></el-input>
       </el-form-item>
       <el-form-item label="指标来源">
         <el-select v-model="form.indicatorsSource" disabled>
