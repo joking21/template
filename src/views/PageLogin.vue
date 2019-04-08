@@ -59,7 +59,7 @@ export default {
       }
     };
   },
-  // created() {
+  // beforeCreate() {
   //   // 若有什么统一登录，在此设置
   //   const token = sessionStorage.getItem("token");  // 获取统一登录的某个标识
   //   if (token) {

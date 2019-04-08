@@ -81,6 +81,7 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  store.commit('changeLogin');
   if (to.meta.requireAuth) {
     if (store.state.token) {
       next();
