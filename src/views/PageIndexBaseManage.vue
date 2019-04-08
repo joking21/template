@@ -1,5 +1,5 @@
 <template>
-  <div class="d-content">
+  <div class="d-content d-flex">
     <div class="d-left" id="leftTree">
       <TreeData :changeId="changeId" />
     </div>

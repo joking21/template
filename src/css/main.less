@@ -25,17 +25,19 @@ body::-webkit-scrollbar-track {
     border: 1px solid #ffffff;
     background-color: #ffffff;
     position: relative;
-    .d-left{
-        position: absolute; top:0; left:0;
+}
+.d-flex{
+    display: flex;
+    .d-left {
         width: 240px;
-        height: auto;
         background: #ffffff;
         padding: 10px;
         border: 1px solid #eeeeee;
         min-height: 250px;
-    }
+     }
     .d-right{
-        margin-left: 300px;
+        margin-left: 10px;
+        flex: 1;
     }
 }
 .el-table th{
@@ -140,6 +142,8 @@ body::-webkit-scrollbar-track {
 .el-menu--vertical{
     .el-menu{
         background-color: #303133 !important;
+        padding-bottom: 9999px;
+        margin-bottom: -9999px; 
     }
 }
 // 自定义tab标签
