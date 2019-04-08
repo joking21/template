@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--:current-node-key="selectTreeId"-->
     <el-tree
       :data="dataTree"
       :props="defaultProps"
@@ -14,6 +13,7 @@
       :expand-on-click-node="false"
       @node-contextmenu="handleRightClick"
       @node-click="handleNodeClick"
+      :render-content="renderContent"
     ></el-tree>
     <div v-show="menuVisible" id="menu">
       <div class="d-btnitem">
@@ -59,9 +59,8 @@ export default {
         label: "name"
       },
       dataTree: [],
-      // selectTreeId: 0, // 默认选中的字节
       openParentId: 0, // 默认选中的子节点
-      storageTreeId: '',
+      storageTreeId: "",
       NewclassificationModel: false,
       NewclassificationIsEdit: false,
       menuVisible: false,
@@ -87,6 +86,20 @@ export default {
   },
   props: ["changeId", "changeTree"],
   methods: {
+    renderContent(h, { node, data, store }) {
+      let label = node.label;
+      return (
+        <span class="custom-tree-node">
+          <span
+            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; width: 180px;"
+            class="el-tree-node__label"
+            title={node.label}
+          >
+            {node.label}
+          </span>
+        </span>
+      );
+    },
     // 获取列表
     getList() {
       this.$get("/meIndicatorsCategory/list", null, data => {
@@ -97,7 +110,10 @@ export default {
         }).then(() => {
           const dataArr = this.analyticTree(this.dataTree, []);
           // 编辑当前选中节点时，重新渲染
-          if((this.storageTreeId===this.selectData.id) && this.NewclassificationIsEdit){
+          if (
+            this.storageTreeId === this.selectData.id &&
+            this.NewclassificationIsEdit
+          ) {
             this.changeTree();
           }
           if (dataArr.indexOf(this.storageTreeId) <= -1) {

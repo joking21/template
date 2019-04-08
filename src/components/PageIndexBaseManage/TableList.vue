@@ -6,15 +6,15 @@
         <el-button size="small" icon="el-icon-delete" type="danger" @click="handledeleteSelect">删除指标</el-button>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="24">
           <div class="d-desc">分类名称：{{treeData.name}}</div>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="24">
           <div class="d-desc">上级分类：{{treeData.pIdName || '---'}}</div>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="24">
           <div class="d-desc">描述信息：{{treeData.information || '---'}}</div>
         </el-col>
       </el-row>

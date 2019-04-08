@@ -12,7 +12,9 @@
         :auto-expand-parent="true"
         :check-on-click-node="true"
         :accordion="true"
+        :expand-on-click-node="false"
         @node-click="handleNodeClick"
+        :render-content="renderContent"
       ></el-tree>
     </div>
     <div class="d-right">
@@ -82,6 +84,20 @@ export default {
     this.getTreeList();
   },
   methods: {
+    renderContent(h, { node, data, store }) {
+      let label = node.label;
+      return (
+        <span class="custom-tree-node">
+          <span
+            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; width: 180px;"
+            class="el-tree-node__label"
+            title={node.label}
+          >
+            {node.label}
+          </span>
+        </span>
+      );
+    },
     // 表格名字解析
     getTableList(tempList) {
       const size = tempList.size;
@@ -169,12 +185,12 @@ export default {
       newWin.document.write(tableToPrint.outerHTML); //将表格添加进新的窗口
       let th = newWin.document.getElementsByTagName("th");
       let tr = newWin.document.getElementsByTagName("tr");
-      for(let i = 0; i< th.length;i++){
-        th[i].setAttribute('style', 'text-align: left');
+      for (let i = 0; i < th.length; i++) {
+        th[i].setAttribute("style", "text-align: left");
       }
-      for(let i = 0; i< tr.length;i++){
-        tr[i].setAttribute('style', 'height: 36px');
-        tr[i].setAttribute('style', 'line-height: 36px');
+      for (let i = 0; i < tr.length; i++) {
+        tr[i].setAttribute("style", "height: 36px");
+        tr[i].setAttribute("style", "line-height: 36px");
       }
       newWin.document.close(); //在IE浏览器中使用必须添加这一句
       newWin.focus(); //在IE浏览器中使用必须添加这一句
