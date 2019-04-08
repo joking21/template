@@ -1,16 +1,17 @@
 <template>
   <div>
-    <!--       :current-node-key="selectTreeId"
-    :default-expanded-keys="[openParentId]"-->
+    <!--:current-node-key="selectTreeId"-->
     <el-tree
       :data="dataTree"
       :props="defaultProps"
       :highlight-current="true"
       node-key="id"
+      :default-expanded-keys="[openParentId]"
       ref="tree"
       :auto-expand-parent="true"
       :check-on-click-node="true"
       :accordion="true"
+      :expand-on-click-node="false"
       @node-contextmenu="handleRightClick"
       @node-click="handleNodeClick"
     ></el-tree>
@@ -50,8 +51,6 @@
 </style>
 <script>
 import Newclassification from "./Newclassification.vue";
-import { setTimeout } from "timers";
-import { Promise } from "q";
 export default {
   data() {
     return {
@@ -60,8 +59,9 @@ export default {
         label: "name"
       },
       dataTree: [],
-      selectTreeId: 0, // 默认选中的字节
+      // selectTreeId: 0, // 默认选中的字节
       openParentId: 0, // 默认选中的子节点
+      storageTreeId: '',
       NewclassificationModel: false,
       NewclassificationIsEdit: false,
       menuVisible: false,
@@ -85,21 +85,38 @@ export default {
   components: {
     Newclassification
   },
-  props: ["changeId"],
+  props: ["changeId", "changeTree"],
   methods: {
     // 获取列表
     getList() {
       this.$get("/meIndicatorsCategory/list", null, data => {
         // this.selectTreeId = data.list.id; // 默认展开第一个子节点
-        // this.openParentId = data.list.id;
         new Promise((resolve, reject) => {
           this.dataTree = [data.list];
           resolve();
         }).then(() => {
-          this.changeId(data.list.id);
-          this.$refs.tree.setCurrentKey(data.list.id); // 重新渲染树，默认选中
+          const dataArr = this.analyticTree(this.dataTree, []);
+          // 编辑当前选中节点时，重新渲染
+          if((this.storageTreeId===this.selectData.id) && this.NewclassificationIsEdit){
+            this.changeTree();
+          }
+          if (dataArr.indexOf(this.storageTreeId) <= -1) {
+            this.storageTreeId = data.list.id;
+          }
+          this.openParentId = this.storageTreeId;
+          this.changeId(this.storageTreeId);
+          this.$refs.tree.setCurrentKey(this.storageTreeId); // 重新渲染树，默认选中
         });
       });
+    },
+    analyticTree(data, dataArr) {
+      for (let i = 0; i < data.length; i++) {
+        dataArr.push(data[i].id);
+        if (data[i].children) {
+          this.analyticTree(data[i].children, dataArr);
+        }
+      }
+      return dataArr;
     },
     changeFirst(data) {
       for (let i = 0; i < data.length; i++) {
@@ -117,6 +134,7 @@ export default {
     handleNodeClick(data, node) {
       this.menuVisible = false;
       this.changeId(data.id);
+      this.storageTreeId = data.id;
     },
     handleRightClick(event, data, node, self) {
       this.selectData = {
@@ -147,6 +165,7 @@ export default {
     },
     //删除分类
     deleteType() {
+      this.NewclassificationIsEdit = false;
       this.$confirm(
         `是否确定删除指标分类【${this.selectData.name}】？`,
         "删除分类",

@@ -127,8 +127,6 @@ export default {
         type: "warning"
       })
         .then(() => {
-          // {ids:[1,2,3]}
-
           this.$post("/meIndicatorsItems/delete", {ids:[row.id]}, () => {
             this.getList();
           });

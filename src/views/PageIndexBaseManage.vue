@@ -1,10 +1,10 @@
 <template>
   <div class="d-content d-flex">
     <div class="d-left" id="leftTree">
-      <TreeData :changeId="changeId" />
+      <TreeData :changeId="changeId" :changeTree="changeTree"/>
     </div>
     <div class="d-right">
-     <TableList :treeId="treeId" />
+     <TableList ref="tableList" :treeId="treeId" />
     </div>
   </div>
 </template>
@@ -24,6 +24,9 @@ export default {
   methods: {
    changeId(id){
      this.treeId = id;
+   },
+   changeTree(){
+     this.$refs.tableList.getTreeData(this.treeId);
    }
   },
 };
