@@ -9,11 +9,16 @@
         <el-form-item prop="username">
           <!-- <el-input placeholder="请输入用户名" v-model="loginData.username">
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
-          </el-input> -->
+          </el-input>-->
           <el-input v-model="loginData.username" style="width: 300px;" placeholder="用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password" class="password_font_algin">
-          <el-input type="password" v-model="loginData.password" style="width: 300px;" placeholder="密码"></el-input>
+          <el-input
+            type="password"
+            v-model="loginData.password"
+            style="width: 300px;"
+            placeholder="密码"
+          ></el-input>
         </el-form-item>
         <el-form-item style="text-align:center;">
           <el-button
@@ -54,6 +59,21 @@ export default {
       }
     };
   },
+  // created() {
+  //   // 若有什么统一登录，在此设置
+  //   const token = sessionStorage.getItem("token");  // 获取统一登录的某个标识
+  //   if (token) {
+  //     sessionStorage.setItem("token", token);
+  //     this.$store.commit("changeLogin");
+  //     if (token) {
+  //       this.$get("/user/loginUserInfo", null, data => {
+  //         sessionStorage.setItem("user", JSON.stringify(data.object));
+  //         this.$store.commit("changeLogin");
+  //         this.$router.push({ path: "/" });
+  //       });
+  //     }
+  //   }
+  // },
   methods: {
     submit(formName) {
       this.$refs[formName].validate(valid => {

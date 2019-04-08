@@ -10,14 +10,15 @@ export default new Vuex.Store({
   },
   mutations: {
     changeLogin(state) {
-      if (sessionStorage.getItem('token') && sessionStorage.getItem('user')) {
+      if (sessionStorage.getItem('token')) {
         state.token = sessionStorage.getItem('token');
-        state.user = JSON.parse(sessionStorage.getItem('user'));
+        state.user = JSON.parse(sessionStorage.getItem('user')) || {};
       } else {
         state.token = '';
         state.user = {};
       }
-    }
+    },
+
   },
   actions: {
 
