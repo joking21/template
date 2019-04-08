@@ -20,8 +20,18 @@
         <el-row>
           <el-col :span="12">
             <label class="el-form-item__label">考评任务</label>
-            <el-select v-model="region" style="width: 180px; padding-top: 5px;" placeholder="请选择" @change="handleChange">
-              <el-option v-for="item in taskList" :key="item.id" :label="item.taskName" :value="item.id"></el-option>
+            <el-select
+              v-model="region"
+              style="width: 180px; padding-top: 5px;"
+              placeholder="请选择"
+              @change="handleChange"
+            >
+              <el-option
+                v-for="item in taskList"
+                :key="item.id"
+                :label="item.taskName"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </el-col>
           <el-col :span="12" style="text-align: right;">
@@ -46,7 +56,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   data() {
@@ -56,6 +65,7 @@ export default {
       nameArr: [],
       tableData: [],
       taskList: [],
+      titleArr: [],
       defaultProps: {
         children: "children",
         label: "deptShortName"
@@ -70,7 +80,6 @@ export default {
   },
   created() {
     this.getTreeList();
-    // this.getTableList();
   },
   methods: {
     // 表格名字解析
@@ -85,10 +94,10 @@ export default {
       this.tableData = tempList.list.slice(1);
     },
     // 获取表格
-    getTemp(id){
-      this.$get(`/analysisReport/list/${id}`, null, (data)=>{
+    getTemp(id) {
+      this.$get(`/analysisReport/list/${id}`, null, data => {
         this.getTableList(data.object);
-      })
+      });
     },
     // 获取左边树的list
     getTreeList() {
@@ -98,10 +107,10 @@ export default {
       });
     },
     // 获取考评任务
-    getTask(id){
-      this.$get("/MeEvaluateTask/getEvaluateTaskList", {deptId:id}, (data)=>{
+    getTask(id) {
+      this.$get("/MeEvaluateTask/getEvaluateTaskList", { deptId: id }, data => {
         this.taskList = data.object;
-      })
+      });
     },
     // 获取登录用户的组织id  登录用户的组织id即为最顶层id
     getUserInfo() {
@@ -143,18 +152,30 @@ export default {
     // 选择树
     handleNodeClick(data, node) {
       const id = data.id;
+      this.nameArr = [];
+      this.titleArr = [];
+      this.tableData = [];
+      this.region = "";
       this.getTask(id);
     },
     // 选择考评任务
-    handleChange(value){
-      console.log(value);
+    handleChange(value) {
       this.getTemp(value);
     },
     // 打印
     printFun() {
-      var tableToPrint = document.getElementById("printf"); //将要被打印的表格
-      var newWin = window.open(""); //新打开一个空窗口
+      let tableToPrint = document.getElementById("printf"); //将要被打印的表格
+      let newWin = window.open(""); //新打开一个空窗口
       newWin.document.write(tableToPrint.outerHTML); //将表格添加进新的窗口
+      let th = newWin.document.getElementsByTagName("th");
+      let tr = newWin.document.getElementsByTagName("tr");
+      for(let i = 0; i< th.length;i++){
+        th[i].setAttribute('style', 'text-align: left');
+      }
+      for(let i = 0; i< tr.length;i++){
+        tr[i].setAttribute('style', 'height: 36px');
+        tr[i].setAttribute('style', 'line-height: 36px');
+      }
       newWin.document.close(); //在IE浏览器中使用必须添加这一句
       newWin.focus(); //在IE浏览器中使用必须添加这一句
       newWin.print(); //打印
