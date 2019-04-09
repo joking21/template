@@ -14,7 +14,7 @@
           </p>
           <ul v-if="isShow">
             <li v-for="(item,index) in menuList" :key="index">
-              <a :href="`/eva?${item.jumpUrl}`" target="_black">{{item.productShowName}}</a>
+              <a @click="jumpToPage(item.jumpUrl)">{{item.productShowName}}</a>
             </li>
           </ul>
         </div>
@@ -68,9 +68,6 @@ export default {
         this.menuList = data;
       })
     },
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
-    },
     productEnter() {
       this.isShow = true;
     },
@@ -83,6 +80,7 @@ export default {
     peopleLeave() {
       this.isShowLoginout = false;
     },
+    // 退出
     loginOut() {
       this.$post("/logout", null, (data) => {
         sessionStorage.removeItem("token");
@@ -90,6 +88,11 @@ export default {
         this.$store.commit("changeLogin");
         this.$router.push({ path: "/login" });
       });
+    },
+    // 跳转
+    jumpToPage(url){
+       // :href="`/eva?${item.jumpUrl}`"
+       console.log(url);
     }
   }
 };

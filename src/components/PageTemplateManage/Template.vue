@@ -90,7 +90,6 @@ export default {
     // 新增的时候，获取表格模板
     getTableTemp() {
       this.$get("/meIndicatorsCategory/treeAndIndicate", null, data => {
-        console.log(data);
         this.dataList = data.list;
         this.isShow = true;
       });
@@ -98,7 +97,6 @@ export default {
     // 查看详情
     getDetail() {
       this.$get(`/meEvaluateTemplate/info/${this.selectedId}`, null, data => {
-        console.log(data);
         this.form.templateName = data.object.templateName;
         this.form.templateDescribe = data.object.templateDescribe;
         this.form.deptId = data.object.deptId;

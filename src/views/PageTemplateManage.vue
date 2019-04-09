@@ -168,7 +168,6 @@ export default {
     // },
     // 删除模板
     deleteTemplate(index, row) {
-      console.log(index, row);
       this.$confirm(`是否确定删除模板【${row.templateName}】？`, "删除模板", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

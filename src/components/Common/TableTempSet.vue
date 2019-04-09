@@ -132,17 +132,6 @@ export default {
     "isAdd"
   ],
   created() {
-    // // console.log(this.dataList);
-    // this.analyticTree(this.dataList); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
-    // // console.log(this.dataArr);
-    // this.getMax(this.level); // 计算最深树枝的深度
-    // this.analyticArr(this.dataArr); // 把所有有关联的数据合成一条
-    // this.handleRowspan(); // 处理rowspan
-    // console.log("最最最忠", this.tableData);
-    // // 处理查看、编辑时的check默认选中
-    // if(!this.isAdd){
-    //   this.hancleCheck();
-    // }
     new Promise((resolve, reject) => {
       this.analyticTree(this.dataList); // 计算this.level  所有树支的深度 把树解析成一条单数据  this.dataArr
       resolve();
