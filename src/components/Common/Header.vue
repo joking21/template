@@ -52,7 +52,7 @@ export default {
     return {
       isShow: false,
       isShowLoginout: false,
-      menuList: [],
+      menuList: []
     };
   },
   computed: {
@@ -60,14 +60,14 @@ export default {
       return this.$store.state.user;
     }
   },
-  created(){
+  created() {
     this.getList();
   },
   methods: {
-    getList(){
-      this.$get("/getProductIntegrateList", null, (data)=>{
+    getList() {
+      this.$get("/getProductIntegrateList", null, data => {
         this.menuList = data;
-      })
+      });
     },
     productEnter() {
       this.isShow = true;
@@ -83,7 +83,7 @@ export default {
     },
     // 退出
     loginOut() {
-      this.$post("/logout", null, (data) => {
+      this.$post("/logout", null, data => {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user");
         this.$store.commit("changeLogin");
@@ -91,10 +91,12 @@ export default {
       });
     },
     // 跳转
-    jumpToPage(url){
-       jumpGet(`/sso?${url}`, data=>{
-         window.location.href = data.url;
-       })
+    jumpToPage(url) {
+      jumpGet(`/sso?${url}`, data => {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+        window.location.href = data.url;
+      });
     }
   }
 };
