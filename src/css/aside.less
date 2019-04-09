@@ -1,3 +1,4 @@
+@asideHoverColor: #00BCFF;
 .el-aside{
     background:linear-gradient(180deg,rgba(19,30,73,1) 0%,rgba(13,18,46,1) 100%) !important;
     overflow: hidden !important;
@@ -14,6 +15,14 @@
       padding-left: 17px;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
     }
+    .d-aside-circle{
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      background: #ffffff;
+      border-radius: 20px;
+      margin-right: 5px;
+    }
     .el-menu-vertical-demo:not(.el-menu--collapse) {
       width: 200px;
       min-height: 400px;
@@ -27,6 +36,7 @@
     }
     .is-active {
       background: rgba(31, 67, 128, 0.5) !important;
+      color: @asideHoverColor !important;
     }
     .el-dropdown-menu {
       top: 30px !important;
@@ -38,5 +48,11 @@
       color: #ffffff;
       font-size: 18px;
       margin-right: 5px;
+    }
+    span{
+      font-size: 13px;
+    }
+    .el-menu-item{
+      font-size: 13px;
     }
   }

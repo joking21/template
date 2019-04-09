@@ -13,9 +13,9 @@
           <el-main>
             <router-view></router-view>
           </el-main>
-          <!-- <el-footer height="40px">
-            <Footer />
-          </el-footer> -->
+          <el-footer height="40px">
+            <!-- <Footer /> -->
+          </el-footer>
         </el-container>
       </el-container>
     </el-container>

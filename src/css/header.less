@@ -1,3 +1,4 @@
+@hoverColor: rgba(0,188,255);
 .el-header{
     background-color: #1F4380;
     color: #FFFFFF;
@@ -26,9 +27,9 @@
       font-family: PingFangSC-Regular;
       font-weight: 400;
       color: rgba(255, 255, 255, 1);
-      width: 131px;
+      width: 102px;
       ul {
-        width: 131px;
+        width: 102px;
         list-style: none;
         padding: 0px;
         margin: 0px;
@@ -42,7 +43,7 @@
           font-family: PingFangSC-Regular;
           font-weight: 400;
           color: rgba(255, 255, 255, 0.8);
-          line-height: 24px;
+          line-height: 32px;
           cursor: pointer;
           a{
             color:rgba(255, 255, 255, 0.8);
@@ -53,6 +54,9 @@
     }
     .other-system:hover {
       background-color: rgba(19, 30, 73, 1);
+        a:hover{
+          color: @hoverColor;
+        }
     }
     .line {
       position: absolute;
@@ -115,7 +119,7 @@
           list-style: none;
           padding: 0px;
           margin: 0px;
-          padding-bottom: 10px;
+          // padding-bottom: 10px;
           width: 104px;
           margin-top: -18px;
           li {
@@ -123,11 +127,15 @@
             padding: 0px 10px;
             list-style: none;
             padding: 0px;
-            margin: 0px;
+            margin: 0 -10px;
             background-color: rgba(19, 30, 73, 1);
             font-size: 13px;
             font-family: MicrosoftYaHei;
             color: rgba(255, 255, 255, 1);
+          }
+          li:hover{
+            background:rgba(31,67,128,0.5);
+            color: #00BCFF;
           }
         }
       }

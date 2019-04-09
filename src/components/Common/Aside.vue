@@ -9,7 +9,7 @@
       :unique-opened="true"
       :collapse="isCollapse"
     >
-     <template v-for="item in menuList" >
+      <template v-for="item in menuList">
         <el-menu-item :key="item.id" v-if="item.children.length===0" :index="item.sysMenu.url">
           <i :class="item.sysMenu.icon"></i>
           <span slot="title">{{item.sysMenu.menuName}}</span>
@@ -23,13 +23,16 @@
             v-for="iitem in item.children"
             :key="iitem.sysMenu.id"
             :index="iitem.sysMenu.url"
-          >{{iitem.sysMenu.menuName}}</el-menu-item>
+          >
+            <span class="d-aside-circle"></span>
+            {{iitem.sysMenu.menuName}}
+          </el-menu-item>
         </el-submenu>
       </template>
     </el-menu>
     <div class="d-aside-footer">
       <i
-        class="el-icon-d-arrow-left"
+        :class="isCollapse?'iconfont iconshouqi':'iconfont iconzhankai'"
         style="font-size: 20px; color: #ffffff; cursor: pointer;"
         @click="changeBtn"
       ></i>
