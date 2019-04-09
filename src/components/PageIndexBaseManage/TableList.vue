@@ -25,11 +25,12 @@
         </el-col>
       </el-row>
     </div>
-    <div style="position:absolute; width:100%;">
+    <div class="d-flex-div" style="height:140px">
       <el-table
         ref="multipleTable"
         :data="tableData"
-        style="width: 100%"
+        style="position:absolute; width:100%;"
+        class="d-flex-table"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
@@ -110,6 +111,10 @@ export default {
         this.total = data.page.total;
         this.paginationPara.pageSize = data.page.size;
         this.paginationPara.currentPage = data.page.current;
+        setTimeout(() => {
+          let one = document.querySelector(".d-flex-table").offsetHeight;
+          document.querySelector(".d-flex-div").style.height = one + "px";
+        }, 0);
       });
     },
     // 获取指标信息

@@ -47,8 +47,9 @@
           </el-col>
         </el-row>
       </div>
-      <div style="position:absolute; width:100%;">
-        <el-table id="printf" :data="tableData" style="width: 100%">
+
+      <div class="d-flex-div">
+        <el-table id="printf" class="d-flex-table" :data="tableData" style="position:absolute; width:100%;">
           <el-table-column
             v-for="item in nameArr"
             :key="item"
@@ -103,6 +104,7 @@ export default {
     // 表格名字解析
     getTableList(tempList) {
       const size = tempList.size;
+      document.querySelector(".d-flex-div").style.height = 60+'px';
       if (size === 0) return;
       let tempArr = [];
       for (let i = 0; i < size; i++) {
@@ -111,6 +113,10 @@ export default {
       this.nameArr = tempArr;
       this.titleArr = tempList.list[0];
       this.tableData = tempList.list.slice(1);
+      setTimeout(()=>{
+        let one = document.querySelector(".d-flex-table").offsetHeight;
+        document.querySelector(".d-flex-div").style.height = one+'px';
+      },0)
     },
     // 获取表格
     getTemp(id) {
@@ -179,6 +185,9 @@ export default {
     },
     // 选择考评任务
     handleChange(value) {
+      this.nameArr = [];
+      this.titleArr = [];
+      this.tableData = [];
       this.getTemp(value);
     },
     // 打印
