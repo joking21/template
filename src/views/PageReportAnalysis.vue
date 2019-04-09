@@ -101,6 +101,7 @@ export default {
     // 表格名字解析
     getTableList(tempList) {
       const size = tempList.size;
+      if(size === 0) return;
       let tempArr = [];
       for (let i = 0; i < size; i++) {
         tempArr.push(i);

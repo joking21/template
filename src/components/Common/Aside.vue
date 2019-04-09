@@ -9,12 +9,12 @@
       :unique-opened="true"
       :collapse="isCollapse"
     >
-      <div v-for="item in menuList" :key="item.id">
-        <el-menu-item v-if="item.children.length===0" :index="item.sysMenu.url">
+     <template v-for="item in menuList" >
+        <el-menu-item :key="item.id" v-if="item.children.length===0" :index="item.sysMenu.url">
           <i :class="item.sysMenu.icon"></i>
-          <span>{{item.sysMenu.menuName}}</span>
+          <span slot="title">{{item.sysMenu.menuName}}</span>
         </el-menu-item>
-        <el-submenu v-else :index="item.sysMenu.id">
+        <el-submenu :key="item.id" v-else :index="item.sysMenu.id">
           <template slot="title">
             <i :class="item.sysMenu.icon"></i>
             <span>{{item.sysMenu.menuName}}</span>
@@ -25,7 +25,7 @@
             :index="iitem.sysMenu.url"
           >{{iitem.sysMenu.menuName}}</el-menu-item>
         </el-submenu>
-      </div>
+      </template>
     </el-menu>
     <div class="d-aside-footer">
       <i
