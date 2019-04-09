@@ -2,7 +2,13 @@
   <div>
     <div class="search">
       <el-row style="margin-bottom: 8px;">
-        <el-button size="small" icon="el-icon-plus" type="primary" :disabled="!treeData.level" @click="handleAddIndicator">新增指标</el-button>
+        <el-button
+          size="small"
+          icon="el-icon-plus"
+          type="primary"
+          :disabled="!treeData.level"
+          @click="handleAddIndicator"
+        >新增指标</el-button>
         <el-button size="small" icon="el-icon-delete" type="danger" @click="handledeleteSelect">删除指标</el-button>
       </el-row>
       <el-row>
@@ -19,27 +25,29 @@
         </el-col>
       </el-row>
     </div>
-    <el-table
-      ref="multipleTable"
-      :data="tableData"
-      style="width: 100%"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="indicatorsName" label="指标项"></el-table-column>
-      <el-table-column prop="indicatorsSource" label="指标来源">
-        <template slot-scope="scope">{{scope.row.indicatorsSource == 0 ? '人工' : '其它'}}</template>
-      </el-table-column>
-      <el-table-column prop="indicatorsDescribe" label="指标描述"></el-table-column>
-      <el-table-column label="操作" width="120">
-        <!-- v-if="scope.row.id===2" -->
-        <template slot-scope="scope">
-          <a class="operator" @click="handlePreview(scope.$index, scope.row)">查看</a>
-          <a class="operator" @click="handleEditIndicator(scope.$index, scope.row)">编辑</a>
-          <a class="operator" @click="deleteIndicator(scope.$index, scope.row)">删除</a>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div style="position:absolute; width:100%;">
+      <el-table
+        ref="multipleTable"
+        :data="tableData"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column prop="indicatorsName" label="指标项"></el-table-column>
+        <el-table-column prop="indicatorsSource" label="指标来源">
+          <template slot-scope="scope">{{scope.row.indicatorsSource == 0 ? '人工' : '其它'}}</template>
+        </el-table-column>
+        <el-table-column prop="indicatorsDescribe" label="指标描述"></el-table-column>
+        <el-table-column label="操作" width="120">
+          <!-- v-if="scope.row.id===2" -->
+          <template slot-scope="scope">
+            <a class="operator" @click="handlePreview(scope.$index, scope.row)">查看</a>
+            <a class="operator" @click="handleEditIndicator(scope.$index, scope.row)">编辑</a>
+            <a class="operator" @click="deleteIndicator(scope.$index, scope.row)">删除</a>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <Pagination :paginationPara="paginationPara" :total="total" :getList="getList"/>
     <!-- 新增编辑指标项 -->
     <Indicator
@@ -70,7 +78,7 @@ export default {
         name: "",
         pIdName: "",
         information: "",
-        level: false,
+        level: false
       },
       paginationPara: {
         currentPage: 1,
@@ -127,7 +135,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$post("/meIndicatorsItems/delete", {ids:[row.id]}, () => {
+          this.$post("/meIndicatorsItems/delete", { ids: [row.id] }, () => {
             this.getList();
           });
         })
@@ -148,7 +156,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$post("/meIndicatorsItems/delete", {ids:idList}, () => {
+          this.$post("/meIndicatorsItems/delete", { ids: idList }, () => {
             this.getList();
           });
         })

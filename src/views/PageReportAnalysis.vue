@@ -47,14 +47,16 @@
           </el-col>
         </el-row>
       </div>
-      <el-table id="printf" :data="tableData" style="width: 100%">
-        <el-table-column
-          v-for="item in nameArr"
-          :key="item"
-          :prop="`name${item}`"
-          :label="titleArr[`name${item}`]"
-        ></el-table-column>
-      </el-table>
+      <div style="position:absolute; width:100%;">
+        <el-table id="printf" :data="tableData" style="width: 100%">
+          <el-table-column
+            v-for="item in nameArr"
+            :key="item"
+            :prop="`name${item}`"
+            :label="titleArr[`name${item}`]"
+          ></el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -101,7 +103,7 @@ export default {
     // 表格名字解析
     getTableList(tempList) {
       const size = tempList.size;
-      if(size === 0) return;
+      if (size === 0) return;
       let tempArr = [];
       for (let i = 0; i < size; i++) {
         tempArr.push(i);
