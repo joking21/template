@@ -76,3 +76,17 @@ export function get(url, para, successFun, errorFun) {
             failer(error);
         });
 }
+
+// 导航条跳转的请求
+export function jumpGet(url, successFun) {
+    if (store.state.token) {
+        axios.defaults.headers.common["token"] = store.state.token;
+    }
+    axios.get(prefix+url)
+        .then(function (response) {
+            successFun(response.data);
+        })
+        .catch(function (error) {
+            failer(error);
+        });
+}

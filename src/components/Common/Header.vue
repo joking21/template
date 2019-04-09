@@ -46,6 +46,7 @@
 </style>
 
 <script>
+import { jumpGet } from "../../util/request.js";
 export default {
   data() {
     return {
@@ -91,8 +92,9 @@ export default {
     },
     // 跳转
     jumpToPage(url){
-       // :href="`/eva?${item.jumpUrl}`"
-       console.log(url);
+       jumpGet(`/sso?${url}`, data=>{
+         window.location.href = data.url;
+       })
     }
   }
 };
