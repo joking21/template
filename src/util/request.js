@@ -10,7 +10,7 @@ function success(msg) {
         title: '成功',
         message: msg,
         type: 'success',
-        duration: 3000,
+        duration: 2000,
     });
 }
 function failer(msg) {
@@ -19,26 +19,26 @@ function failer(msg) {
         dangerouslyUseHTMLString: true,
         message: msg,
         type: 'error',
-        duration: 3000,
+        duration: 2000,
     });
 }
 // 登录失效处理
-function clearNoEffect(){
+function clearNoEffect() {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
-    window.location.href="/login";
+    window.location.href = "/login";
 }
 export function post(url, para, successFun, errorFun) {
     if (store.state.token) {
         axios.defaults.headers.common["token"] = store.state.token;
     }
-    axios.post(prefix+url, para)
+    axios.post(prefix + url, para)
         .then(function (response) {
             if (response.data.code === 200) {
                 success(response.data.msg);
                 if (successFun) successFun(response.data.data);
-            } 
-            else if(response.data.code === 401){
+            }
+            else if (response.data.code === 401) {
                 failer(response.data.msg);
                 clearNoEffect();
             }
@@ -56,14 +56,14 @@ export function get(url, para, successFun, errorFun) {
     if (store.state.token) {
         axios.defaults.headers.common["token"] = store.state.token;
     }
-    axios.get(prefix+url, {
+    axios.get(prefix + url, {
         params: para
     })
         .then(function (response) {
             if (response.data.code === 200) {
                 if (successFun) successFun(response.data.data || response.data.treeMenus || response.data.sysProductIntegrate);
             }
-            else if(response.data.code === 401){
+            else if (response.data.code === 401) {
                 failer(response.data.msg);
                 clearNoEffect();
             }
@@ -82,7 +82,7 @@ export function jumpGet(url, successFun) {
     if (store.state.token) {
         axios.defaults.headers.common["token"] = store.state.token;
     }
-    axios.get(prefix+url)
+    axios.get(prefix + url)
         .then(function (response) {
             successFun(response.data);
         })
