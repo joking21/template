@@ -104,7 +104,6 @@ export default {
     // 表格名字解析
     getTableList(tempList) {
       const size = tempList.size;
-      document.querySelector(".d-flex-div").style.height = 60+'px';
       if (size === 0) return;
       let tempArr = [];
       for (let i = 0; i < size; i++) {
@@ -181,6 +180,7 @@ export default {
       this.titleArr = [];
       this.tableData = [];
       this.region = "";
+      document.querySelector(".d-flex-div").style.height = 60+'px';
       this.getTask(id);
     },
     // 选择考评任务
@@ -188,6 +188,7 @@ export default {
       this.nameArr = [];
       this.titleArr = [];
       this.tableData = [];
+      document.querySelector(".d-flex-div").style.height = 60+'px';
       this.getTemp(value);
     },
     // 打印
