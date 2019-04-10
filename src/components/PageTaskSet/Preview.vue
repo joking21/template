@@ -21,7 +21,6 @@ export default {
   data() {
     return {
       taskName: "",
-      taskName: "",
       templateName: "",
       deptName: "",
       reviewersName: "",

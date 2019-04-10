@@ -75,8 +75,6 @@ export default {
       return false;
     },
     selectJump(index) {
-      let title;
-      let url;
       this.$router.push({ path: index });
     },
     changeBtn() {
