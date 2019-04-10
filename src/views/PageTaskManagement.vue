@@ -7,6 +7,7 @@
       <el-form :inline="true" :model="paginationPara" class="demo-form-inline">
         <el-form-item label="考评对象">
           <el-select v-model="paginationPara.deptId" style="width: 180px;" placeholder="请选择考评对象">
+            <el-option label="全部" :value="''"></el-option>
             <el-option
               v-for="item in objectOfEvaluationData"
               :key="item.id"
