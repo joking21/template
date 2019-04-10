@@ -26,7 +26,7 @@
         </div>
         <div class="admin" @mouseenter="peopleEnter" @mouseleave="peopleLeave">
           <div class="imgIcon">
-            <img src="../../assets/people.jpg" alt>
+            <img src="../../assets/people.png" alt>
           </div>
           <div class="people">
             <p class="userName">{{user.userName}}</p>
