@@ -31,9 +31,9 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="footer">
+    <!-- <div class="footer">
       <p>© 2005-2018 勤智数码科技股份有限公司 蜀 ICP 备 11012966 号</p>
-    </div>
+    </div> -->
   </div>
 </template>
 <style lang="less" scoped>
