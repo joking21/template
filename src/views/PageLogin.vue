@@ -1,10 +1,8 @@
 <template>
   <div class="d-login">
     <div class="d-loginheader">
-      <div class="img">
-        <img style="width:55px" src="../assets/loginTitle.png">
-      </div>
-      <p class="title">信息考评管理系统</p>
+      <img class="img" src="../assets/loginTitle.png">
+      <span class="title">信息考评管理系统</span>
     </div>
     <div class="login-content">
       <p class="tip">账户密码登录</p>
