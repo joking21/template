@@ -50,6 +50,7 @@
         <div v-else>
           <el-input-number
             :min="0"
+            :max="100"
             v-model="scope.row.subIndexItemactualvalues"
             :controls="false"
             style="width: 60px"

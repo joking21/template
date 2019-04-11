@@ -29,7 +29,11 @@
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
       <div v-if="form.historyReviewerList.length!==0" class="d-auditOpinion">
-        <div v-for="(item, index) in  form.historyReviewerList" :key="index">
+        <div
+          v-for="(item, index) in  form.historyReviewerList"
+          :class="index!==0?'line desc':'desc'"
+          :key="index"
+        >
           <p>
             <span class="leftAuditOpinion">审核人</span>
             <span>{{item.reviewerName}}</span>
@@ -41,6 +45,10 @@
           <p>
             <span class="leftAuditOpinion">审核意见</span>
             <span>{{item.reviewerOpinion}}</span>
+          </p>
+          <p>
+            <span class="leftAuditOpinion">审核时间</span>
+            <span>{{item.reviewerTime}}</span>
           </p>
         </div>
       </div>
@@ -62,6 +70,13 @@
     width: 100px;
     text-align: right;
     margin-right: 10px;
+  }
+  .line{
+    padding-top: 10px;
+    border-top: 1px dashed #d5d5d5;
+  }
+  .desc{
+    margin:0 13px;
   }
 }
 .d-total {

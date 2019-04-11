@@ -45,6 +45,31 @@
         <el-form-item label="审核意见" prop="desc">
           <el-input type="textarea" v-model="form.reviewerOpinion"></el-input>
         </el-form-item>
+        <el-form-item label="历史审核记录" prop="desc" v-if="historyReviewerList.length!==0"></el-form-item>
+        <div v-if="historyReviewerList.length!==0" style="margin-top:-20px">
+          <div
+            v-for="(item, index) in  historyReviewerList"
+            :key="index"
+            :class="index!==0?'line desc':'desc'"
+          >
+            <p>
+              <span class="leftAuditOpinion">审核人</span>
+              <span>{{item.reviewerName}}</span>
+            </p>
+            <p>
+              <span class="leftAuditOpinion">审核结果</span>
+              <span>{{item.reviewerStatus}}</span>
+            </p>
+            <p>
+              <span class="leftAuditOpinion">审核意见</span>
+              <span>{{item.reviewerOpinion}}</span>
+            </p>
+            <p>
+              <span class="leftAuditOpinion">审核时间</span>
+              <span>{{item.reviewerTime}}</span>
+            </p>
+          </div>
+        </div>
       </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -58,6 +83,21 @@
   border: 1px dashed #eeeeee;
   min-height: 20px;
   margin-top: 20px;
+  line-height: 30px;
+  padding: 8px;
+  .leftAuditOpinion {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    margin-right: 10px;
+  }
+  .line {
+    padding-top: 10px;
+    border-top: 1px dashed #d5d5d5;
+  }
+  .desc {
+    margin: 0 13px;
+  }
 }
 .d-total {
   height: 36px;
@@ -93,6 +133,7 @@ export default {
         evaluateStatus: 3, //结果
         reviewerOpinion: "" //原因
       },
+      historyReviewerList: [],
       actualList: [],
       totalScore: "",
       canClick: false
@@ -121,6 +162,7 @@ export default {
           this.form.taskDescribe = data.object.taskDescribe;
           this.actualList = data.object.actualList;
           this.totalScore = data.object.totalScore;
+          this.historyReviewerList = data.object.historyReviewerList;
         }
       );
     },
