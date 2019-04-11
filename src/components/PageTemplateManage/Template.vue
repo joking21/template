@@ -33,7 +33,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
-      <el-button size="medium" type="primary" @click="handleSubmit">确 定</el-button>
+      <el-button size="medium" type="primary" @click="handleSubmit" :loading="canClick">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -50,6 +50,7 @@ export default {
       },
       dataList: [],
       isShow: false,
+      canClick: false,
     };
   },
   props: [
@@ -113,6 +114,7 @@ export default {
         this.handleCancel();
         return;
       }
+      this.canClick = true;
       const tableData = this.$refs.tableTemp.tableData;
       const name = this.$refs.tableTemp.columnArr;
       const meEvaluateTemplateWeightList = [];
@@ -142,6 +144,9 @@ export default {
       this.$post(url, para, () => {
         this.getList();
         this.handleCancel();
+        this.canClick = false;
+      },()=>{
+        this.canClick = false;
       });
     },
     // 因为指标项的权重如果是多条数据合并表单，则只有第一条数据有值

@@ -41,7 +41,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
-      <el-button size="medium" type="primary" @click="submitFun">确 定</el-button>
+      <el-button size="medium" type="primary" @click="submitFun" :loading="canClick">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -55,7 +55,8 @@ export default {
         indicatorsDescribe: "",
         categoryId: "",
         meIndicatorsChildItemsList: []
-      }
+      },
+      canClick: false,
     };
   },
   props: [
@@ -107,6 +108,7 @@ export default {
       this.form.meIndicatorsChildItemsList.splice(index, 1);
     },
     submitFun() {
+      this.canClick = true;
       this.form.categoryId = this.categoryId;
       this.IndicatorIsEdit ? (this.form.id = this.editId) : null;
       const url = this.IndicatorIsEdit
@@ -115,6 +117,9 @@ export default {
       this.$post(url, this.form, () => {
         this.getList();
         this.handleCancel();
+        this.canClick = false;
+      },()=>{
+        this.canClick = false;
       });
     }
   }

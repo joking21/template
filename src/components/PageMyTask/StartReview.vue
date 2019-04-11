@@ -42,7 +42,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
-      <el-button size="medium" type="primary" @click="handleSubmit">确 定</el-button>
+      <el-button size="medium" type="primary" @click="handleSubmit" :loading="canClick">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -87,7 +87,8 @@ export default {
         reviewerOpinion: "" //原因
       },
       actualList: [],
-      totalScore: ""
+      totalScore: "",
+      canClick: false,
     };
   },
   props: ["startReviewVisible", "changeParent", "checkId", "getList"],
@@ -135,6 +136,7 @@ export default {
       this.changeParent("startReviewVisible", false);
     },
     handleSubmit() {
+      this.canClick = true;
       const para = {
         id: this.checkId,
         totalScore: this.totalScore, //总分数
@@ -154,6 +156,9 @@ export default {
       this.$post("/meEvaluateUserTask/auditOrFillTask", para, data => {
         this.getList();
         this.handleCancel();
+         this.canClick = false;
+      },()=>{
+         this.canClick = false;
       });
     }
   }

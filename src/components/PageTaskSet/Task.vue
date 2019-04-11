@@ -121,7 +121,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
-      <el-button size="medium" type="primary" @click="submit">确 定</el-button>
+      <el-button size="medium" type="primary" @click="submit" :loading="canClick">确 定</el-button>
     </div>
     <SelectUser
       v-if="approvalTableModel && form.deptId"
@@ -162,7 +162,8 @@ export default {
       templateList: [],
       approvalTableModel: false,
       multipleSelectionName: "",
-      reviewerList: []
+      reviewerList: [],
+      canClick: false
     };
   },
   props: [
@@ -253,6 +254,7 @@ export default {
       this.changeParent("taskModel", false);
     },
     submit() {
+      this.canClick = true;
       const date = this.form.date || [];
       const para = {
         evaluateTask: {
@@ -290,6 +292,9 @@ export default {
       this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
         this.getList();
         this.handleCancel();
+        this.canClick = false;
+      }, ()=>{
+        this.canClick = false;
       });
     }
   },

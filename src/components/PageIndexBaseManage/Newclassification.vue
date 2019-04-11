@@ -20,7 +20,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
-      <el-button size="medium" type="primary" @click="handleSubmit">确 定</el-button>
+      <el-button size="medium" type="primary" @click="handleSubmit" :loading="canClick">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -33,7 +33,8 @@ export default {
         information: "",
         pIdName: "",
         pId: ""
-      }
+      },
+      canClick: false,
     };
   },
   props: [
@@ -67,6 +68,7 @@ export default {
       this.changeParent("NewclassificationModel", false);
     },
     handleSubmit() {
+      this.canClick = true;
       const para = {
         name: this.form.name,
         information: this.form.information,
@@ -79,6 +81,9 @@ export default {
       this.$post(url, para, () => {
         this.getList();
         this.handleCancel();
+        this.canClick = false;
+      },()=>{
+        this.canClick = false;
       });
     }
   }
