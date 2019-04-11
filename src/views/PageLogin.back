@@ -1,15 +1,15 @@
 <template>
   <div class="d-login">
     <div class="d-loginheader">
-      <div class="img">
-        <img style="width:55px" src="../assets/loginTitle.png">
-      </div>
-      <p class="title">信息考评管理系统</p>
+      <p>信息考评管理系统</p>
+      <p class="tip">账户密码登录</p>
     </div>
     <div class="login-content">
-      <p class="tip">账户密码登录</p>
       <el-form ref="loginData" :model="loginData" :rules="rulesForm">
         <el-form-item prop="username">
+          <!-- <el-input placeholder="请输入用户名" v-model="loginData.username">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>-->
           <el-input v-model="loginData.username" style="width: 300px;" placeholder="用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password" class="password_font_algin">
@@ -33,7 +33,7 @@
     </div>
     <!-- <div class="footer">
       <p>© 2005-2018 勤智数码科技股份有限公司 蜀 ICP 备 11012966 号</p>
-    </div>-->
+    </div> -->
   </div>
 </template>
 <style lang="less" scoped>
@@ -61,7 +61,7 @@ export default {
   },
   created() {
     // 若有什么统一登录，在此设置
-    const token = this.getToken("token"); // 获取统一登录的某个标识
+    const token = this.getToken("token");  // 获取统一登录的某个标识
     if (token) {
       sessionStorage.setItem("token", token);
       this.$store.commit("changeLogin");
