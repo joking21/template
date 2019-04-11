@@ -1,5 +1,12 @@
 <template>
-  <el-dialog title="考评任务审核" :visible="reversedMessage" @close="handleCancel" width="70%">
+  <el-dialog
+    title="考评任务审核"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    width="70%"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form ref="form" :model="form" label-width="100px">
       <el-col :span="12">
         <el-form-item label="任务名称">
@@ -88,7 +95,7 @@ export default {
       },
       actualList: [],
       totalScore: "",
-      canClick: false,
+      canClick: false
     };
   },
   props: ["startReviewVisible", "changeParent", "checkId", "getList"],
@@ -153,13 +160,18 @@ export default {
         };
         para.actualList.push(temp);
       }
-      this.$post("/meEvaluateUserTask/auditOrFillTask", para, data => {
-        this.getList();
-        this.handleCancel();
-         this.canClick = false;
-      },()=>{
-         this.canClick = false;
-      });
+      this.$post(
+        "/meEvaluateUserTask/auditOrFillTask",
+        para,
+        data => {
+          this.getList();
+          this.handleCancel();
+          this.canClick = false;
+        },
+        () => {
+          this.canClick = false;
+        }
+      );
     }
   }
 };

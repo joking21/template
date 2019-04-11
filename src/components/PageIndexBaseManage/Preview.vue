@@ -1,22 +1,20 @@
 <template>
-  <el-dialog title="查看详情" :visible="reversedMessage" @close="handleCancel" width="300">
+  <el-dialog
+    title="查看详情"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form ref="form" :model="form" label-width="30%" class="preiewForm">
-      <el-form-item label="指标项：">
-        {{form.indicatorsName}}
-      </el-form-item>
-      <el-form-item label="指标来源：">
-          {{form.indicatorsSource == 0 ? '人工': '其它'}}
-      </el-form-item>
-      <el-form-item label="指标描述：">
-        {{form.indicatorsDescribe}}
-      </el-form-item>
+      <el-form-item label="指标项：">{{form.indicatorsName}}</el-form-item>
+      <el-form-item label="指标来源：">{{form.indicatorsSource == 0 ? '人工': '其它'}}</el-form-item>
+      <el-form-item label="指标描述：">{{form.indicatorsDescribe}}</el-form-item>
       <el-form-item
-          v-for="(item, index) in form.meIndicatorsChildItemsList"
-          :key="index"
-          label="子指标项："
-        >
-          {{item.indicatorsLoverName}}
-        </el-form-item>
+        v-for="(item, index) in form.meIndicatorsChildItemsList"
+        :key="index"
+        label="子指标项："
+      >{{item.indicatorsLoverName}}</el-form-item>
     </el-form>
     <!-- <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>

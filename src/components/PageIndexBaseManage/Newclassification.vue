@@ -3,6 +3,8 @@
     :title="NewclassificationIsEdit?'编辑分类':'新增分类'"
     :visible="reversedMessage"
     @close="handleCancel"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
     width="300"
   >
     <el-form ref="form" :model="form" label-width="150px">

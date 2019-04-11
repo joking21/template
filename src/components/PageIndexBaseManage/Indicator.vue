@@ -3,6 +3,8 @@
     :title="IndicatorIsEdit?'编辑指标':'新增指标'"
     :visible="reversedMessage"
     @close="handleCancel"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
     width="300"
   >
     <el-form ref="form" :model="form" label-width="150px">

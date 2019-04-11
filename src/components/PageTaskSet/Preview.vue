@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="查看任务" :visible="reversedMessage" @close="handleCancel">
+  <el-dialog
+    title="查看任务"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form label-width="30%" class="preiewForm">
       <el-form-item label="任务名称：">{{taskName}}</el-form-item>
       <el-form-item label="考评模板：">{{templateName}}</el-form-item>
@@ -12,7 +18,7 @@
     <!-- <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
       <el-button size="medium" type="primary" @click="handleCancel">确 定</el-button>
-    </div> -->
+    </div>-->
   </el-dialog>
 </template>
 

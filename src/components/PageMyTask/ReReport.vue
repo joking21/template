@@ -1,5 +1,12 @@
 <template>
-  <el-dialog title="填报考核任务" :visible="reversedMessage" @close="handleCancel" width="70%">
+  <el-dialog
+    title="填报考核任务"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    width="70%"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="任务名称" width="100">
         <el-input style="width: 220px;" disabled v-model="form.name"></el-input>
@@ -8,7 +15,7 @@
         <el-input type="textarea" disabled v-model="form.desc"></el-input>
       </el-form-item>
       <el-form-item label="考核信息" width="100">
-         <TableTemp :reReport='true' ref="tableTemp" />
+        <TableTemp :reReport="true" ref="tableTemp"/>
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
       <div class="d-auditOpinion">
@@ -42,7 +49,7 @@
   .d-disagree {
     padding: 15px;
     line-height: 30px;
-    .title{
+    .title {
       display: inline-block;
       width: 120px;
       text-align: right;
@@ -58,14 +65,14 @@
 }
 </style>
 <script>
-import TableTemp from '../Common/TableTemp';
+import TableTemp from "../Common/TableTemp";
 export default {
   data() {
     return {
       form: {
         name: "不可填的任务名称",
         desc: "不可填的任务描述"
-      },
+      }
     };
   },
   props: ["reReportVisible", "changeParent"],
@@ -81,7 +88,7 @@ export default {
     handleCancel() {
       this.changeParent("reReportVisible", false);
     },
-    submit(){
+    submit() {
       console.log(this.$refs.tableTemp.tableData);
     }
   }

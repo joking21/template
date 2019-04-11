@@ -1,5 +1,12 @@
 <template>
-  <el-dialog title="考评任务详情" :visible="reversedMessage" @close="handleCancel" width="70%">
+  <el-dialog
+    title="考评任务详情"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    width="70%"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form ref="form" :model="form" label-width="100px">
       <el-col :span="24">
         <el-form-item label="任务名称">{{form.taskName}}</el-form-item>
@@ -36,7 +43,7 @@
     <!-- <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
       <el-button size="medium" type="primary" @click="dialogFormVisible = false">确 定</el-button>
-    </div> -->
+    </div>-->
   </el-dialog>
 </template>
 <style lang="less" scoped>
@@ -83,10 +90,10 @@ export default {
         taskName: "",
         taskDescribe: "",
         historyReviewerList: "",
-        deptName: "",
+        deptName: ""
       },
       actualList: [],
-      totalScore: '',
+      totalScore: ""
     };
   },
   props: ["viewDetailsModel", "changeParent", "checkId"],

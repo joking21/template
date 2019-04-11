@@ -1,5 +1,11 @@
 <template>
-  <el-dialog :title="isTaskEdit?'编辑任务':'添加任务'" :visible="reversedMessage" @close="handleCancel">
+  <el-dialog
+    :title="isTaskEdit?'编辑任务':'添加任务'"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form ref="form" :model="form" label-width="150px">
       <el-form-item label="任务名称">
         <el-input style="width: 80%;" v-model="form.taskName"></el-input>
@@ -15,7 +21,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="考评对象">
-        <el-select v-model="form.deptId" style="width: 80%;" placeholder="请选择"  @change="changeDeptId">
+        <el-select
+          v-model="form.deptId"
+          style="width: 80%;"
+          placeholder="请选择"
+          @change="changeDeptId"
+        >
           <el-option
             v-for="item in objectOfEvaluationData"
             :key="item.id"
@@ -289,16 +300,19 @@ export default {
         }
       }
       this.isTaskEdit ? (para.evaluateTask.id = this.editId) : null;
-      this.$post("/MeEvaluateTask/insertOrUpdate", para, () => {
-        this.getList();
-        this.handleCancel();
-        this.canClick = false;
-      }, ()=>{
-        this.canClick = false;
-      });
+      this.$post(
+        "/MeEvaluateTask/insertOrUpdate",
+        para,
+        () => {
+          this.getList();
+          this.handleCancel();
+          this.canClick = false;
+        },
+        () => {
+          this.canClick = false;
+        }
+      );
     }
-  },
-  watch:{
   }
 };
 </script>

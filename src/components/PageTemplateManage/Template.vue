@@ -1,5 +1,12 @@
 <template>
-  <el-dialog :title="templateTitle" :visible="reversedMessage" @close="handleCancel" width="70%">
+  <el-dialog
+    :title="templateTitle"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    width="70%"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="模板名称">
         <span v-if="isPreview">{{form.templateName}}</span>
@@ -7,12 +14,7 @@
       </el-form-item>
       <el-form-item label="所属组织">
         <span v-if="isPreview">{{form.deptName}}</span>
-        <el-select
-          v-else
-          v-model="form.deptId"
-          style="width: 100%"
-          placeholder="请选择"
-        >
+        <el-select v-else v-model="form.deptId" style="width: 100%" placeholder="请选择">
           <el-option
             v-for="item in objectOfEvaluationData"
             :key="item.id"
@@ -27,7 +29,13 @@
       </el-form-item>
       <el-form-item label="选择指标项">
         <TableTemp v-if="isPreview && isShow" :templatePreview="true" :dataList="dataList"/>
-        <TableTemp v-else-if="isShow" ref="tableTemp" :isAdd="isAdd" :templateEdit="true" :dataList="dataList"/>
+        <TableTemp
+          v-else-if="isShow"
+          ref="tableTemp"
+          :isAdd="isAdd"
+          :templateEdit="true"
+          :dataList="dataList"
+        />
       </el-form-item>
       <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
     </el-form>
@@ -46,11 +54,11 @@ export default {
         templateName: "",
         templateDescribe: "",
         deptId: "", // 所属组织
-        deptName: "",
+        deptName: ""
       },
       dataList: [],
       isShow: false,
-      canClick: false,
+      canClick: false
     };
   },
   props: [
@@ -61,7 +69,7 @@ export default {
     "isPreview",
     "objectOfEvaluationData",
     "getList",
-    "selectedId",
+    "selectedId"
   ],
   created() {
     if (this.isAdd) {
@@ -139,15 +147,22 @@ export default {
         deptId: this.form.deptId, // 所属组织
         meEvaluateTemplateWeightList: meEvaluateTemplateWeightList
       };
-      if(this.isTemplateEdit) para.id = this.selectedId;
-      const url = this.isTemplateEdit?'/meEvaluateTemplate/update':'/meEvaluateTemplate/save';
-      this.$post(url, para, () => {
-        this.getList();
-        this.handleCancel();
-        this.canClick = false;
-      },()=>{
-        this.canClick = false;
-      });
+      if (this.isTemplateEdit) para.id = this.selectedId;
+      const url = this.isTemplateEdit
+        ? "/meEvaluateTemplate/update"
+        : "/meEvaluateTemplate/save";
+      this.$post(
+        url,
+        para,
+        () => {
+          this.getList();
+          this.handleCancel();
+          this.canClick = false;
+        },
+        () => {
+          this.canClick = false;
+        }
+      );
     },
     // 因为指标项的权重如果是多条数据合并表单，则只有第一条数据有值
     getItemsWeight(list, id) {

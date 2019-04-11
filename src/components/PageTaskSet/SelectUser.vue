@@ -1,5 +1,12 @@
 <template>
-  <el-dialog title="选择用户" :visible="reversedMessage" @close="handleCancel" append-to-body>
+  <el-dialog
+    title="选择用户"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    append-to-body
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <div style="margin-bottom: 10px; padding-left: 46%;">
       <el-input placeholder="请输入姓名/用户名" v-model="getApprovalPara.keyWord" class="input-with-select">
         <el-button slot="append" icon="el-icon-search" @click="searchFun"></el-button>

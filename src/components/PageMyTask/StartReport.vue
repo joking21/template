@@ -1,5 +1,12 @@
 <template>
-  <el-dialog title="填报考核任务" :visible="reversedMessage" @close="handleCancel" width="70%">
+  <el-dialog
+    title="填报考核任务"
+    :visible="reversedMessage"
+    @close="handleCancel"
+    width="70%"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="任务名称" width="100">
         <el-input style="width: 220px;" v-model="form.taskName" disabled placeholder="请输入任务名称"></el-input>
@@ -90,7 +97,7 @@ export default {
       },
       actualList: [],
       totalScore: 100,
-      canClick: false,
+      canClick: false
     };
   },
   props: ["startReportModel", "changeParent", "checkId", "getList"],
@@ -154,13 +161,18 @@ export default {
         };
         para.actualList.push(temp);
       }
-      this.$post("/meEvaluateUserTask/auditOrFillTask", para, data => {
-        this.getList();
-        this.handleCancel();
-        this.canClick = false;
-      }, ()=>{
-         this.canClick = false;
-      });
+      this.$post(
+        "/meEvaluateUserTask/auditOrFillTask",
+        para,
+        data => {
+          this.getList();
+          this.handleCancel();
+          this.canClick = false;
+        },
+        () => {
+          this.canClick = false;
+        }
+      );
     }
   }
 };
