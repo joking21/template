@@ -82,7 +82,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column prop="expectations" label="期望值（%）" width="80">
+    <el-table-column prop="expectations" label="期望值" width="80">
       <template slot-scope="scope">
         <div v-if="templatePreview || !scope.row.subIndexItemName">
           <span>{{ scope.row.subIndexItemExpectations || '-'}}</span>

@@ -34,7 +34,7 @@
         {{ scope.row.subIndexItemWeight}}
       </template>
     </el-table-column>
-    <el-table-column prop="expectations" label="期望值（%）" width="80">
+    <el-table-column prop="expectations" label="期望值" width="80">
       <template slot-scope="scope">
         {{ scope.row.subIndexItemExpectations}}
       </template>
