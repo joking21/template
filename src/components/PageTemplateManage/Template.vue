@@ -37,7 +37,23 @@
           :dataList="dataList"
         />
       </el-form-item>
-      <p style="font-size: 12px; margin-top: 10px;">计算公式：子指标项得分=（实际值/期望值）*子指标项权重</p>
+      <div>
+        <p style="font-size: 12px; margin-top: 10px;">
+          <span style="display: inline-block;
+          width: 90px;
+          text-align: right;">计算公式：</span>子指标项得分=（实际值/期望值）*子指标项权重
+        </p>
+        <p style="font-size: 12px; margin-top: 8px;">
+          <span style="    display: inline-block;
+            width: 90px;
+            text-align: right;">权重设置规则：</span>权重单个指标项的权重最大值为100；所有指标项的权重总和必须等于100；
+        </p>
+        <p style="font-size: 12px; margin-top: 8px;">
+          <span style="    display: inline-block;
+            width: 90px;
+            text-align: right;"></span>单个子指标项的权重最大值为100；单个指标项中的所有子指标项的权重总和必须等于100。
+        </p>
+      </div>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="medium" @click="handleCancel">取 消</el-button>
