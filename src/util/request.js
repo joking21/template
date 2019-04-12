@@ -10,7 +10,7 @@ function success(msg) {
         title: '成功',
         message: msg,
         type: 'success',
-        duration: 1500,
+        duration: 3000,
     });
 }
 function failer(msg) {
@@ -19,7 +19,7 @@ function failer(msg) {
         dangerouslyUseHTMLString: true,
         message: msg,
         type: 'error',
-        duration: 1500,
+        duration: 3000,
     });
 }
 // 登录失效处理

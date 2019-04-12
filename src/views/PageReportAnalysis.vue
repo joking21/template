@@ -73,7 +73,7 @@ export default {
       titleArr: [],
       defaultProps: {
         children: "children",
-        label: "deptShortName"
+        label: "deptName"
       },
       treeData: [],
       selectTreeId: 2, // 默认选中的字节
