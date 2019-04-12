@@ -49,7 +49,12 @@
       </div>
 
       <div class="d-flex-div">
-        <el-table id="printf" class="d-flex-table" :data="tableData" style="position:absolute; width:100%;">
+        <el-table
+          id="printf"
+          class="d-flex-table"
+          :data="tableData"
+          style="position:absolute; width:100%;"
+        >
           <el-table-column
             v-for="item in nameArr"
             :key="item"
@@ -112,10 +117,10 @@ export default {
       this.nameArr = tempArr;
       this.titleArr = tempList.list[0];
       this.tableData = tempList.list.slice(1);
-      setTimeout(()=>{
+      setTimeout(() => {
         let one = document.querySelector(".d-flex-table").offsetHeight;
-        document.querySelector(".d-flex-div").style.height = one+'px';
-      },0)
+        document.querySelector(".d-flex-div").style.height = one + "px";
+      }, 0);
     },
     // 获取表格
     getTemp(id) {
@@ -139,6 +144,10 @@ export default {
     // 获取登录用户的组织id  登录用户的组织id即为最顶层id
     getUserInfo() {
       this.$get("/user/loginUserInfo", null, data => {
+        if (data.object.userType === 1) {
+          this.treeData = this.getTree(this.treeList, "root");
+          return;
+        }
         this.loginDeptId = data.object.deptId;
         new Promise((resolve, reject) => {
           this.handleTree(this.loginDeptId, this.treeList);
@@ -180,7 +189,7 @@ export default {
       this.titleArr = [];
       this.tableData = [];
       this.region = "";
-      document.querySelector(".d-flex-div").style.height = 60+'px';
+      document.querySelector(".d-flex-div").style.height = 60 + "px";
       this.getTask(id);
     },
     // 选择考评任务
@@ -188,7 +197,7 @@ export default {
       this.nameArr = [];
       this.titleArr = [];
       this.tableData = [];
-      document.querySelector(".d-flex-div").style.height = 60+'px';
+      document.querySelector(".d-flex-div").style.height = 60 + "px";
       this.getTemp(value);
     },
     // 打印
@@ -198,12 +207,15 @@ export default {
       newWin.document.write(tableToPrint.outerHTML); //将表格添加进新的窗口
       let th = newWin.document.getElementsByTagName("th");
       let tr = newWin.document.getElementsByTagName("tr");
+      let td = newWin.document.getElementsByTagName("td");
       for (let i = 0; i < th.length; i++) {
-        th[i].setAttribute("style", "text-align: left");
+        th[i].setAttribute("style", "height: 62x; line-height: 62px;text-align: left; border-bottom: 1px solid #e9e9e9;");
       }
       for (let i = 0; i < tr.length; i++) {
-        tr[i].setAttribute("style", "height: 36px");
-        tr[i].setAttribute("style", "line-height: 36px");
+        tr[i].setAttribute("style", "height: 48x; line-height: 48px;");
+      }
+      for (let i = 0; i < td.length; i++) {
+        td[i].setAttribute("style", "border-bottom: 1px solid #e9e9e9;");
       }
       newWin.document.close(); //在IE浏览器中使用必须添加这一句
       newWin.focus(); //在IE浏览器中使用必须添加这一句
