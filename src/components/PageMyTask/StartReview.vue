@@ -170,16 +170,17 @@ export default {
       const tableData = this.$refs.tableTemp.tableData;
       let score = 0;
       for (let i = 0; i < tableData.length; i++) {
-        const scoreChild = (
-          (tableData[i].subIndexItemactualvalues /
+        const scoreChild =
+          (((tableData[i].subIndexItemactualvalues /
             tableData[i].subIndexItemExpectations) *
-          tableData[i].subIndexItemWeight
-        ).toFixed(2);
+            tableData[i].subIndexItemWeight) /
+            100) *
+          tableData[i].indexItemWeight.toFixed(2);
         if (!isNaN(parseFloat(scoreChild))) {
           score += parseFloat(scoreChild);
         }
       }
-      this.totalScore = score.toFixed(2);
+      this.totalScore = score.toFixed(2) > 100 ? 100 : score.toFixed(2);
     },
     handleCancel() {
       this.changeParent("startReviewVisible", false);

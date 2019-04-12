@@ -69,7 +69,7 @@
           >查看详情</a>-->
           <a
             class="operator"
-            v-if="scope.row.taskStatus==='已完成' || scope.row.taskStatus==='待填报'"
+            v-if="scope.row.taskStatus==='审核通过' || scope.row.taskStatus==='待填报'"
             @click="handleViewDetails(scope.$index, scope.row)"
           >查看详情</a>
           <a

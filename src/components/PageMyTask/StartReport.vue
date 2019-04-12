@@ -153,12 +153,12 @@ export default {
           (tableData[i].subIndexItemactualvalues /
             tableData[i].subIndexItemExpectations) *
           tableData[i].subIndexItemWeight
-        ).toFixed(2);
+        )/100*tableData[i].indexItemWeight.toFixed(2);
         if (!isNaN(parseFloat(scoreChild))) {
           score += parseFloat(scoreChild);
         }
       }
-      this.totalScore = score.toFixed(2);
+      this.totalScore = score.toFixed(2) >100 ? 100 : score.toFixed(2);
     },
     handleSubmit() {
       this.canClick = true;

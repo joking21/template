@@ -54,7 +54,7 @@
           >开始填报</a>
           <a
             class="operator"
-            v-if="scope.row.taskStatus==='已完成'"
+            v-if="scope.row.taskStatus==='审核通过'"
             @click="handleViewDetails(scope.$index, scope.row)"
           >查看详情</a>
           <a
