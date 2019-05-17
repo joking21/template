@@ -32,9 +32,9 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-# 传勇需知
 
-新建页面流程
+
+#新建页面流程
 1 新建文件
     页面都放在src/views文件夹（一个.vue 的文件template标签里面写html的代码，script写js的代码，style里面写css的代码）
 2 配置新建路由
