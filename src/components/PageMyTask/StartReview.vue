@@ -15,7 +15,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="考评填报人">
-          <el-input style="width: 220px;" disabled v-model="form.deptName"></el-input>
+          <el-input style="width: 220px;" disabled v-model="form.fillInUserName"></el-input>
         </el-form-item>
       </el-col>
       <el-form-item label="任务描述">
@@ -129,7 +129,7 @@ export default {
       form: {
         taskName: "",
         taskDescribe: "",
-        deptName: "",
+        fillInUserName: "",
         evaluateStatus: 3, //结果
         reviewerOpinion: "" //原因
       },
@@ -158,7 +158,7 @@ export default {
         null,
         data => {
           this.form.taskName = data.object.taskName;
-          this.form.deptName = data.object.deptName;
+          this.form.fillInUserName = data.object.fillInUserName;
           this.form.taskDescribe = data.object.taskDescribe;
           this.actualList = data.object.actualList;
           this.totalScore = data.object.totalScore;

@@ -12,7 +12,7 @@
         <el-form-item label="任务名称">{{form.taskName}}</el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-form-item label="考评填报人">{{form.deptName}}</el-form-item>
+        <el-form-item label="考评填报人">{{form.fillInUserName}}</el-form-item>
       </el-col>
       <el-form-item label="任务描述">{{form.taskDescribe}}</el-form-item>
       <el-form-item label="考核信息">
@@ -105,7 +105,7 @@ export default {
         taskName: "",
         taskDescribe: "",
         historyReviewerList: "",
-        deptName: ""
+        fillInUserName: ""
       },
       actualList: [],
       totalScore: ""
@@ -131,7 +131,7 @@ export default {
         null,
         data => {
           this.form.taskName = data.object.taskName;
-          this.form.deptName = data.object.deptName;
+          this.form.fillInUserName = data.object.fillInUserName;
           this.form.taskDescribe = data.object.taskDescribe;
           this.form.historyReviewerList = data.object.historyReviewerList;
           this.totalScore = data.object.totalScore;
