@@ -8,6 +8,7 @@
       @select="selectJump"
       :unique-opened="true"
       :collapse="isCollapse"
+      :default-active="activeNav"
     >
       <template v-for="item in menuList">
         <el-menu-item :key="item.id" v-if="item.children.length===0" :index="item.sysMenu.url">
@@ -48,7 +49,8 @@ export default {
   data() {
     return {
       isCollapse: false,
-      menuList: []
+      menuList: [],
+      activeNav: '/'
     };
   },
   computed: {
@@ -60,6 +62,7 @@ export default {
     }
   },
   created() {
+    this.activeNav = window.location.pathname
     this.getList();
   },
   methods: {
