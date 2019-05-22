@@ -62,7 +62,7 @@ export default {
     }
   },
   created() {
-    this.activeNav = window.location.pathname
+    this.activeNav = window.location.pathname;
     this.getList();
   },
   methods: {
