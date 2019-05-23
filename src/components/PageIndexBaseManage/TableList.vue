@@ -184,6 +184,8 @@ export default {
   watch: {
     treeId() {
       this.paginationPara.categoryId = this.treeId;
+      this.paginationPara.currentPage = 1;
+      this.paginationPara.pageSize = 10;
       this.getList(this.paginationPara);
       this.getTreeData(this.treeId);
     }
