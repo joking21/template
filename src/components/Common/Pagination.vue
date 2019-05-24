@@ -3,9 +3,9 @@
     <el-pagination v-if="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="paginationChild.current"
+      :current-page="paginationChild.currentPage"
       :page-sizes="pageSizesArr"
-      :page-size="paginationChild.pagesize"
+      :page-size="paginationChild.pageSize"
       layout="prev, pager, next, sizes, jumper"
       :total="total"
     ></el-pagination>
