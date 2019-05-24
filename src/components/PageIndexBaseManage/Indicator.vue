@@ -17,7 +17,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="指标描述">
-        <el-input type="textarea" v-model="form.indicatorsDescribe"></el-input>
+        <el-input type="textarea" maxlength="100" v-model="form.indicatorsDescribe"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button size="small" round @click="addSubIndicator">添加子指标项</el-button>
